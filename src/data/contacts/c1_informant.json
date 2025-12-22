@@ -1,0 +1,32 @@
+{
+  "id": "c1",
+  "puzzles": [
+    {
+      "turnId": 1,
+      "maxAttempts": 3,
+      "penaltySeconds": 10,
+      "solution": {
+        "keywords": ["blue", "eagle"],
+        "response": {
+          "text": "Correct. Here is the proof.",
+          "messageId": "msg_turn1_success",
+          "mediaId": "m1",
+          "nextTurn": 2
+        }
+      },
+      "hints": [
+        { "keywords": ["blue"], "response": "Blue what?" }
+      ],
+      "fallbacks": ["I don't understand.", "Wrong code."],
+      "penaltyResponses": ["System Locked. Cooling down..."]
+    }
+  ],
+  "media": [
+    {
+      "id": "m1",
+      "type": "image",
+      "src": "/assets/images/evidence.jpg",
+      "triggerMessageId": "msg_turn1_success"
+    }
+  ]
+}
