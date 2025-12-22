@@ -44,7 +44,7 @@
           placeholder="T1: la tua risposta"
           @keyup.enter="sendMessage"
         />
-        <button :disabled="!inputValue || isCooldown" class="send-btn" @click="sendMessage">📤</button>
+        <button :disabled="!inputValue || isCooldown" class="send-btn" @click="sendMessage"><i class="fas fa-paper-plane"></i></button>
       </div>
       <p v-if="isCooldown" class="cooldown-msg">⏱️ Raffreddamento: {{ cooldownCountdown }}s</p>
     </div>
@@ -105,12 +105,17 @@ const fullscreenMedia = ref<any>(null)
 // Helper function to add messages with delay
 let messageDelayCounter = 0
 const addDelayedMessage = (contactId: string, messageData: any, delaySeconds: number = 2) => {
-  setTimeout(() => {
+  const addMsg = () => {
     addMessage(contactId, {
       ...messageData,
       timestamp: Date.now()
     })
-  }, delaySeconds * 1000)
+  }
+  if (delaySeconds === 0) {
+    addMsg()
+  } else {
+    setTimeout(addMsg, delaySeconds * 1000)
+  }
 }
 
 // Load contact data and add initial message if chat is empty
@@ -264,18 +269,16 @@ const sendMessage = async () => {
   
   isTyping.value = false
   
-  // Start typing for the response sequence
-  isTyping.value = true
-  
-  // Reset delay counter for response sequence
-  messageDelayCounter = 0
-  
-  // Add main response
-  addDelayedMessage(contactId.value, {
+  // Add main response immediately after typing
+  addMessage(contactId.value, {
     id: result.messageId || `msg_auto_${Date.now()}`,
     content: result.text,
-    sender: 'contact'
-  }, 0) // Immediate response after typing
+    sender: 'contact',
+    timestamp: Date.now()
+  })
+
+  // Reset delay counter for response sequence
+  messageDelayCounter = 0
   messageDelayCounter++
 
   // Add evidence text if present
@@ -414,6 +417,12 @@ const sendMessage = async () => {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.messages-area::-webkit-scrollbar {
+  display: none;
 }
 
 .empty-state {

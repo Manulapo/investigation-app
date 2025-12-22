@@ -2,8 +2,8 @@
   <header v-if="showHeader" class="app-header">
     <div class="header-content">
       <router-link v-if="showBack" to="/" class="back-btn">←</router-link>
-      <div class="title">Progetto Detective</div>
-      <div class="turn-badge">{{ currentTurn }}</div>
+      <div class="title">{{ config.title }}</div>
+      <div class="turn-badge">Level {{ currentTurn }}</div>
     </div>
   </header>
 </template>
@@ -12,9 +12,11 @@
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useSaveManager } from '../../composables/useSaveManager'
+import { useAppConfig } from '../../composables/useAppConfig'
 
 const route = useRoute()
 const { state } = useSaveManager()
+const { config } = useAppConfig()
 const currentTurn = computed(() => state.currentGlobalTurn)
 const showBack = computed(() => route.name === 'chat' || route.name === 'profile')
 const showHeader = computed(() => route.name === 'list')
@@ -22,10 +24,9 @@ const showHeader = computed(() => route.name === 'list')
 
 <style scoped lang="scss">
 .app-header {
-  background: #075e54;
+  background: #333;
   color: white;
   padding: 0.75rem 1rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   flex-shrink: 0;
 }
 

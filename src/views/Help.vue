@@ -1,5 +1,6 @@
 <template>
-  <div class="help-page">
+  <transition name="fade-page" appear>
+    <div class="help-page">
     <div class="help-header">
       <router-link to="/" class="back-btn">←</router-link>
       <h1>Guida al Gioco</h1>
@@ -52,6 +53,7 @@
       </section>
     </div>
   </div>
+  </transition>
 </template>
 
 <script setup lang="ts">
@@ -131,5 +133,21 @@ code {
   border-radius: 4px;
   font-family: monospace;
   font-size: 0.9rem;
+}
+
+/* Page Transitions */
+.fade-page-enter-active,
+.fade-page-leave-active {
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.fade-page-enter-from {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.fade-page-leave-to {
+  opacity: 0;
+  transform: translateY(-20px);
 }
 </style>
