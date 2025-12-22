@@ -3,4 +3,5 @@ import vue from '@vitejs/plugin-vue'
 
 export default defineConfig({
   plugins: [vue()],
+  base: '/investigation-app/', // Change this to your repo name
 })
