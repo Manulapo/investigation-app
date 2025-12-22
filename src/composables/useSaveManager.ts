@@ -5,17 +5,27 @@ type Message = {
   content: string
   sender: 'user'|'contact'
   timestamp: number
+  media?: {
+    type: 'image' | 'video'
+    src: string
+    alt?: string
+  }
 }
 
 type ContactHistory = Message[]
 
 const STORAGE_KEY = 'project_detective_save_v1'
 
+type PuzzleStatus = {
+  failedAttempts: number
+  lockedUntil: number | null
+  preQuestionShown: boolean
+}
+
 const defaultState = {
   currentGlobalTurn: 1,
   chatHistories: {} as Record<string, ContactHistory>,
-  failedAttempts: {} as Record<string, number>,
-  cooldowns: {} as Record<string, number>
+  puzzleStatus: {} as Record<string, PuzzleStatus>
 }
 
 const state = reactive(load())
@@ -23,9 +33,16 @@ const state = reactive(load())
 function load() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
-    if (raw) return JSON.parse(raw)
+    if (raw) {
+      const loaded = JSON.parse(raw)
+      // Ensure puzzleStatus exists for backwards compatibility
+      if (!loaded.puzzleStatus) {
+        loaded.puzzleStatus = {}
+      }
+      return loaded
+    }
   } catch (e) {}
-  return defaultState
+  return { ...defaultState }
 }
 
 watch(state, (val) => {
@@ -42,21 +59,49 @@ export function useSaveManager() {
     return state.chatHistories[contactId] || []
   }
 
-  function incrementFailed(contactTurnKey: string) {
-    state.failedAttempts[contactTurnKey] = (state.failedAttempts[contactTurnKey] || 0) + 1
-    return state.failedAttempts[contactTurnKey]
+  function getPuzzleStatus(key: string): PuzzleStatus {
+    if (!state.puzzleStatus[key]) {
+      state.puzzleStatus[key] = { failedAttempts: 0, lockedUntil: null, preQuestionShown: false }
+    }
+    return state.puzzleStatus[key]
   }
 
-  function resetFailed(contactTurnKey: string) {
-    state.failedAttempts[contactTurnKey] = 0
+  function incrementFailed(key: string) {
+    const status = getPuzzleStatus(key)
+    status.failedAttempts++
+    return status.failedAttempts
   }
 
-  function setCooldown(contactTurnKey: string, untilTs: number) {
-    state.cooldowns[contactTurnKey] = untilTs
+  function resetFailed(key: string) {
+    const status = getPuzzleStatus(key)
+    status.failedAttempts = 0
   }
 
-  function getCooldown(contactTurnKey: string) {
-    return state.cooldowns[contactTurnKey] || 0
+  function setLockUntil(key: string, untilTs: number) {
+    const status = getPuzzleStatus(key)
+    status.lockedUntil = untilTs
+    status.failedAttempts = 0
+  }
+
+  function isPreQuestionShown(key: string): boolean {
+    const status = getPuzzleStatus(key)
+    return status.preQuestionShown
+  }
+
+  function setPreQuestionShown(key: string, shown: boolean = true) {
+    const status = getPuzzleStatus(key)
+    status.preQuestionShown = shown
+  }
+
+  function isLocked(key: string): boolean {
+    const status = getPuzzleStatus(key)
+    if (!status.lockedUntil) return false
+    return Date.now() < status.lockedUntil
+  }
+
+  function getLockedUntil(key: string): number | null {
+    const status = getPuzzleStatus(key)
+    return status.lockedUntil
   }
 
   function advanceTurn(next: number) {
@@ -75,10 +120,14 @@ export function useSaveManager() {
     state,
     addMessage,
     getMessages,
+    getPuzzleStatus,
     incrementFailed,
     resetFailed,
-    setCooldown,
-    getCooldown,
+    setLockUntil,
+    isLocked,
+    getLockedUntil,
+    isPreQuestionShown,
+    setPreQuestionShown,
     advanceTurn,
     resetAll
   }

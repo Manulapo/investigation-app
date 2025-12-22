@@ -2,8 +2,17 @@
   {
     "id": "c1",
     "file": "c1_informant",
-    "name": "The Informant",
-    "avatar": "/assets/images/c1.png",
+    "name": "L'Informatore",
+    "avatar": "/assets/images/c1.svg",
+    "description": "Fonte anonima con accesso a informazioni riservate. Specializzato in intelligence urbana e sorveglianza discreta. Ha fornito prove cruciali in diversi casi di corruzione politica.",
     "visibleAtTurn": 1
+  },
+  {
+    "id": "c2",
+    "file": "c2_informant",
+    "name": "Il Detective",
+    "avatar": "/assets/images/c2.svg",
+    "description": "Detective della polizia locale specializzato in casi di corruzione e crimine organizzato. Ha lavorato undercover in diverse operazioni e mantiene contatti con informatori chiave.",
+    "visibleAtTurn": 2
   }
 ]

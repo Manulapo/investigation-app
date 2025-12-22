@@ -3,7 +3,7 @@
     <img :src="contact.avatar" :alt="contact.name" class="avatar" />
     <div class="info">
       <p class="name">{{ contact.name }}</p>
-      <p class="preview">{{ lastMessage || 'Tap to start' }}</p>
+      <p class="preview">{{ lastMessage || 'Tocca per iniziare' }}</p>
     </div>
     <span v-if="timestamp" class="time">{{ formattedTime }}</span>
   </div>

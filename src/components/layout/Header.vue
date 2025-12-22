@@ -1,9 +1,9 @@
 <template>
-  <header class="app-header">
+  <header v-if="showHeader" class="app-header">
     <div class="header-content">
       <router-link v-if="showBack" to="/" class="back-btn">←</router-link>
       <div class="logo">🔍</div>
-      <div class="title">Project Detective</div>
+      <div class="title">Progetto Detective</div>
       <div class="turn-badge">{{ currentTurn }}</div>
     </div>
   </header>
@@ -18,6 +18,7 @@ const route = useRoute()
 const { state } = useSaveManager()
 const currentTurn = computed(() => state.currentGlobalTurn)
 const showBack = computed(() => route.name === 'chat' || route.name === 'profile')
+const showHeader = computed(() => route.name === 'list')
 </script>
 
 <style scoped lang="scss">

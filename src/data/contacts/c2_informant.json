@@ -1,0 +1,91 @@
+{
+  "id": "c2",
+  "initialMessage": "Salve detective. Sono il Detective Rossi. Ho ricevuto informazioni che potrebbero interessarti.",
+  "puzzles": [
+    {
+      "turnId": 2,
+      "preQuestion": "Per verificare la tua autorizzazione, rispondi: Qual è il tuo numero di distintivo?",
+      "maxAttempts": 3,
+      "penaltySeconds": 15,
+      "showNotification": true,
+      "notificationContact": "c1",
+      "notificationMessage": "Hai ricevuto un messaggio dall'Informatore",
+      "solution": {
+        "keywords": ["detective", "badge"],
+        "response": {
+          "text": "Autorizzazione confermata. Ecco le informazioni riservate.",
+          "messageId": "msg_turn2_success",
+          "evidenceText": "Il distintivo numero 4782 appartiene all'agente speciale Luca Martini, attualmente sotto copertura nell'operazione 'Ombra'."
+        }
+      },
+      "hints": [
+        { 
+          "keywords": ["badge"], 
+          "response": "Il numero di distintivo è essenziale per l'accesso." 
+        }
+      ],
+      "fallbacks": [
+        "Codice non riconosciuto.",
+        "Accesso negato.",
+        "Credenziali non valide."
+      ],
+      "penaltyResponses": [
+        "⚠️ ACCESSO TEMPORANEAMENTE SOSPESO",
+        "🔒 VERIFICA IDENTITÀ FALLITA",
+        "🛡️ SISTEMA DI SICUREZZA ATTIVATO"
+      ]
+    },
+    {
+      "turnId": 3,
+      "preQuestion": "Ora che sei autorizzato, dimmi: Chi è il bersaglio principale dell'operazione?",
+      "maxAttempts": 3,
+      "penaltySeconds": 20,
+      "showNotification": false,
+      "solution": {
+        "keywords": ["senatore", "bianchi"],
+        "response": {
+          "text": "Corretto. Il senatore Marco Bianchi è il bersaglio principale.",
+          "messageId": "msg_turn3_success",
+          "evidenceText": "Il senatore Marco Bianchi è coinvolto in uno schema di corruzione che coinvolge tangenti per 2 milioni di euro. L'incontro cruciale è previsto domani.",
+          "mediaId": "m2"
+        }
+      },
+      "hints": [
+        { 
+          "keywords": ["senatore"], 
+          "response": "Il bersaglio è un senatore. Qual è il suo nome?" 
+        }
+      ],
+      "fallbacks": [
+        "Informazione errata.",
+        "Non è quella la persona.",
+        "Riprova con il nome corretto."
+      ],
+      "penaltyResponses": [
+        "🚫 ACCESSO RISERVATO NEGATO",
+        "🔐 INFORMAZIONI CLASSIFICATE",
+        "⚠️ LIVELLO DI CLEARANCE INSUFFICIENTE"
+      ]
+    }
+  ],
+  "media": [
+    {
+      "id": "m1",
+      "type": "image",
+      "src": "https://picsum.photos/300/200?random=7",
+      "triggerMessageId": "msg_turn1_success"
+    },
+    {
+      "id": "m2",
+      "type": "image",
+      "src": "https://picsum.photos/300/200?random=8",
+      "triggerMessageId": "msg_turn3_success"
+    },
+    {
+      "id": "m3",
+      "type": "image",
+      "src": "https://picsum.photos/300/200?random=9",
+      "triggerMessageId": "msg_turn1_success"
+    }
+  ]
+}

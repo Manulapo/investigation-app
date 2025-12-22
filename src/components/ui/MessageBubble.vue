@@ -1,7 +1,11 @@
 <template>
   <div class="message-row" :class="{ 'is-user': sender === 'user', 'is-contact': sender === 'contact' }">
     <div class="bubble">
-      <p class="text">{{ content }}</p>
+      <p v-if="content" class="text">{{ content }}</p>
+      <div v-if="media" class="media-container">
+        <img v-if="media.type === 'image'" :src="media.src" :alt="media.alt || 'Evidence'" class="media-image" @click="openFullscreen" />
+        <video v-else-if="media.type === 'video'" :src="media.src" controls class="media-video"></video>
+      </div>
       <span class="timestamp">{{ formattedTime }}</span>
     </div>
   </div>
@@ -15,12 +19,29 @@ const props = defineProps<{
   content: string
   sender: 'user' | 'contact'
   timestamp: number
+  media?: {
+    type: 'image' | 'video'
+    src: string
+    alt?: string
+  }
+}>()
+
+const emit = defineEmits<{
+  openFullscreen: [media: { type: 'image' | 'video'; src: string; alt?: string }]
 }>()
 
 const formattedTime = computed(() => {
+  if (!props.timestamp || isNaN(props.timestamp)) return ''
   const date = new Date(props.timestamp)
+  if (isNaN(date.getTime())) return ''
   return format(date, 'HH:mm')
 })
+
+function openFullscreen() {
+  if (props.media) {
+    emit('openFullscreen', props.media)
+  }
+}
 </script>
 
 <style scoped lang="scss">
@@ -76,6 +97,28 @@ const formattedTime = computed(() => {
   margin: 0;
   font-size: 0.95rem;
   line-height: 1.3;
+}
+
+.media-container {
+  margin: 0.5rem 0;
+  
+  .media-image {
+    max-width: 100%;
+    max-height: 200px;
+    border-radius: 8px;
+    object-fit: cover;
+    cursor: pointer;
+    
+    &:hover {
+      opacity: 0.9;
+    }
+  }
+  
+  .media-video {
+    max-width: 100%;
+    max-height: 200px;
+    border-radius: 8px;
+  }
 }
 
 .timestamp {

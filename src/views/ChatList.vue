@@ -10,11 +10,11 @@
     </div>
     <div v-if="visibleContacts.length === 0" class="empty-state">
       <div class="empty-icon">💬</div>
-      <h2>No contacts yet</h2>
-      <p>Solve puzzles to unlock new contacts</p>
+      <h2>Nessun contatto ancora</h2>
+      <p>Risolvi gli enigmi per sbloccare nuovi contatti</p>
       <div class="hint-box">
-        <p><strong>How to play:</strong></p>
-        <p>Answer questions with: <code>T1: answer</code></p>
+        <p><strong>Come giocare:</strong></p>
+        <p>Rispondi alle domande con: <code>T1: risposta</code></p>
       </div>
     </div>
   </div>

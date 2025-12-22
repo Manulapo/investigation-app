@@ -1,12 +1,24 @@
 <template>
   <div class="chat-room">
+    <!-- Chat Header -->
+    <div class="chat-header">
+      <router-link to="/" class="back-btn">←</router-link>
+      <router-link :to="`/profile/${contactId}`" class="contact-info">
+        <img :src="contact?.avatar" :alt="contact?.name" class="avatar" />
+        <div class="contact-details">
+          <div class="contact-name">{{ contact?.name }}</div>
+          <div class="contact-status">Online</div>
+        </div>
+      </router-link>
+    </div>
+
     <!-- Messages -->
     <div class="messages-area" ref="messagesContainer">
       <div v-if="messages.length === 0" class="empty-state">
         <div class="empty-emoji">🔍</div>
-        <p>No messages yet</p>
-        <p class="hint">Type your answer to start</p>
-        <p class="format">Example: <code>T1: Blue Eagle</code></p>
+        <p>Ancora nessun messaggio</p>
+        <p class="hint">Digita la tua risposta per iniziare</p>
+        <p class="format">Esempio: <code>T1: Aquila Blu</code></p>
       </div>
       <MessageBubble
         v-for="msg in messages"
@@ -14,6 +26,8 @@
         :content="msg.content"
         :sender="msg.sender"
         :timestamp="msg.timestamp"
+        :media="msg.media"
+        @openFullscreen="openFullscreen"
       />
       <div v-if="isTyping" class="typing-indicator">
         <span></span><span></span><span></span>
@@ -27,12 +41,21 @@
           v-model="inputValue"
           :disabled="isCooldown"
           class="input-field"
-          placeholder="T1: your answer"
+          placeholder="T1: la tua risposta"
           @keyup.enter="sendMessage"
         />
         <button :disabled="!inputValue || isCooldown" class="send-btn" @click="sendMessage">📤</button>
       </div>
-      <p v-if="isCooldown" class="cooldown-msg">⏱️ Cooldown: {{ cooldownCountdown }}s</p>
+      <p v-if="isCooldown" class="cooldown-msg">⏱️ Raffreddamento: {{ cooldownCountdown }}s</p>
+    </div>
+
+    <!-- Fullscreen Media Modal -->
+    <div v-if="fullscreenMedia" class="fullscreen-modal" @click="closeFullscreen">
+      <div class="fullscreen-content">
+        <img v-if="fullscreenMedia.type === 'image'" :src="fullscreenMedia.src" :alt="fullscreenMedia.alt || 'Media'" class="fullscreen-image" />
+        <video v-else-if="fullscreenMedia.type === 'video'" :src="fullscreenMedia.src" controls class="fullscreen-video"></video>
+        <button class="close-btn" @click="closeFullscreen">×</button>
+      </div>
     </div>
   </div>
 </template>
@@ -47,44 +70,151 @@ import { useNotification } from '../composables/useNotification'
 
 const props = defineProps<{ id: string }>()
 
-const contactId = props.id || 'c1'
-const { getMessages, addMessage, getCooldown } = useSaveManager()
+const contactId = computed(() => props.id || 'c1')
+const { state, getMessages, addMessage, isLocked, getLockedUntil, setPreQuestionShown, isPreQuestionShown } = useSaveManager()
 const { parseInput } = useGameEngine()
 const { show } = useNotification()
 
-const contact = computed(() => registry.find((c: any) => c.id === contactId))
-const messages = computed(() => getMessages(contactId))
+// Function to determine the current turn for a contact
+function getCurrentTurnForContact(contactId: string): number {
+  const messages = getMessages(contactId)
+  let highestCompletedTurn = 0
+  
+  // Find all success messages and extract turn numbers
+  messages.forEach((message: any) => {
+    if (message.id?.startsWith('msg_turn') && message.id?.endsWith('_success')) {
+      // Extract turn number from message ID like "msg_turn1_success"
+      const match = message.id.match(/msg_turn(\d+)_success/)
+      if (match) {
+        const turnNumber = parseInt(match[1])
+        highestCompletedTurn = Math.max(highestCompletedTurn, turnNumber)
+      }
+    }
+  })
+  
+  const nextTurn = highestCompletedTurn + 1
+  // Return the max of global turn and next turn to ensure progression
+  return Math.max(state.currentGlobalTurn, nextTurn)
+}
+
+const contact = computed(() => registry.find((c: any) => c.id === contactId.value))
+const messages = computed(() => getMessages(contactId.value))
+const currentTurn = computed(() => getCurrentTurnForContact(contactId.value))
+const fullscreenMedia = ref<any>(null)
+
+// Helper function to add messages with delay
+let messageDelayCounter = 0
+const addDelayedMessage = (contactId: string, messageData: any, delaySeconds: number = 2) => {
+  setTimeout(() => {
+    addMessage(contactId, {
+      ...messageData,
+      timestamp: Date.now()
+    })
+  }, delaySeconds * 1000)
+}
+
+// Load contact data and add initial message if chat is empty
+const contactData = ref<any>(null)
+const loadContactData = async () => {
+  try {
+    const contactFile = contact.value?.file
+    if (contactFile) {
+      // Import the JSON file dynamically
+      const module = await import(`../data/contacts/${contactFile}.json`)
+      contactData.value = module.default
+      
+      // Add initial message if chat is empty
+      if (messages.value.length === 0) {
+        messageDelayCounter = 0
+        if (contactData.value.initialMessage) {
+          addDelayedMessage(contactId.value, {
+            id: `msg_initial_${contactId.value}`,
+            content: contactData.value.initialMessage,
+            sender: 'contact'
+          }, 0) // No delay for first message
+          messageDelayCounter++
+        }
+      }
+      
+      // Determine current turn for this contact and trigger appropriate puzzle
+      const currentTurn = getCurrentTurnForContact(contactId.value)
+      const nextPuzzle = contactData.value.puzzles?.find((p: any) => p.turnId === currentTurn)
+      
+      if (nextPuzzle?.preQuestion && !isPreQuestionShown(`${contactId.value}_${currentTurn}`)) {
+        addDelayedMessage(contactId.value, {
+          id: `msg_prequestion_${contactId.value}_${currentTurn}`,
+          content: nextPuzzle.preQuestion,
+          sender: 'contact'
+        }, messages.value.length === 0 ? messageDelayCounter * 2 : 0)
+        if (messages.value.length === 0) messageDelayCounter++
+        // Mark preQuestion as shown so it doesn't show again
+        setPreQuestionShown(`${contactId.value}_${currentTurn}`, true)
+      }
+    }
+  } catch (error) {
+    console.error('Error loading contact data:', error)
+  }
+}
+
+const findMedia = (mediaId: string) => {
+  return contactData.value?.media?.find((m: any) => m.id === mediaId)
+}
+
 const inputValue = ref('')
 const isTyping = ref(false)
 const messagesContainer = ref<HTMLElement | null>(null)
 const cooldownCountdown = ref(0)
+const currentTime = ref(Date.now())
 
 const isCooldown = computed(() => {
-  const now = Date.now()
-  const key = `${contactId}_1`
-  const until = getCooldown(key)
-  return until && now < until
+  const key = `${contactId.value}_${currentTurn.value}`
+  const status = state.puzzleStatus[key]
+  if (!status || !status.lockedUntil) return false
+  return currentTime.value < status.lockedUntil
 })
+
+const isMessageSending = ref(false)
 
 watch(isCooldown, (val) => {
   if (val) {
-    const key = `${contactId}_1`
-    const until = getCooldown(key)
     updateCooldownTimer()
     const interval = setInterval(() => {
-      if (!isCooldown.value) clearInterval(interval)
-      updateCooldownTimer()
-    }, 500)
+      currentTime.value = Date.now()
+      if (!isCooldown.value) {
+        clearInterval(interval)
+        cooldownCountdown.value = 0
+      } else {
+        updateCooldownTimer()
+      }
+    }, 100)
+  } else {
+    cooldownCountdown.value = 0
+  }
+})
+
+watch(currentTurn, (newTurn) => {
+  // Only show preQuestion from watcher if NOT in a message send flow
+  // Message send flow handles preQuestion with proper timing
+  if (isMessageSending.value) return
+  
+  if (contactData.value && messages.value.length > 0) {
+    const nextPuzzle = contactData.value.puzzles?.find((p: any) => p.turnId === newTurn)
+    if (nextPuzzle?.preQuestion && !isPreQuestionShown(`${contactId.value}_${newTurn}`)) {
+      addMessage(contactId.value, {
+        id: `msg_prequestion_${contactId.value}_${newTurn}`,
+        content: nextPuzzle.preQuestion,
+        sender: 'contact',
+        timestamp: Date.now()
+      })
+      setPreQuestionShown(`${contactId.value}_${newTurn}`, true)
+    }
   }
 })
 
 function updateCooldownTimer() {
-  const now = Date.now()
-  const key = `${contactId}_1`
-  const until = getCooldown(key)
-  if (until && now < until) {
-    cooldownCountdown.value = Math.ceil((until - now) / 1000)
-  }
+  const key = `${contactId.value}_${currentTurn.value}`
+  const until = getLockedUntil(key)
+  cooldownCountdown.value = until ? Math.max(0, Math.ceil((until - Date.now()) / 1000)) : 0
 }
 
 const scrollToBottom = async () => {
@@ -94,7 +224,19 @@ const scrollToBottom = async () => {
   }
 }
 
+function openFullscreen(media: any) {
+  fullscreenMedia.value = media
+}
+
+function closeFullscreen() {
+  fullscreenMedia.value = null
+}
+
 watch(() => messages.value.length, scrollToBottom)
+
+watch(contactId, () => {
+  loadContactData()
+}, { immediate: true })
 
 onMounted(() => {
   scrollToBottom()
@@ -104,7 +246,7 @@ const sendMessage = async () => {
   if (!inputValue.value.trim() || isCooldown.value) return
 
   const userMsg = inputValue.value.trim()
-  addMessage(contactId, {
+  addMessage(contactId.value, {
     id: `msg_user_${Date.now()}`,
     content: userMsg,
     sender: 'user',
@@ -113,24 +255,92 @@ const sendMessage = async () => {
 
   inputValue.value = ''
   isTyping.value = true
+  isMessageSending.value = true
 
-  // Simulate typing delay
-  await new Promise((resolve) => setTimeout(resolve, 800))
+  // Simulate typing delay (1.5s as specified)
+  await new Promise((resolve) => setTimeout(resolve, 1500))
 
-  const result = parseInput(contactId, userMsg)
-  addMessage(contactId, {
-    id: `msg_auto_${Date.now()}`,
-    content: result.text,
-    sender: 'contact',
-    timestamp: Date.now()
-  })
-
+  const result = parseInput(contactId.value, userMsg)
+  
   isTyping.value = false
+  
+  // Start typing for the response sequence
+  isTyping.value = true
+  
+  // Reset delay counter for response sequence
+  messageDelayCounter = 0
+  
+  // Add main response
+  addDelayedMessage(contactId.value, {
+    id: result.messageId || `msg_auto_${Date.now()}`,
+    content: result.text,
+    sender: 'contact'
+  }, 0) // Immediate response after typing
+  messageDelayCounter++
+
+  // Add evidence text if present
+  if (result.evidenceText) {
+    addDelayedMessage(contactId.value, {
+      id: `msg_evidence_${Date.now()}`,
+      content: result.evidenceText,
+      sender: 'contact'
+    }, messageDelayCounter * 2)
+    messageDelayCounter++
+  }
+
+  // Add media evidence if present
+  if (result.mediaId) {
+    const media = findMedia(result.mediaId)
+    if (media) {
+      addDelayedMessage(contactId.value, {
+        id: `msg_media_${Date.now()}`,
+        content: '',
+        sender: 'contact',
+        media: {
+          type: media.type,
+          src: media.src,
+          alt: media.alt || 'Evidence'
+        }
+      }, messageDelayCounter * 2)
+      messageDelayCounter++
+    }
+  }
+  
+  // Calculate total delay for all messages to complete
+  const totalMessageDelay = messageDelayCounter * 2 * 1000
+  
+  // Turn off typing after the last message
+  setTimeout(() => {
+    isTyping.value = false
+  }, totalMessageDelay)
 
   if (result.status === 'success') {
-    show('Puzzle Solved! ✓')
+    // Show notification after all evidence messages
+    if (result.showNotification && result.notificationContact && result.notificationMessage) {
+      setTimeout(() => {
+        show(result.notificationMessage, result.notificationContact)
+      }, totalMessageDelay + 500)
+    }
+    
+    // Show preQuestion for next turn if it exists
+    setTimeout(() => {
+      const nextTurnData = contactData.value?.puzzles?.find((p: any) => p.turnId === currentTurn.value)
+      if (nextTurnData?.preQuestion && !isPreQuestionShown(`${contactId.value}_${currentTurn.value}`)) {
+        addMessage(contactId.value, {
+          id: `msg_prequestion_${contactId.value}_${currentTurn.value}`,
+          content: nextTurnData.preQuestion,
+          sender: 'contact',
+          timestamp: Date.now()
+        })
+        setPreQuestionShown(`${contactId.value}_${currentTurn.value}`, true)
+      }
+      isMessageSending.value = false
+    }, totalMessageDelay + 1500)
   } else if (result.status === 'locked') {
-    show('System Locked - Cooldown Active')
+    show('🔒 Sistema Bloccato - Raffreddamento Attivo')
+    isMessageSending.value = false
+  } else {
+    isMessageSending.value = false
   }
 
   scrollToBottom()
@@ -145,6 +355,56 @@ const sendMessage = async () => {
   width: 100%;
   background: #ece5dd;
   overflow: hidden;
+}
+
+.chat-header {
+  background: #075e54;
+  color: white;
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+}
+
+.back-btn {
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  color: white;
+  text-decoration: none;
+}
+
+.contact-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+  color: white;
+  flex: 1;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.contact-details {
+  flex: 1;
+}
+
+.contact-name {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.contact-status {
+  font-size: 0.8rem;
+  opacity: 0.8;
 }
 
 .messages-area {
@@ -299,5 +559,49 @@ code {
   margin: 0;
   padding: 0.5rem 0.75rem;
   background: #ffebee;
+}
+
+.fullscreen-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  cursor: pointer;
+}
+
+.fullscreen-content {
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+}
+
+.fullscreen-image, .fullscreen-video {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.close-btn {
+  position: absolute;
+  top: -40px;
+  right: 0;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>
