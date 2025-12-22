@@ -5,7 +5,7 @@
       <router-view />
     </div>
     <ToastNotification />
-    <DebugMenu />
+    <!-- <DebugMenu /> -->
   </div>
 </template>
 
