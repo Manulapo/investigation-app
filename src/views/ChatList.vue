@@ -9,7 +9,7 @@
       />
     </div>
     <div v-if="visibleContacts.length === 0" class="empty-state">
-      <div class="empty-icon">💬</div>
+      <div class="empty-icon"><i class="fas fa-comments"></i></div>
       <h2>Nessun contatto ancora</h2>
       <p>Risolvi gli enigmi per sbloccare nuovi contatti</p>
       <div class="hint-box">
@@ -17,6 +17,11 @@
         <p>Rispondi alle domande con: <code>T1: risposta</code></p>
       </div>
     </div>
+
+    <!-- Floating Help Button -->
+    <button class="help-button" @click="goToHelp">
+      <i class="fas fa-question-circle"></i>
+    </button>
   </div>
 </template>
 
@@ -33,6 +38,10 @@ const visibleContacts = computed(() => registry.filter((r: any) => r.visibleAtTu
 
 function goToChat(contactId: string) {
   router.push(`/chat/${contactId}`)
+}
+
+function goToHelp() {
+  router.push('/help')
 }
 </script>
 
@@ -99,6 +108,27 @@ code {
   border-radius: 3px;
   font-family: monospace;
   color: #333;
+}
+
+.help-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: #075e54;
+  color: white;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: background 0.2s;
+  z-index: 1000;
+}
+
+.help-button:hover {
+  background: #064e47;
 }
 </style>
 

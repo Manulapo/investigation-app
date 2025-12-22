@@ -15,7 +15,7 @@
     <!-- Messages -->
     <div class="messages-area" ref="messagesContainer">
       <div v-if="messages.length === 0" class="empty-state">
-        <div class="empty-emoji">🔍</div>
+        <div class="empty-emoji"><i class="fas fa-search"></i></div>
         <p>Ancora nessun messaggio</p>
         <p class="hint">Digita la tua risposta per iniziare</p>
         <p class="format">Esempio: <code>T1: Aquila Blu</code></p>

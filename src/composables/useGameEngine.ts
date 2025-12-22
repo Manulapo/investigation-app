@@ -1,6 +1,7 @@
 import registry from '../data/registry.json'
 import c1Data from '../data/contacts/c1_informant.json'
 import c2Data from '../data/contacts/c2_informant.json'
+import c3Data from '../data/contacts/c3_risolutore.json'
 import { useSaveManager } from './useSaveManager'
 import { useNotification } from './useNotification'
 import { format } from 'date-fns'
@@ -14,6 +15,7 @@ export function useGameEngine() {
   function findContactFile(id: string) {
     if (id === 'c1') return c1Data as any
     if (id === 'c2') return c2Data as any
+    if (id === 'c3') return c3Data as any
     return null
   }
 
@@ -60,12 +62,12 @@ export function useGameEngine() {
       resetFailed(key)
       
       // Validate notification requirements
-      if (puzzle.showNotification && (!puzzle.notificationContact || !puzzle.notificationMessage)) {
+      if (puzzle.notification?.showNotification && (!puzzle.notification?.notificationContact || !puzzle.notification?.notificationMessage)) {
         console.error(`Puzzle ${turnId} has showNotification: true but missing notificationContact or notificationMessage`)
         return { status: 'error', text: 'Configurazione notifica incompleta' }
       }
       
-      return { status: 'success', text: response.text, mediaId: response.mediaId, evidenceText: response.evidenceText, messageId: response.messageId, showNotification: puzzle.showNotification || false, notificationContact: puzzle.notificationContact, notificationMessage: puzzle.notificationMessage }
+      return { status: 'success', text: response.text, mediaId: response.mediaId, evidenceText: response.evidenceText, messageId: response.messageId, showNotification: puzzle.notification?.showNotification || false, notificationContact: puzzle.notification?.notificationContact, notificationMessage: puzzle.notification?.notificationMessage }
     }
 
     // CHECK 3: Specific Hint Match

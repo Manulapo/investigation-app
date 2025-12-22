@@ -20,11 +20,9 @@ import { ref, onMounted, onUnmounted, watch } from 'vue'
 import registry from '../data/registry.json'
 import { toasts } from '../composables/useNotification'
 import { useNotification } from '../composables/useNotification'
-import { useSaveManager } from '../composables/useSaveManager'
 
 const router = useRouter()
 const { getToasts, removeToast } = useNotification()
-const { addMessage } = useSaveManager()
 // Track which toasts have animated in
 const animatedToasts = new Set<number>()
 // Track which toasts have been clicked to prevent double-clicks
@@ -76,13 +74,6 @@ function handleClick(toast: any) {
   clickedToastIds.add(toast.id)
 
   if (toast.contactId) {
-    // Add a message to the chat
-    addMessage(toast.contactId, {
-      id: `msg_contact_${Date.now()}`,
-      content: 'Nuovo indizio disponibile grazie alla tua risoluzione!',
-      sender: 'contact',
-      timestamp: Date.now()
-    })
     // Navigate to the chat and remove toast after navigation
     router.push({ name: 'chat', params: { id: toast.contactId } }).then(() => {
       removeToast(toast.id)

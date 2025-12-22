@@ -1,22 +1,24 @@
 {
   "id": "c1",
-  "initialMessage": "Benvenuto detective. Sono il tuo informatore anonimo. Ho delle informazioni cruciali per te.",
+  "initialMessage": "Benvenuto detective. Sono il tuo informatore anonimo. Ho delle informazioni cruciali per te sul caso 'Ombra'. Procedi con cautela, le pareti hanno orecchie.",
   "puzzles": [
     {
       "turnId": 1,
-      "preQuestion": "Prima di iniziare, conferma la tua identità: Qual è il protocollo di sicurezza?",
+      "preQuestion": "Prima di iniziare, conferma la tua identità: Qual è il protocollo di sicurezza? (risposta: blue eagle)",
       "maxAttempts": 3,
       "penaltySeconds": 15,
-      "showNotification": true,
-      "notificationContact": "c2",
-      "notificationMessage": "Hai ricevuto un messaggio dal Detective Rossi",
+      "notification": {
+        "showNotification": true,
+        "notificationContact": "c2",
+        "notificationMessage": "Hai ricevuto un messaggio dal Detective Rossi"
+      },
       "solution": {
         "keywords": ["blue", "eagle"],
         "response": {
-          "text": "Corretto. Ecco la prova.",
+          "text": "Corretto. Il protocollo 'Aquila Blu' conferma che l'obiettivo è il senatore Marco Bianchi.",
           "messageId": "msg_turn1_success",
           "mediaId": "m1",
-          "evidenceText": "Il codice 'Aquila Blu' conferma che l'obiettivo è il senatore Marco Bianchi, residente in Via Roma 45."
+          "evidenceText": "Il senatore Marco Bianchi è coinvolto in uno schema di corruzione che coinvolge tangenti per 2 milioni di euro. L'incontro cruciale è previsto domani alle 22:00 al Porto Vecchio."
         }
       },
       "hints": [
@@ -39,18 +41,21 @@
     },
     {
       "turnId": 3,
-      "preQuestion": "Per il secondo livello: Qual è il codice di emergenza?",
+      "preQuestion": "Per il livello finale con me, qual è il codice di emergenza? (risposta: red wolf)",
       "maxAttempts": 3,
       "penaltySeconds": 20,
-      "showNotification": false,
-      "notificationContact": "c2",
-      "notificationMessage": "Hai completato un livello importante",
+      "notification": {
+        "showNotification": true,
+        "notificationContact": "c3",
+        "notificationMessage": "Hai ricevuto un messaggio dal risolutore"
+      },
       "solution": {
         "keywords": ["red", "wolf"],
         "response": {
-          "text": "Ottimo lavoro. Hai completato il secondo livello.",
+          "text": "Ottimo lavoro. Hai completato il livello finale. Ora contatta il Risolutore per chiudere il caso.",
           "messageId": "msg_turn3_success",
-          "evidenceText": "Il codice 'Lupo Rosso' indica che l'incontro è previsto per domani alle 22:00 al Porto Vecchio."
+          "mediaId": "m4",
+          "evidenceText": "Il codice 'Lupo Rosso' indica che l'incontro è previsto per domani alle 22:00 al Porto Vecchio. Tutte le prove sono state raccolte."
         }
       },
       "hints": [
@@ -88,24 +93,12 @@
       "id": "m3",
       "type": "image",
       "src": "https://picsum.photos/300/200?random=3",
-      "triggerMessageId": "msg_turn1_success"
+      "triggerMessageId": "msg_turn3_success"
     },
     {
       "id": "m4",
       "type": "image",
       "src": "https://picsum.photos/300/200?random=4",
-      "triggerMessageId": "msg_turn3_success"
-    },
-    {
-      "id": "m5",
-      "type": "image",
-      "src": "https://picsum.photos/300/200?random=5",
-      "triggerMessageId": "msg_turn1_success"
-    },
-    {
-      "id": "m6",
-      "type": "image",
-      "src": "https://picsum.photos/300/200?random=6",
       "triggerMessageId": "msg_turn3_success"
     }
   ]

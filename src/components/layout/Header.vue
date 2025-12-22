@@ -2,7 +2,6 @@
   <header v-if="showHeader" class="app-header">
     <div class="header-content">
       <router-link v-if="showBack" to="/" class="back-btn">←</router-link>
-      <div class="logo">🔍</div>
       <div class="title">Progetto Detective</div>
       <div class="turn-badge">{{ currentTurn }}</div>
     </div>
