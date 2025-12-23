@@ -169,13 +169,15 @@ const inputValue = ref('')
 const isTyping = ref(false)
 const messagesContainer = ref<HTMLElement | null>(null)
 const cooldownCountdown = ref(0)
-const currentTime = ref(Date.now())
+const reactiveTimer = ref(0)
 
 const isCooldown = computed(() => {
+  // Include reactiveTimer to make this computed property reactive
+  reactiveTimer.value
   const key = `${contactId.value}_${currentTurn.value}`
   const status = state.puzzleStatus[key]
   if (!status || !status.lockedUntil) return false
-  return currentTime.value < status.lockedUntil
+  return Date.now() < status.lockedUntil
 })
 
 const isMessageSending = ref(false)
@@ -184,7 +186,7 @@ watch(isCooldown, (val) => {
   if (val) {
     updateCooldownTimer()
     const interval = setInterval(() => {
-      currentTime.value = Date.now()
+      reactiveTimer.value = Date.now()
       if (!isCooldown.value) {
         clearInterval(interval)
         cooldownCountdown.value = 0
@@ -245,6 +247,19 @@ watch(contactId, () => {
 
 onMounted(() => {
   scrollToBottom()
+  // Initialize cooldown timer if already in cooldown when component mounts
+  if (isCooldown.value) {
+    updateCooldownTimer()
+    const interval = setInterval(() => {
+      reactiveTimer.value = Date.now()
+      if (!isCooldown.value) {
+        clearInterval(interval)
+        cooldownCountdown.value = 0
+      } else {
+        updateCooldownTimer()
+      }
+    }, 100)
+  }
 })
 
 const sendMessage = async () => {
