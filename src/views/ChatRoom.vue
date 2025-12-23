@@ -164,6 +164,11 @@ const findMedia = (mediaId: string) => {
   return contactData.value?.media?.find((m: any) => m.id === mediaId)
 }
 
+const findMediaArray = (mediaIds: string | string[]) => {
+  const ids = Array.isArray(mediaIds) ? mediaIds : [mediaIds]
+  return ids.map(id => findMedia(id)).filter(Boolean)
+}
+
 const inputValue = ref('')
 const isTyping = ref(false)
 const messagesContainer = ref<HTMLElement | null>(null)
@@ -333,15 +338,15 @@ const sendMessage = async () => {
   }
 
   if (result.mediaId) {
-    const media = findMedia(result.mediaId)
-    if (media) {
+    const mediaArray = findMediaArray(result.mediaId)
+    mediaArray.forEach((media: any) => {
       addDelayedMessage(contactId.value, {
-        id: `msg_media_${Date.now()}`,
+        id: `msg_media_${Date.now()}_${Math.random()}`,
         content: '',
         sender: 'contact',
-        media
+        media: [media]
       }, messageDelayCounter++ * 2)
-    }
+    })
   }
 
   const totalMessageDelay = (messageDelayCounter - 1) * 2 * 1000 // -1 because the last message has no typing delay

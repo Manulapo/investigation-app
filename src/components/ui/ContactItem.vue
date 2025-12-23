@@ -47,10 +47,11 @@ const lastMessage = computed(() => {
   const last = messages.value[messages.value.length - 1]
   
   // If message has media but no text content
-  if (last.media && !last.content) {
-    const mediaType = last.media.type
+  if (last.media && !last.content && last.media.length > 0) {
+    const mediaType = last.media[last.media.length - 1].type
     if (mediaType === 'image') return '📷 Foto'
     if (mediaType === 'pdf') return '📎 File'
+    if (mediaType === 'audio') return '🎵 Audio'
     return '📎 File'
   }
   

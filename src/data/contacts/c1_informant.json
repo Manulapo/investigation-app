@@ -17,7 +17,7 @@
         "response": {
           "text": "Corretto. Il protocollo 'Aquila Blu' conferma che l'obiettivo è il senatore Marco Bianchi.",
           "messageId": "msg_turn1_success",
-          "mediaId": "m1",
+          "mediaId": ["m1", "m5"],
           "evidenceText": "Il senatore Marco Bianchi è coinvolto in uno schema di corruzione che coinvolge tangenti per 2 milioni di euro. L'incontro cruciale è previsto domani alle 22:00 al Porto Vecchio."
         }
       },
@@ -54,7 +54,7 @@
         "response": {
           "text": "Ottimo lavoro. Hai completato il livello finale. Ora contatta il Risolutore per chiudere il caso.",
           "messageId": "msg_turn3_success",
-          "mediaId": "m4",
+          "mediaId": ["m4"],
           "evidenceText": "Il codice 'Lupo Rosso' indica che l'incontro è previsto per domani alle 22:00 al Porto Vecchio. Tutte le prove sono state raccolte."
         }
       },
@@ -99,6 +99,12 @@
       "id": "m4",
       "type": "image",
       "src": "https://picsum.photos/300/200?random=4",
+      "triggerMessageId": "msg_turn3_success"
+    },
+    {
+      "id": "m5",
+      "type": "audio",
+      "src": "https://drive.google.com/file/d/1dZ4mMLld8fQgPR_pxZmMb-tP2Q1cnBIr/view?usp=drive_link",
       "triggerMessageId": "msg_turn3_success"
     }
   ]

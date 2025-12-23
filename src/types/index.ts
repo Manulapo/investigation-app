@@ -1,6 +1,6 @@
 // Message Types
 export type Media = {
-  type: 'image' | 'pdf'
+  type: 'image' | 'pdf' | 'audio'
   src: string
   alt?: string
 }
@@ -10,7 +10,7 @@ export type Message = {
   content: string
   sender: 'user' | 'contact'
   timestamp: number
-  media?: Media
+  media?: Media[]
   isRead?: boolean
 }
 

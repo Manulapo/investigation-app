@@ -2,13 +2,23 @@
   <div class="message-row" :class="{ 'is-user': sender === 'user', 'is-contact': sender === 'contact' }">
     <div class="bubble">
       <p v-if="content" class="text">{{ content }}</p>
-      <div v-if="media" class="media-container">
-        <img v-if="media.type === 'image'" :src="media.src" :alt="media.alt || 'Evidence'" class="media-image" @click="openFullscreen" />
-        <div v-else-if="media.type === 'pdf'" class="pdf-container">
-          <a :href="media.src" target="_blank" class="pdf-preview">
-            <i class="fas fa-file-pdf"></i>
-            <span>{{ media.alt + '.pdf' || 'PDF Document' }}</span>
-          </a>
+      <div v-if="media && media.length > 0" class="media-gallery">
+        <div v-for="(item, idx) in media" :key="idx" class="media-item">
+          <img v-if="item.type === 'image'" :src="item.src" :alt="item.alt || 'Evidence'" class="media-image" @click="openFullscreen(item)" />
+          <div v-else-if="item.type === 'pdf'" class="pdf-container">
+            <a :href="item.src" target="_blank" class="pdf-preview">
+              <i class="fas fa-file-pdf"></i>
+              <span>{{ item.alt + '.pdf' || 'PDF Document' }}</span>
+              <i class="fas fa-chevron-right"></i>
+            </a>
+          </div>
+          <div v-else-if="item.type === 'audio'" class="pdf-container">
+            <a :href="getMediaSrc(item.src, 'audio')" target="_blank" class="pdf-preview">
+              <i class="fas fa-music"></i>
+              <span>{{ item.alt || 'Audio' }}</span>
+              <i class="fas fa-chevron-right"></i>
+            </a>
+          </div>
         </div>
       </div>
       <span class="timestamp">
@@ -27,12 +37,30 @@ const props = defineProps<{
   content: string
   sender: 'user' | 'contact'
   timestamp: number
-  media?: Media
+  media?: Media[]
 }>()
 
 const emit = defineEmits<{
   openFullscreen: [media: { type: 'image'; src: string; alt?: string }]
 }>()
+
+const convertGoogleDriveUrl = (url: string): string => {
+  // Convert Google Drive view/preview links to streamable format
+  const fileIdMatch = url.match(/\/d\/([a-zA-Z0-9-_]+)/)
+  if (fileIdMatch) {
+    const fileId = fileIdMatch[1]
+    // Try using the uc endpoint without export for direct streaming
+    return `https://drive.google.com/uc?id=${fileId}`
+  }
+  return url
+}
+
+const getMediaSrc = (src: string, type: string): string => {
+  if (type === 'audio' && src.includes('drive.google.com')) {
+    return convertGoogleDriveUrl(src)
+  }
+  return src
+}
 
 const formattedTime = computed(() => {
   if (!props.timestamp || isNaN(props.timestamp)) return ''
@@ -41,12 +69,12 @@ const formattedTime = computed(() => {
   return format(date, 'HH:mm')
 })
 
-function openFullscreen() {
-  if (props.media && props.media.type === 'image') {
+function openFullscreen(media: Media) {
+  if (media.type === 'image') {
     emit('openFullscreen', {
-      type: props.media.type,
-      src: props.media.src,
-      alt: props.media.alt
+      type: media.type,
+      src: media.src,
+      alt: media.alt
     })
   }
 }
@@ -108,47 +136,86 @@ function openFullscreen() {
   line-height: 1.3;
 }
 
+.media-gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.5rem 0;
+}
+
+.media-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.media-image {
+  max-width: 100%;
+  max-height: 200px;
+  border-radius: 8px;
+  object-fit: cover;
+  cursor: pointer;
+}
+
+.pdf-container {
+  margin: 0.5rem 0;
+  display: flex;
+}
+
+.pdf-preview {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: #f5f5f5;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  color: #075e54;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+  
+  i {
+    font-size: 1.2rem;
+    color: #e74c3c;
+    flex-shrink: 0;
+    
+    &.fa-chevron-right {
+      margin-left: auto;
+      font-size: 1rem;
+      color: #999;
+    }
+    
+    &.fa-music {
+      color: #9b59b6;
+    }
+  }
+}
+
 .media-container {
   margin: 0.5rem 0;
   
-  .media-image {
-    max-width: 100%;
-    max-height: 200px;
-    border-radius: 8px;
-    object-fit: cover;
-    cursor: pointer;
-    
-    &:hover {
-      opacity: 0.9;
-    }
-  }
-  
-  .pdf-container {
-    margin: 0.5rem 0;
-  }
-  
-  .pdf-preview {
-    display: inline-flex;
-    align-items: center;
+  .audio-container {
+    display: flex;
+    flex-direction: column;
     gap: 0.5rem;
     padding: 0.75rem 1rem;
     background: #f5f5f5;
     border: 1px solid #e0e0e0;
     border-radius: 8px;
-    color: #075e54;
-    text-decoration: none;
-    font-size: 0.9rem;
-    transition: all 0.2s;
-    
-    &:hover {
-      background: #efefef;
-      border-color: #075e54;
-    }
-    
-    i {
-      font-size: 1.2rem;
-      color: #e74c3c;
-    }
+    margin: 0.5rem 0;
+  }
+  
+  .audio-player {
+    width: 100%;
+    height: 32px;
+    cursor: pointer;
+  }
+  
+  .audio-label {
+    font-size: 0.85rem;
+    color: #666;
+    font-weight: 500;
   }
 }
 

@@ -18,7 +18,7 @@
           "text": "Autorizzazione confermata. Ecco le informazioni riservate sul caso 'Ombra'.",
           "messageId": "msg_turn2_success",
           "evidenceText": "Il distintivo numero 4782 appartiene all'agente speciale Luca Martini, attualmente sotto copertura nell'operazione 'shadow'.",
-          "mediaId": "m4"
+          "mediaId": ["m4"]
         }
       },
       "hints": [
