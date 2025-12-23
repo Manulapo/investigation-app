@@ -2,7 +2,9 @@
   <div class="chat-room">
     <!-- Chat Header -->
     <div class="chat-header">
-      <router-link to="/" class="back-btn">←</router-link>
+      <router-link to="/" class="back-btn">
+        <i class="fas fa-chevron-left"></i>
+      </router-link>
       <router-link :to="`/profile/${contactId}`" class="contact-info">
         <img :src="contact?.avatar" :alt="contact?.name" class="avatar" />
         <div class="contact-details">

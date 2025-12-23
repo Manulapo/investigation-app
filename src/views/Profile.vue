@@ -2,7 +2,7 @@
   <div class="container">
     <!-- Profile Header -->
     <div class="profile-header">
-      <router-link to="/" class="back-btn">←</router-link>
+      <i class="fas fa-chevron-left" @click="goToChat(contactId)"></i>
       <div class="contact-info">
         <img :src="contact?.avatar" :alt="contact?.name" class="avatar" />
         <div class="contact-details">
@@ -47,17 +47,22 @@
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import registry from '../data/registry.json'
 import { useSaveManager } from '../composables/useSaveManager'
 
 const route = useRoute()
+const router = useRouter()
 const contactId = route.params.id as string
 const { state } = useSaveManager()
 
 const contact = computed(() => registry.find((c: any) => c.id === contactId))
 const contactData = ref<any>(null)
 const fullscreenMedia = ref<any>(null)
+
+const goToChat = (id: string) => {
+  router.push(`/chat/${id}`)
+}
 
 watch(contact, async (newContact) => {
   if (newContact?.file) {
