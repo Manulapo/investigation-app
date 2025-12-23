@@ -10,6 +10,7 @@ type Message = {
     src: string
     alt?: string
   }
+  isRead?: boolean
 }
 
 type ContactHistory = Message[]
@@ -52,7 +53,12 @@ watch(state, (val) => {
 export function useSaveManager() {
   function addMessage(contactId: string, msg: Message) {
     if (!state.chatHistories[contactId]) state.chatHistories[contactId] = []
-    state.chatHistories[contactId].push(msg)
+    // User messages are always read
+    const messageWithReadStatus = {
+      ...msg,
+      isRead: msg.sender === 'user' ? true : (msg.isRead ?? true)
+    }
+    state.chatHistories[contactId].push(messageWithReadStatus)
   }
 
   function getMessages(contactId: string) {
@@ -108,6 +114,32 @@ export function useSaveManager() {
     if (next > state.currentGlobalTurn) state.currentGlobalTurn = next
   }
 
+  function markMessagesAsRead(contactId: string) {
+    const messages = getMessages(contactId)
+    messages.forEach((msg: Message) => {
+      if (msg.sender === 'contact' && !msg.isRead) {
+        msg.isRead = true
+      }
+    })
+  }
+
+  function getUnreadCount(contactId: string): number {
+    if (!state.hasNotification) {
+      state.hasNotification = {}
+    }
+    const count = state.hasNotification[contactId] ? 1 : 0
+    console.log('Getting unread count for', contactId, ':', count)
+    return count
+  }
+
+  function setNotificationForContact(contactId: string) {
+    if (!state.hasNotification) {
+      state.hasNotification = {}
+    }
+    console.log('Setting notification flag for contact:', contactId)
+    state.hasNotification[contactId] = true
+  }
+
   function resetAll() {
     Object.keys(state).forEach(k => delete (state as any)[k])
     const fresh = JSON.parse(JSON.stringify(defaultState))
@@ -129,6 +161,7 @@ export function useSaveManager() {
     isPreQuestionShown,
     setPreQuestionShown,
     advanceTurn,
+    markMessagesAsRead,
     resetAll
   }
 }

@@ -3,16 +3,18 @@
     <img :src="contact.avatar" :alt="contact.name" class="avatar" />
     <div class="info">
       <p class="name">{{ contact.name }}</p>
-      <p class="preview">{{ lastMessage || 'Tocca per iniziare' }}</p>
+      <p class="preview">{{ lastMessage }}</p>
     </div>
-    <span v-if="timestamp" class="time">{{ formattedTime }}</span>
+    <div class="right-section">
+      <span v-if="timestamp" class="time">{{ formattedTime }}</span>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
-import { useSaveManager } from '../../composables/useSaveManager'
+import { computed, ref, onMounted } from 'vue'
 import { format } from 'date-fns'
+import { useSaveManager } from '../../composables/useSaveManager'
 
 const props = defineProps<{
   contact: any
@@ -22,10 +24,38 @@ defineEmits(['select'])
 
 const { getMessages } = useSaveManager()
 const messages = computed(() => getMessages(props.contact.id))
+const contactData = ref<any>(null)
+
+onMounted(async () => {
+  try {
+    const contactFile = props.contact?.file
+    if (contactFile) {
+      const module = await import(`../../data/contacts/${contactFile}.json`)
+      contactData.value = module.default
+    }
+  } catch (error) {
+    console.error('Error loading contact data:', error)
+  }
+})
+
 const lastMessage = computed(() => {
-  if (messages.value.length === 0) return ''
+  if (messages.value.length === 0) {
+    // Show initialMessage preview for unopened chats
+    const preview = contactData.value?.initialMessage || 'Tocca per iniziare'
+    return preview.substring(0, 50) + (preview.length > 50 ? '...' : '')
+  }
   const last = messages.value[messages.value.length - 1]
-  return last.content.substring(0, 35) + (last.content.length > 35 ? '...' : '')
+  
+  // If message has media but no text content
+  if (last.media && !last.content) {
+    const mediaType = last.media.type
+    const fileName = last.media.src?.split('/').pop() || 
+                     (mediaType === 'image' ? '📷 Foto' : 
+                      mediaType === 'video' ? '🎥 Video' : '📎 File')
+    return fileName
+  }
+  
+  return last.content.substring(0, 50) + (last.content.length > 50 ? '...' : '')
 })
 const timestamp = computed(() => {
   if (messages.value.length === 0) return null
@@ -50,6 +80,12 @@ const formattedTime = computed(() => {
   &:active {
     background: #f5f5f5;
   }
+}
+
+.name-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .avatar {
@@ -81,9 +117,15 @@ const formattedTime = computed(() => {
   text-overflow: ellipsis;
 }
 
+.right-section {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
 .time {
   font-size: 0.75rem;
   color: #999;
-  flex-shrink: 0;
 }
 </style>

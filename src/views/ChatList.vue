@@ -52,17 +52,65 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import registry from '../data/registry.json'
 import ContactItem from '../components/ui/ContactItem.vue'
 import { useSaveManager } from '../composables/useSaveManager'
 
 const router = useRouter()
-const { state, resetAll } = useSaveManager()
+const { state, resetAll, getMessages, addMessage, setPreQuestionShown } = useSaveManager()
 const visibleContacts = computed(() => registry.filter((r: any) => r.visibleAtTurn <= state.currentGlobalTurn))
 
 const menuOpen = ref(false)
+
+// Pre-populate initial messages for visible contacts that haven't been opened yet
+async function ensureInitialMessages() {
+  for (const contact of visibleContacts.value) {
+    const messages = getMessages(contact.id)
+    if (messages.length === 0) {
+      try {
+        const module = await import(`../data/contacts/${contact.file}.json`)
+        const contactData = module.default
+        
+        // Add initial message
+        if (contactData.initialMessage) {
+          addMessage(contact.id, {
+            id: `msg_initial_${contact.id}`,
+            content: contactData.initialMessage,
+            sender: 'contact',
+            timestamp: Date.now()
+          })
+        }
+        
+        // Add preQuestion for first puzzle if it exists
+        const firstPuzzle = contactData.puzzles?.[0]
+        if (firstPuzzle?.preQuestion && firstPuzzle.turnId === 1) {
+          addMessage(contact.id, {
+            id: `msg_prequestion_${contact.id}_1`,
+            content: firstPuzzle.preQuestion,
+            sender: 'contact',
+            timestamp: Date.now() + 1
+          })
+          // Mark preQuestion as shown so ChatRoom doesn't add it again
+          const { setPreQuestionShown } = useSaveManager()
+          setPreQuestionShown(`${contact.id}_1`, true)
+        }
+        
+      } catch (error) {
+        console.error('Error loading contact data:', error)
+      }
+    }
+  }
+}
+
+onMounted(() => {
+  ensureInitialMessages()
+})
+
+watch(visibleContacts, () => {
+  ensureInitialMessages()
+})
 
 function goToChat(contactId: string) {
   router.push(`/chat/${contactId}`)
@@ -249,10 +297,6 @@ code {
   background: transparent
 }
 
-.menu-btn:hover {
-  background: #1976d2;
-}
-
 .reset-btn {
   background: transparent;
   color: #e53935;
@@ -266,10 +310,6 @@ code {
   gap: 0.5rem;
   transition: background 0.2s;
   margin-top: auto;
-}
-
-.reset-btn:hover {
-  background: #d32f2f;
 }
 
 /* Side Menu Transitions */

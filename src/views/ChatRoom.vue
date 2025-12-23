@@ -73,7 +73,7 @@ import { useNotification } from '../composables/useNotification'
 const props = defineProps<{ id: string }>()
 
 const contactId = computed(() => props.id || 'c1')
-const { state, getMessages, addMessage, isLocked, getLockedUntil, setPreQuestionShown, isPreQuestionShown } = useSaveManager()
+const { state, getMessages, addMessage, isLocked, getLockedUntil, setPreQuestionShown, isPreQuestionShown, markMessagesAsRead } = useSaveManager()
 const { parseInput } = useGameEngine()
 const { show } = useNotification()
 
@@ -249,6 +249,8 @@ watch(contactId, () => {
 
 onMounted(() => {
   scrollToBottom()
+  // Mark messages as read when entering the chat
+  markMessagesAsRead(contactId.value)
   // Initialize cooldown timer if already in cooldown when component mounts
   if (isCooldown.value) {
     updateCooldownTimer()

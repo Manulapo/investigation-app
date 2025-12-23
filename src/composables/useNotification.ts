@@ -11,6 +11,7 @@ export function useNotification() {
       const id = nextId++
       const createdAt = Date.now()
       toasts.value.push({ id, text, contactId, createdAt, ttl })
+      
       setTimeout(() => {
         toasts.value = toasts.value.filter(t => t.id !== id)
       }, ttl)

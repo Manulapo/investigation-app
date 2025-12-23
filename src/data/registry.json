@@ -3,7 +3,7 @@
     "id": "c1",
     "file": "c1_informant",
     "name": "L'Informatore",
-    "avatar": "/assets/images/c1.svg",
+    "avatar": "https://thumbs.dreamstime.com/b/suspicious-young-afro-man-looking-camera-magnifier-mental-disorder-illness-suspicious-young-man-looking-camera-168439499.jpg",
     "description": "Fonte anonima con accesso a informazioni riservate. Specializzato in intelligence urbana e sorveglianza discreta. Ha fornito prove cruciali in diversi casi di corruzione politica.",
     "visibleAtTurn": 1
   },
@@ -11,12 +11,20 @@
     "id": "c2",
     "file": "c2_informant",
     "name": "Il Detective",
-    "avatar": "/assets/images/c2.svg",
+    "avatar": "https://laughterlog.com/wp-content/uploads/2024/01/inspector-clouseau.jpg",
     "description": "Detective della polizia locale specializzato in casi di corruzione e crimine organizzato. Ha lavorato undercover in diverse operazioni e mantiene contatti con informatori chiave.",
     "visibleAtTurn": 2
   },
   {
     "id": "c3",
+    "file": "c3_risolutore",
+    "name": "Il Risolutore",
+    "avatar": "https://www.shutterstock.com/image-photo/dnipro-ukraine-31-jan-2024-600nw-2432138019.jpg",
+    "description": "Agente speciale con autorità finale per chiudere i casi. Possiede le risorse e le prove conclusive necessarie per portare a termine le operazioni più complesse.",
+    "visibleAtTurn": 4
+  },
+  {
+    "id": "c4",
     "file": "c3_risolutore",
     "name": "Il Risolutore",
     "avatar": "/assets/images/c3.svg",
