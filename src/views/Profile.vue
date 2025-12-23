@@ -27,7 +27,21 @@
       <h2>Media</h2>
       <div class="grid">
         <div v-for="m in unlockedMedia" :key="m.id" class="card" @click="openFullscreen(m)">
-          <img :src="m.src" alt="media" />
+          <div v-if="m.type === 'image'" class="card-image">
+            <img :src="m.src" alt="media" />
+          </div>
+          <div v-else-if="m.type === 'pdf'" class="card-icon">
+            <div class="icon-wrapper">
+              <i class="fas fa-file-pdf"></i>
+              <span v-if="m.alt" class="icon-title">{{ m.alt }}</span>
+            </div>
+          </div>
+          <div v-else-if="m.type === 'audio'" class="card-icon">
+            <div class="icon-wrapper">
+              <i class="fas fa-music"></i>
+              <span v-if="m.alt" class="icon-title">{{ m.alt }}</span>
+            </div>
+          </div>
         </div>
       </div>
       <div v-if="unlockedMedia.length === 0" class="no-media">
@@ -86,13 +100,16 @@ const unlockedMedia = computed(() => {
     m.id?.startsWith('msg_turn') && m.id?.endsWith('_success')
   )
   
-  // For each success message, find the corresponding puzzle and get its mediaId
+  // For each success message, find the corresponding puzzle and get its mediaId(s)
   const unlockedMediaIds = new Set<string>()
   successMessages.forEach((msg: any) => {
     const puzzles = contactData.value?.puzzles || []
     const puzzle = puzzles.find((p: any) => p.solution?.response?.messageId === msg.id)
     if (puzzle?.solution?.response?.mediaId) {
-      unlockedMediaIds.add(puzzle.solution.response.mediaId)
+      const mediaIds = Array.isArray(puzzle.solution.response.mediaId) 
+        ? puzzle.solution.response.mediaId 
+        : [puzzle.solution.response.mediaId]
+      mediaIds.forEach(id => unlockedMediaIds.add(id))
     }
   })
   
@@ -210,23 +227,77 @@ function closeFullscreen() {
   grid-template-columns: repeat(3, 1fr);
   gap: 10px;
   margin-bottom: 1rem;
+  width: 100%;
 }
 
 .card {
   cursor: pointer;
   transition: transform 0.2s;
+  min-width: 0;
+  overflow: hidden;
+  border-radius: 6px;
 }
 
 .card:hover {
   transform: scale(1.05);
 }
 
-.card img {
+.card-image {
   width: 100%;
   height: 140px;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.card-image img {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
+}
+
+.card-icon {
+  width: 100%;
+  height: 140px;
+  background: #fff;
   border-radius: 6px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  overflow: hidden;
+}
+
+.icon-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.icon-title {
+  font-size: 0.65rem;
+  color: #666;
+  text-align: center;
+  max-width: 90%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 500;
+}
+
+.card-icon i {
+  color: #075e54;
+}
+
+.card-icon .fa-file-pdf {
+  color: #e74c3c;
+}
+
+.card-icon .fa-music {
+  color: #9b59b6;
 }
 
 .no-media {
