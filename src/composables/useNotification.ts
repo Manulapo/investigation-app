@@ -1,6 +1,5 @@
 import { ref } from 'vue'
-
-type Toast = { id: number; text: string; contactId?: string; createdAt: number; ttl: number }
+import type { Toast } from '../types'
 
 export const toasts = ref<Toast[]>([])
 let nextId = 1

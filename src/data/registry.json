@@ -25,10 +25,10 @@
   },
   {
     "id": "c4",
-    "file": "c3_risolutore",
-    "name": "Il Risolutore",
+    "file": "c4_risolutore",
+    "name": "Il killer",
     "avatar": "/assets/images/c3.svg",
     "description": "Agente speciale con autorità finale per chiudere i casi. Possiede le risorse e le prove conclusive necessarie per portare a termine le operazioni più complesse.",
-    "visibleAtTurn": 4
+    "visibleAtTurn": 5
   }
 ]

@@ -1,27 +1,7 @@
-import { reactive, ref, watch } from 'vue'
-
-type Message = {
-  id: string
-  content: string
-  sender: 'user'|'contact'
-  timestamp: number
-  media?: {
-    type: 'image' | 'video'
-    src: string
-    alt?: string
-  }
-  isRead?: boolean
-}
-
-type ContactHistory = Message[]
+import { reactive, watch } from 'vue'
+import type { Message, ContactHistory, PuzzleStatus, GameState } from '../types'
 
 const STORAGE_KEY = 'project_detective_save_v1'
-
-type PuzzleStatus = {
-  failedAttempts: number
-  lockedUntil: number | null
-  preQuestionShown: boolean
-}
 
 const defaultState = {
   currentGlobalTurn: 1,
@@ -165,5 +145,3 @@ export function useSaveManager() {
     resetAll
   }
 }
-
-export type { Message }
