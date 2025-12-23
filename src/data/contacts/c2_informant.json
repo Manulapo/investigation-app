@@ -17,6 +17,42 @@
         "response": {
           "text": "Autorizzazione confermata. Ecco le informazioni riservate sul caso 'Ombra'.",
           "messageId": "msg_turn2_success",
+          "evidenceText": "Il distintivo numero 4782 appartiene all'agente speciale Luca Martini, attualmente sotto copertura nell'operazione 'shadow'.",
+          "mediaId": "m4"
+        }
+      },
+      "hints": [
+        { 
+          "keywords": ["badge"], 
+          "response": "Il numero di distintivo è essenziale per l'accesso." 
+        }
+      ],
+      "fallbacks": [
+        "Codice non riconosciuto.",
+        "Accesso negato.",
+        "Credenziali non valide."
+      ],
+      "penaltyResponses": [
+        "⚠️ ACCESSO TEMPORANEAMENTE SOSPESO",
+        "🔒 VERIFICA IDENTITÀ FALLITA",
+        "🛡️ SISTEMA DI SICUREZZA ATTIVATO"
+      ]
+    },
+    {
+      "turnId": 5,
+      "preQuestion": "Per verificare la tua autorizzazione, rispondi: Qual è il tuo numero di distintivo? (risposta: detective badge)",
+      "maxAttempts": 3,
+      "penaltySeconds": 30,
+      "notification": {
+        "showNotification": true,
+        "notificationContact": "c3",
+        "notificationMessage": "Hai ricevuto un messaggio dall risolutore"
+      },
+      "solution": {
+        "keywords": ["detective", "badge"],
+        "response": {
+          "text": "Autorizzazione confermata. Ecco le informazioni riservate sul caso 'Ombra'.",
+          "messageId": "msg_turn2_success",
           "evidenceText": "Il distintivo numero 4782 appartiene all'agente speciale Luca Martini, attualmente sotto copertura nell'operazione 'Ombra'."
         }
       },
@@ -56,6 +92,12 @@
       "type": "image",
       "src": "https://picsum.photos/300/200?random=9",
       "triggerMessageId": "msg_turn1_success"
+    },
+    {
+      "id": "m4",
+      "type": "pdf",
+      "src": "https://drive.google.com/file/d/1oOMEqMMoQQ_5o1vHhYknI_l3l8mlTB43/view?usp=drive_link",
+      "alt": "Rapporto Investigativo Caso Ombra"
     }
   ]
 }

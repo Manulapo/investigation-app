@@ -49,10 +49,9 @@ const lastMessage = computed(() => {
   // If message has media but no text content
   if (last.media && !last.content) {
     const mediaType = last.media.type
-    const fileName = last.media.src?.split('/').pop() || 
-                     (mediaType === 'image' ? '📷 Foto' : 
-                      mediaType === 'video' ? '🎥 Video' : '📎 File')
-    return fileName
+    if (mediaType === 'image') return '📷 Foto'
+    if (mediaType === 'pdf') return '📎 File'
+    return '📎 File'
   }
   
   return last.content.substring(0, 50) + (last.content.length > 50 ? '...' : '')

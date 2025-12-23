@@ -9,7 +9,7 @@
         <img :src="contact?.avatar" :alt="contact?.name" class="avatar" />
         <div class="contact-details">
           <div class="contact-name">{{ contact?.name }}</div>
-          <div class="contact-status">Online</div>
+          <div class="contact-status">{{ isTyping ? 'sta scrivendo...' : 'Online' }}</div>
         </div>
       </router-link>
     </div>
@@ -31,9 +31,6 @@
         :media="msg.media"
         @openFullscreen="openFullscreen"
       />
-      <div v-if="isTyping" class="typing-indicator">
-        <span></span><span></span><span></span>
-      </div>
     </div>
 
     <!-- Input -->
@@ -48,14 +45,13 @@
         />
         <button :disabled="!inputValue || isCooldown" class="send-btn" @click="sendMessage"><i class="fas fa-paper-plane"></i></button>
       </div>
-      <p v-if="isCooldown" class="cooldown-msg">⏱️ Raffreddamento: {{ cooldownCountdown }}s</p>
+      <p v-if="isCooldown" class="cooldown-msg">⏱️ Cooldown: {{ cooldownCountdown }}s</p>
     </div>
 
     <!-- Fullscreen Media Modal -->
     <div v-if="fullscreenMedia" class="fullscreen-modal" @click="closeFullscreen">
       <div class="fullscreen-content">
         <img v-if="fullscreenMedia.type === 'image'" :src="fullscreenMedia.src" :alt="fullscreenMedia.alt || 'Media'" class="fullscreen-image" />
-        <video v-else-if="fullscreenMedia.type === 'video'" :src="fullscreenMedia.src" controls class="fullscreen-video"></video>
         <button class="close-btn" @click="closeFullscreen">×</button>
       </div>
     </div>
@@ -63,12 +59,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watch, nextTick } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import registry from '../data/registry.json'
 import MessageBubble from '../components/ui/MessageBubble.vue'
 import { useSaveManager } from '../composables/useSaveManager'
 import { useGameEngine } from '../composables/useGameEngine'
 import { useNotification } from '../composables/useNotification'
+
 
 const props = defineProps<{ id: string }>()
 
@@ -247,6 +244,19 @@ watch(contactId, () => {
   loadContactData()
 }, { immediate: true })
 
+// Listen for debug auto-solve event
+const handleAutoSolve = (event: any) => {
+  const answers = event.detail.answers
+  const answer = answers[currentTurn.value]
+  if (answer) {
+    console.log('Auto-solve triggered with answer for turn', currentTurn.value, ':', answer)
+    inputValue.value = answer
+    setTimeout(() => sendMessage(), 100)
+  } else {
+    console.log('No answer found for turn:', currentTurn.value)
+  }
+}
+
 onMounted(() => {
   scrollToBottom()
   // Mark messages as read when entering the chat
@@ -264,6 +274,14 @@ onMounted(() => {
       }
     }, 100)
   }
+  
+  // Add event listener for auto-solve
+  window.addEventListener('debug-auto-solve', handleAutoSolve)
+})
+
+onUnmounted(() => {
+  // Cleanup listener on unmount
+  window.removeEventListener('debug-auto-solve', handleAutoSolve)
 })
 
 const sendMessage = async () => {
@@ -278,17 +296,15 @@ const sendMessage = async () => {
   })
 
   inputValue.value = ''
-  isTyping.value = true
   isMessageSending.value = true
-
-  // Simulate typing delay (1.5s as specified)
-  await new Promise((resolve) => setTimeout(resolve, 1500))
+  isTyping.value = true
+  
+  // Simulate typing delay
+  await new Promise(resolve => setTimeout(resolve, 1500))
 
   const result = parseInput(contactId.value, userMsg)
   
-  isTyping.value = false
-  
-  // Add main response immediately after typing
+  // Add main response
   addMessage(contactId.value, {
     id: result.messageId || `msg_auto_${Date.now()}`,
     content: result.text,
@@ -296,21 +312,26 @@ const sendMessage = async () => {
     timestamp: Date.now()
   })
 
-  // Reset delay counter for response sequence
-  messageDelayCounter = 0
-  messageDelayCounter++
-
-  // Add evidence text if present
+  // Queue follow-up messages
+  messageDelayCounter = 1
+  
   if (result.evidenceText) {
     addDelayedMessage(contactId.value, {
       id: `msg_evidence_${Date.now()}`,
       content: result.evidenceText,
       sender: 'contact'
-    }, messageDelayCounter * 2)
-    messageDelayCounter++
+    }, messageDelayCounter++ * 2)
   }
 
-  // Add media evidence if present
+  if (result.successMedia) {
+    addDelayedMessage(contactId.value, {
+      id: `msg_success_media_${Date.now()}`,
+      content: '',
+      sender: 'contact',
+      media: result.successMedia
+    }, messageDelayCounter++ * 2)
+  }
+
   if (result.mediaId) {
     const media = findMedia(result.mediaId)
     if (media) {
@@ -318,39 +339,32 @@ const sendMessage = async () => {
         id: `msg_media_${Date.now()}`,
         content: '',
         sender: 'contact',
-        media: {
-          type: media.type,
-          src: media.src,
-          alt: media.alt || 'Evidence'
-        }
-      }, messageDelayCounter * 2)
-      messageDelayCounter++
+        media
+      }, messageDelayCounter++ * 2)
     }
   }
-  
-  // Calculate total delay for all messages to complete
-  const totalMessageDelay = messageDelayCounter * 2 * 1000
-  
-  // Turn off typing after the last message
+
+  const totalMessageDelay = (messageDelayCounter - 1) * 2 * 1000 // -1 because the last message has no typing delay
+
+  // Turn off typing after all messages are sent
   setTimeout(() => {
     isTyping.value = false
   }, totalMessageDelay)
 
+  // Handle post-success actions
   if (result.status === 'success') {
-    // Show notification after all evidence messages
     if (result.showNotification && result.notificationContact && result.notificationMessage) {
       setTimeout(() => {
         show(result.notificationMessage, result.notificationContact)
       }, totalMessageDelay + 500)
     }
-    
-    // Show preQuestion for next turn if it exists
+
     setTimeout(() => {
-      const nextTurnData = contactData.value?.puzzles?.find((p: any) => p.turnId === currentTurn.value)
-      if (nextTurnData?.preQuestion && !isPreQuestionShown(`${contactId.value}_${currentTurn.value}`)) {
+      const nextPuzzle = contactData.value?.puzzles?.find((p: any) => p.turnId === currentTurn.value)
+      if (nextPuzzle?.preQuestion && !isPreQuestionShown(`${contactId.value}_${currentTurn.value}`)) {
         addMessage(contactId.value, {
           id: `msg_prequestion_${contactId.value}_${currentTurn.value}`,
-          content: nextTurnData.preQuestion,
+          content: nextPuzzle.preQuestion,
           sender: 'contact',
           timestamp: Date.now()
         })
@@ -358,10 +372,10 @@ const sendMessage = async () => {
       }
       isMessageSending.value = false
     }, totalMessageDelay + 1500)
-  } else if (result.status === 'locked') {
-    show('🔒 Sistema Bloccato - Raffreddamento Attivo')
-    isMessageSending.value = false
   } else {
+    if (result.status === 'locked') {
+      show('🔒 Sistema Bloccato - Cooldown Attivo')
+    }
     isMessageSending.value = false
   }
 
@@ -480,29 +494,6 @@ code {
   font-size: 0.75rem;
 }
 
-.typing-indicator {
-  display: flex;
-  gap: 4px;
-  align-items: center;
-  margin-bottom: 0.5rem;
-
-  span {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: #999;
-    animation: bounce 1.4s infinite;
-
-    &:nth-child(2) {
-      animation-delay: 0.2s;
-    }
-
-    &:nth-child(3) {
-      animation-delay: 0.4s;
-    }
-  }
-}
-
 @keyframes bounce {
   0%,
   80%,
@@ -609,7 +600,7 @@ code {
   max-height: 90vh;
 }
 
-.fullscreen-image, .fullscreen-video {
+.fullscreen-image {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;

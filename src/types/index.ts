@@ -1,14 +1,16 @@
 // Message Types
+export type Media = {
+  type: 'image' | 'pdf'
+  src: string
+  alt?: string
+}
+
 export type Message = {
   id: string
   content: string
   sender: 'user' | 'contact'
   timestamp: number
-  media?: {
-    type: 'image' | 'video'
-    src: string
-    alt?: string
-  }
+  media?: Media
   isRead?: boolean
 }
 

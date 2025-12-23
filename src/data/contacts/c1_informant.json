@@ -35,7 +35,7 @@
       ],
       "penaltyResponses": [
         "⚠️ SISTEMA BLOCCATO. Attendere prego.",
-        "🔒 [ERR_429] Troppe richieste. Raffreddamento attivo.",
+        "🔒 [ERR_429] Troppe richieste. Cooldown attivo.",
         "🛡️ Ricalibrazione crittografia... attendere."
       ]
     },
