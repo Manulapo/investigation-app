@@ -109,7 +109,7 @@ const unlockedMedia = computed(() => {
       const mediaIds = Array.isArray(puzzle.solution.response.mediaId) 
         ? puzzle.solution.response.mediaId 
         : [puzzle.solution.response.mediaId]
-      mediaIds.forEach(id => unlockedMediaIds.add(id))
+      mediaIds.forEach((id:string) => unlockedMediaIds.add(id))
     }
   })
   
