@@ -11,6 +11,9 @@
     </div>
     <h2 v-else-if="title" class="header-title">{{ title }}</h2>
 
+    <!-- Level Badge (optional) -->
+    <div v-if="showLevel" class="level-badge">Level {{ level }}</div>
+
     <!-- Right Button (optional) -->
     <button v-if="showRightButton" class="right-btn" @click="$emit('right-click')">
       <i :class="rightIcon"></i>
@@ -25,6 +28,8 @@ defineProps<{
   leftIcon?: string
   showRightButton?: boolean
   rightIcon?: string
+  showLevel?: boolean
+  level?: number
 }>()
 
 defineEmits<{
@@ -37,14 +42,16 @@ defineEmits<{
 .app-header {
   position: relative;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   width: 100%;
   background: #075e54;
   color: white;
-  padding: 1rem;
+  padding: 0.75rem 1rem;
   gap: 0.75rem;
   flex-shrink: 0;
+  min-height: 60px;
+  z-index: 100;
 }
 
 .left-btn,
@@ -77,13 +84,7 @@ defineEmits<{
 }
 
 .left-btn {
-  position: absolute;
-  left: 1rem;
-}
-
-.right-btn {
-  position: absolute;
-  right: 1rem;
+  order: -1;
 }
 
 .header-title {
@@ -92,6 +93,7 @@ defineEmits<{
   font-weight: 500;
   text-align: center;
   flex: 1;
+  order: 0;
 }
 
 .header-content {
@@ -100,5 +102,17 @@ defineEmits<{
   justify-content: center;
   flex: 1;
   gap: 0.75rem;
+  order: 0;
+}
+
+.level-badge {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 0.4rem 0.8rem;
+  border-radius: 16px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+  order: 1;
 }
 </style>

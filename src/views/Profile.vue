@@ -1,8 +1,11 @@
 <template>
   <div class="container">
     <!-- Profile Header -->
-    <div class="profile-header">
-      <i class="fas fa-chevron-left" @click="goToChat(contactId)"></i>
+    <AppHeader 
+      show-left-button
+      left-icon="fas fa-chevron-left"
+      @left-click="goToChat(contactId)"
+    >
       <div class="contact-info">
         <img :src="contact?.avatar" :alt="contact?.name" class="avatar" />
         <div class="contact-details">
@@ -10,7 +13,7 @@
           <div class="contact-status">Online</div>
         </div>
       </div>
-    </div>
+    </AppHeader>
 
     <!-- Profile Picture Section -->
     <div class="profile-picture-section">
@@ -34,6 +37,7 @@
 import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import registry from '../data/registry.json'
+import AppHeader from '../components/layout/AppHeader.vue'
 import { useSaveManager } from '../composables/useSaveManager'
 import MediaGrid from '../components/ui/MediaGrid.vue'
 
@@ -96,25 +100,6 @@ const unlockedMedia = computed(() => {
   background: #ece5dd;
 }
 
-.profile-header {
-  background: #075e54;
-  color: white;
-  padding: 0.75rem 1rem;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  flex-shrink: 0;
-}
-
-.back-btn {
-  font-size: 1.5rem;
-  cursor: pointer;
-  padding: 0.25rem 0.5rem;
-  color: white;
-  text-decoration: none;
-}
-
 .contact-info {
   display: flex;
   align-items: center;
@@ -123,8 +108,8 @@ const unlockedMedia = computed(() => {
 }
 
 .avatar {
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid rgba(255, 255, 255, 0.3);
@@ -149,7 +134,6 @@ const unlockedMedia = computed(() => {
   padding: 2rem 1rem;
   display: flex;
   justify-content: center;
-  border-bottom: 1px solid #e0e0e0;
 }
 
 .profile-picture {

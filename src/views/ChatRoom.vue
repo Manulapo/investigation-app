@@ -1,10 +1,11 @@
 <template>
   <div class="chat-room">
     <!-- Chat Header -->
-    <div class="chat-header">
-      <router-link to="/" class="back-btn">
-        <i class="fas fa-chevron-left"></i>
-      </router-link>
+    <AppHeader 
+      show-left-button
+      left-icon="fas fa-chevron-left"
+      @left-click="goBack"
+    >
       <router-link :to="`/profile/${contactId}`" class="contact-info">
         <img :src="contact?.avatar" :alt="contact?.name" class="avatar" />
         <div class="contact-details">
@@ -12,7 +13,7 @@
           <div class="contact-status">{{ isTyping ? 'sta scrivendo...' : 'Online' }}</div>
         </div>
       </router-link>
-    </div>
+    </AppHeader>
 
     <!-- Messages -->
     <div class="messages-area" ref="messagesContainer">
@@ -60,8 +61,10 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
+import { useRouter } from 'vue-router'
 import registry from '../data/registry.json'
 import MessageBubble from '../components/ui/MessageBubble.vue'
+import AppHeader from '../components/layout/AppHeader.vue'
 import { useSaveManager } from '../composables/useSaveManager'
 import { useGameEngine } from '../composables/useGameEngine'
 import { useNotification } from '../composables/useNotification'
@@ -69,6 +72,7 @@ import { useNotification } from '../composables/useNotification'
 
 const props = defineProps<{ id: string }>()
 
+const router = useRouter()
 const contactId = computed(() => props.id || 'c1')
 const { state, getMessages, addMessage, isLocked, getLockedUntil, setPreQuestionShown, isPreQuestionShown, markMessagesAsRead } = useSaveManager()
 const { parseInput } = useGameEngine()
@@ -243,6 +247,10 @@ function closeFullscreen() {
   fullscreenMedia.value = null
 }
 
+function goBack() {
+  router.push('/')
+}
+
 watch(() => messages.value.length, scrollToBottom)
 
 watch(contactId, () => {
@@ -401,25 +409,6 @@ const sendMessage = async () => {
   left: 0;
   right: 0;
   bottom: 0;
-}
-
-.chat-header {
-  background: #075e54;
-  color: white;
-  padding: 0.75rem 1rem;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  flex-shrink: 0;
-}
-
-.back-btn {
-  font-size: 1.5rem;
-  cursor: pointer;
-  padding: 0.25rem 0.5rem;
-  color: white;
-  text-decoration: none;
 }
 
 .contact-info {

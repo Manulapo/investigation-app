@@ -82,8 +82,7 @@ function unlockApp() {
   width: 100%;
   height: 100%;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
   z-index: 9999;
 }
 
@@ -93,10 +92,12 @@ function unlockApp() {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border-radius: 12px;
+  border-radius: 0;
   text-align: center;
-  max-width: 500px;
-  width: 90%;
+  max-width: 100%;
+  width: 100%;
+  flex: 1;
+  padding: 2rem;
 }
 
 .lock-icon {
@@ -138,13 +139,12 @@ p {
 }
 
 .copyright {
-  position: absolute;
-  bottom: 1rem;
-  left: 50%;
-  transform: translateX(-50%);
+  position: relative;
+  padding: 1rem;
   font-size: 0.5rem;
   color: #e7e7e7;
   width: 100%;
   text-align: center;
+  background: white;
 }
 </style>

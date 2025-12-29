@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-    <Header v-if="$route.name !== 'lock' && $route.name !== 'documents'" />
     <div class="app-container">
       <transition name="dissolve" mode="out-in">
         <router-view />
@@ -14,7 +13,6 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import Header from './components/layout/Header.vue'
 import DebugMenu from './components/DebugMenu.vue'
 import ToastNotification from './components/ToastNotification.vue'
 

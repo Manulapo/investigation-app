@@ -1,9 +1,6 @@
 <template>
   <header v-if="showHeader" class="app-header">
     <div class="header-content">
-      <router-link v-if="showBack" to="/" class="back-btn">←</router-link>
-      <div class="title">{{ config.title }}</div>
-      <div class="turn-badge">Level {{ currentTurn }}</div>
     </div>
   </header>
 </template>
@@ -19,7 +16,7 @@ const { state } = useSaveManager()
 const { config } = useAppConfig()
 const currentTurn = computed(() => state.currentGlobalTurn)
 const showBack = computed(() => route.name === 'chat' || route.name === 'profile')
-const showHeader = computed(() => route.name === 'list')
+const showHeader = computed(() => route.name === 'chat' || route.name === 'profile')
 </script>
 
 <style scoped lang="scss">

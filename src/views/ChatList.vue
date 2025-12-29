@@ -4,6 +4,8 @@
       title="Contatti"
       show-left-button
       left-icon="fas fa-bars"
+      show-level
+      :level="currentLevel"
       @left-click="toggleMenu"
     />
 
@@ -54,6 +56,7 @@ import { useSaveManager } from '../composables/useSaveManager'
 const router = useRouter()
 const { state, resetAll, getMessages, addMessage, setPreQuestionShown } = useSaveManager()
 const visibleContacts = computed(() => registry.filter((r: any) => r.visibleAtTurn <= state.currentGlobalTurn))
+const currentLevel = computed(() => state.currentGlobalTurn)
 
 const menuOpen = ref(false)
 
