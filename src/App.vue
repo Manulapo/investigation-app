@@ -1,13 +1,13 @@
 <template>
   <div id="app">
-    <Header v-if="$route.name !== 'lock'" />
+    <Header v-if="$route.name !== 'lock' && $route.name !== 'documents'" />
     <div class="app-container">
       <transition name="dissolve" mode="out-in">
         <router-view />
       </transition>
     </div>
-    <ToastNotification v-if="$route.name !== 'lock'" />
-    <DebugMenu />
+    <ToastNotification v-if="$route.name !== 'lock' && $route.name !== 'documents'" />
+    <!-- <DebugMenu /> -->
   </div>
 </template>
 
@@ -64,7 +64,7 @@ router.afterEach(() => {
 .app-container {
   flex: 1;
   display: flex;
-  overflow: hidden;
+  overflow: visible;
   width: 100%;
 }
 

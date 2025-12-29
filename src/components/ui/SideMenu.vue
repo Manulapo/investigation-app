@@ -9,6 +9,12 @@
         <button class="menu-btn" @click="$emit('lock-chat')">
           <i class="fas fa-lock"></i> Blocca Chat
         </button>
+        <button class="menu-btn" @click="$emit('go-to-documents')">
+          <i class="fas fa-file-alt"></i> Documenti
+        </button>
+        <button class="menu-btn" @click="$emit('go-to-help')">
+          <i class="fas fa-question-circle"></i> Guida
+        </button>
         <button class="reset-btn" @click="$emit('reset-game')">
           <i class="fas fa-undo"></i> Reset Gioco
         </button>
@@ -26,6 +32,8 @@ defineEmits<{
   'close-menu': []
   'reset-game': []
   'lock-chat': []
+  'go-to-help': []
+  'go-to-documents': []
 }>()
 </script>
 
@@ -50,6 +58,7 @@ defineEmits<{
   box-shadow: 2px 0 8px rgba(0, 0, 0, 0.2);
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
 }
 
 .close-btn {

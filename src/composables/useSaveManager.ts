@@ -108,7 +108,6 @@ export function useSaveManager() {
       state.hasNotification = {}
     }
     const count = state.hasNotification[contactId] ? 1 : 0
-    console.log('Getting unread count for', contactId, ':', count)
     return count
   }
 
@@ -116,7 +115,6 @@ export function useSaveManager() {
     if (!state.hasNotification) {
       state.hasNotification = {}
     }
-    console.log('Setting notification flag for contact:', contactId)
     state.hasNotification[contactId] = true
   }
 

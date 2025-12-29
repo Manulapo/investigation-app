@@ -14,6 +14,8 @@
       @close-menu="closeMenu"
       @reset-game="resetGame"
       @lock-chat="lockChat"
+      @go-to-help="goToHelp"
+      @go-to-documents="goToDocuments"
     />
 
     <div class="contacts-list">
@@ -33,11 +35,6 @@
         <p>Rispondi alle domande con: <code>T1: risposta</code></p>
       </div>
     </div>
-
-    <!-- Floating Help Button -->
-    <button class="help-button" @click="goToHelp">
-      <i class="fas fa-question-circle"></i>
-    </button>
   </div>
 </template>
 
@@ -109,6 +106,12 @@ function goToChat(contactId: string) {
 
 function goToHelp() {
   router.push('/help')
+  closeMenu()
+}
+
+function goToDocuments() {
+  router.push('/documents')
+  closeMenu()
 }
 
 function toggleMenu() {
@@ -228,27 +231,6 @@ code {
   font-size: 1.2rem;
   font-weight: 600;
   flex: 1;
-}
-
-.help-button {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  background: #075e54;
-  color: white;
-  border: none;
-  font-size: 24px;
-  cursor: pointer;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  transition: background 0.2s;
-  z-index: 1000;
-}
-
-.help-button:hover {
-  background: #064e47;
 }
 </style>
 

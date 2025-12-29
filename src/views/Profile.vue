@@ -25,36 +25,7 @@
     <!-- Media Section -->
     <div class="media-section">
       <h2>Media</h2>
-      <div class="grid">
-        <div v-for="m in unlockedMedia" :key="m.id" class="card" @click="openFullscreen(m)">
-          <div v-if="m.type === 'image'" class="card-image">
-            <img :src="m.src" alt="media" />
-          </div>
-          <div v-else-if="m.type === 'pdf'" class="card-icon">
-            <div class="icon-wrapper">
-              <i class="fas fa-file-pdf"></i>
-              <span v-if="m.alt" class="icon-title">{{ m.alt }}</span>
-            </div>
-          </div>
-          <div v-else-if="m.type === 'audio'" class="card-icon">
-            <div class="icon-wrapper">
-              <i class="fas fa-music"></i>
-              <span v-if="m.alt" class="icon-title">{{ m.alt }}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div v-if="unlockedMedia.length === 0" class="no-media">
-        <p>Nessun media</p>
-      </div>
-    </div>
-
-    <!-- Fullscreen Media Modal -->
-    <div v-if="fullscreenMedia" class="fullscreen-modal" @click="closeFullscreen">
-      <div class="fullscreen-content">
-        <img :src="fullscreenMedia.src" :alt="fullscreenMedia.alt || 'Media'" class="fullscreen-image" />
-        <button class="close-btn" @click="closeFullscreen">×</button>
-      </div>
+      <MediaGrid :media="unlockedMedia" empty-message="Nessun media" />
     </div>
   </div>
 </template>
@@ -64,6 +35,7 @@ import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import registry from '../data/registry.json'
 import { useSaveManager } from '../composables/useSaveManager'
+import MediaGrid from '../components/ui/MediaGrid.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -72,7 +44,6 @@ const { state } = useSaveManager()
 
 const contact = computed(() => registry.find((c: any) => c.id === contactId))
 const contactData = ref<any>(null)
-const fullscreenMedia = ref<any>(null)
 
 const goToChat = (id: string) => {
   router.push(`/chat/${id}`)
@@ -115,14 +86,6 @@ const unlockedMedia = computed(() => {
   
   return media.filter((m: any) => unlockedMediaIds.has(m.id))
 })
-
-function openFullscreen(media: any) {
-  fullscreenMedia.value = media
-}
-
-function closeFullscreen() {
-  fullscreenMedia.value = null
-}
 </script>
 
 <style scoped lang="scss">
@@ -220,138 +183,5 @@ function closeFullscreen() {
   margin: 0 0 1rem 0;
   color: #333;
   font-size: 1.2rem;
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  margin-bottom: 1rem;
-  width: 100%;
-}
-
-.card {
-  cursor: pointer;
-  transition: transform 0.2s;
-  min-width: 0;
-  overflow: hidden;
-  border-radius: 6px;
-}
-
-.card:hover {
-  transform: scale(1.05);
-}
-
-.card-image {
-  width: 100%;
-  height: 140px;
-  border-radius: 6px;
-  overflow: hidden;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.card-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.card-icon {
-  width: 100%;
-  height: 140px;
-  background: #fff;
-  border-radius: 6px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 3rem;
-  overflow: hidden;
-}
-
-.icon-wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-  width: 100%;
-}
-
-.icon-title {
-  font-size: 0.65rem;
-  color: #666;
-  text-align: center;
-  max-width: 90%;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-weight: 500;
-}
-
-.card-icon i {
-  color: #075e54;
-}
-
-.card-icon .fa-file-pdf {
-  color: #e74c3c;
-}
-
-.card-icon .fa-music {
-  color: #9b59b6;
-}
-
-.no-media {
-  text-align: center;
-  color: #999;
-  padding: 2rem 1rem;
-}
-
-.no-media .hint {
-  font-size: 0.9rem;
-  margin-top: 0.5rem;
-}
-
-.fullscreen-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.9);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 2000;
-  cursor: pointer;
-}
-
-.fullscreen-content {
-  position: relative;
-  max-width: 90vw;
-  max-height: 90vh;
-}
-
-.fullscreen-image {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-  border-radius: 8px;
-}
-
-.close-btn {
-  position: absolute;
-  top: -40px;
-  right: 0;
-  background: rgba(0, 0, 0, 0.7);
-  color: white;
-  border: none;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  font-size: 20px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 </style>

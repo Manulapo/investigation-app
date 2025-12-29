@@ -3,6 +3,7 @@ import ChatList from '../views/ChatList.vue'
 import ChatRoom from '../views/ChatRoom.vue'
 import Profile from '../views/Profile.vue'
 import Help from '../views/Help.vue'
+import Documents from '../views/Documents.vue'
 import LockScreen from '../views/LockScreen.vue'
 
 const routes = [
@@ -10,7 +11,8 @@ const routes = [
   { path: '/', name: 'list', component: ChatList },
   { path: '/chat/:id', name: 'chat', component: ChatRoom, props: true },
   { path: '/profile/:id', name: 'profile', component: Profile, props: true },
-  { path: '/help', name: 'help', component: Help }
+  { path: '/help', name: 'help', component: Help },
+  { path: '/documents', name: 'documents', component: Documents }
 ]
 
 const router = createRouter({
