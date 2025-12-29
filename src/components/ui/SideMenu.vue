@@ -81,7 +81,7 @@ defineEmits<{
 }
 
 .menu-btn {
-  color: #2196f3;
+  color: #888;
   border: none;
   padding: 0.75rem 1rem;
   border-radius: 6px;
@@ -95,6 +95,10 @@ defineEmits<{
   width: 100%;
   justify-content: flex-start;
   background: transparent;
+
+  i{
+    color: #555;
+  }
 }
 
 .reset-btn {

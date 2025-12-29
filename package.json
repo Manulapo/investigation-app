@@ -11,16 +11,17 @@
     "deploy": "npm exec gh-pages -- -d dist"
   },
   "dependencies": {
+    "date-fns": "^2.30.0",
+    "pinch-zoom-js": "^2.3.5",
     "vue": "^3.4.0",
-    "vue-router": "^4.2.0",
-    "date-fns": "^2.30.0"
+    "vue-router": "^4.2.0"
   },
   "devDependencies": {
-    "typescript": "^5.3.0",
-    "vite": "^5.0.0",
     "@vitejs/plugin-vue": "^5.0.0",
-    "sass": "^1.64.0",
     "eslint": "^8.0.0",
-    "gh-pages": "^6.0.0"
+    "gh-pages": "^6.0.0",
+    "sass": "^1.64.0",
+    "typescript": "^5.3.0",
+    "vite": "^5.0.0"
   }
 }

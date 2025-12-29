@@ -1,8 +1,7 @@
 <template>
   <div class="lock-screen">
-  <div class="header">
-    <h2>{{ config.title }}</h2>
-  </div>
+    <AppHeader :title="config.title" />
+    
     <div class="lock-container">
       <div class="lock-icon">
         <i class="fas fa-lock"></i>
@@ -12,23 +11,16 @@
       <div v-if="error" class="error-msg">{{ error }}</div>
 
       <div class="pin-display">
-        <span v-for="n in 4" :key="n" class="pin-dot" :class="{ filled: pin.length >= n }"></span>
+        <span v-for="n in 5" :key="n" class="pin-dot" :class="{ filled: pin.length >= n }"></span>
       </div>
 
-      <div class="keypad">
-        <button v-for="num in 9" :key="num" class="key-btn" @click="addDigit(num)">
-          {{ num }}
-        </button>
-        <button class="key-btn clear-btn" @click="clearPin">
-          <i class="fas fa-backspace"></i>
-        </button>
-        <button class="key-btn" @click="addDigit(0)">
-          0
-        </button>
-        <button class="key-btn enter-btn" @click="submitPin">
-          <i class="fas fa-check"></i>
-        </button>
-      </div>
+      <Keypad 
+        action-icon="fas fa-check"
+        action-button-class="enter-btn"
+        @digit="addDigit"
+        @clear="clearPin"
+        @action="submitPin"
+      />
     </div>
 
     <div class="copyright">
@@ -41,14 +33,16 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAppConfig } from '../composables/useAppConfig'
+import Keypad from '../components/ui/Keypad.vue'
 
+import AppHeader from '../components/layout/AppHeader.vue'
 const router = useRouter()
 const { config } = useAppConfig()
 const pin = ref('')
 const error = ref('')
 
 function addDigit(digit: number) {
-  if (pin.value.length < 4) {
+  if (pin.value.length < 5) {
     pin.value += digit.toString()
     error.value = ''
   }
@@ -60,8 +54,8 @@ function clearPin() {
 }
 
 function submitPin() {
-  if (pin.value.length !== 4) {
-    error.value = 'Il codice deve essere di 4 cifre'
+  if (pin.value.length !== 5) {
+    error.value = 'Il codice deve essere di 5 cifre'
     return
   }
 
@@ -75,6 +69,7 @@ function submitPin() {
 
 function unlockApp() {
   localStorage.removeItem('chat_locked')
+  localStorage.setItem('has_been_unlocked', 'true')
   router.push('/')
 }
 </script>
@@ -90,19 +85,6 @@ function unlockApp() {
   align-items: center;
   justify-content: center;
   z-index: 9999;
-}
-
-.header {
-  position: absolute;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 1em;
-  top: 0;
-  width: 100%;
-  color: #333;
-  padding: 1rem;
-  text-align: center;
 }
 
 .lock-container {
@@ -153,57 +135,6 @@ p {
 .pin-dot.filled {
   background: #075e54;
   border-color: #075e54;
-}
-
-.keypad {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.75rem;
-  margin-bottom: 1rem;
-}
-
-.key-btn {
-  width: 60px;
-  height: 60px;
-  border: none;
-  border-radius: 50%;
-  background: #f5f5f5;
-  font-size: 1.2rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.key-btn:hover {
-  background: #e0e0e0;
-  transform: scale(1.05);
-}
-
-.key-btn:active {
-  transform: scale(0.95);
-}
-
-.clear-btn {
-  background: #e53935;
-  color: white;
-}
-
-.enter-btn {
-  background: #4caf50;
-  color: white;
-}
-
-.enter-btn:hover {
-  background: #45a049;
-}
-
-.error-msg {
-  color: #f44336;
-  font-size: 0.8rem;
-  margin-bottom: 1rem;
 }
 
 .copyright {

@@ -1,12 +1,11 @@
 <template>
   <div class="chat-list-wrapper">
-    <!-- Header with Hamburger Menu -->
-    <div class="chat-list-header">
-      <button class="hamburger-btn" @click="toggleMenu">
-        <i class="fas fa-bars"></i>
-      </button>
-      <h1>Contatti</h1>
-    </div>
+    <AppHeader 
+      title="Contatti"
+      show-left-button
+      left-icon="fas fa-bars"
+      @left-click="toggleMenu"
+    />
 
     <!-- Side Menu -->
     <SideMenu
@@ -35,6 +34,11 @@
         <p>Rispondi alle domande con: <code>T1: risposta</code></p>
       </div>
     </div>
+
+    <!-- Floating Phone Button -->
+    <button class="floating-phone-btn" @click="goToPhone" title="Telefono">
+      <i class="fas fa-phone"></i>
+    </button>
   </div>
 </template>
 
@@ -44,6 +48,7 @@ import { useRouter } from 'vue-router'
 import registry from '../data/registry.json'
 import ContactItem from '../components/ui/ContactItem.vue'
 import SideMenu from '../components/ui/SideMenu.vue'
+import AppHeader from '../components/layout/AppHeader.vue'
 import { useSaveManager } from '../composables/useSaveManager'
 
 const router = useRouter()
@@ -71,7 +76,6 @@ async function ensureInitialMessages() {
           })
         }
         
-        // Add preQuestion for first puzzle if it exists
         const firstPuzzle = contactData.puzzles?.[0]
         if (firstPuzzle?.preQuestion && firstPuzzle.turnId === 1) {
           addMessage(contact.id, {
@@ -80,7 +84,7 @@ async function ensureInitialMessages() {
             sender: 'contact',
             timestamp: Date.now() + 1
           })
-          // Mark preQuestion as shown so ChatRoom doesn't add it again
+          
           const { setPreQuestionShown } = useSaveManager()
           setPreQuestionShown(`${contact.id}_1`, true)
         }
@@ -125,7 +129,10 @@ function closeMenu() {
 function resetGame() {
   if (confirm('Sei sicuro di voler resettare il gioco? Tutti i progressi verranno persi.')) {
     resetAll()
+    localStorage.removeItem('has_been_unlocked')
+    localStorage.setItem('chat_locked', 'true')
     closeMenu()
+    router.push('/lock')
   }
 }
 
@@ -133,6 +140,10 @@ function lockChat() {
   localStorage.setItem('chat_locked', 'true')
   closeMenu()
   router.push('/lock')
+}
+
+function goToPhone() {
+  router.push('/phone')
 }
 </script>
 
@@ -201,36 +212,35 @@ code {
   color: #333;
 }
 
-.chat-list-header {
+.floating-phone-btn {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
   background: #075e54;
   color: white;
-  padding: 0.75rem 1rem;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  flex-shrink: 0;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 1000;
+
+  &:hover {
+    background: #128c7e;
+    transform: scale(1.1);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
 }
 
-.hamburger-btn {
-  background: none;
-  border: none;
-  color: white;
-  font-size: 1.2rem;
-  cursor: pointer;
-  padding: 0.5rem;
-  border-radius: 4px;
-  transition: background 0.2s;
-}
-
-.hamburger-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-}
-
-.chat-list-header h1 {
-  margin: 0;
-  font-size: 1.2rem;
-  font-weight: 600;
-  flex: 1;
-}
 </style>
 

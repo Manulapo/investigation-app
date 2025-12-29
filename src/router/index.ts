@@ -5,6 +5,7 @@ import Profile from '../views/Profile.vue'
 import Help from '../views/Help.vue'
 import Documents from '../views/Documents.vue'
 import LockScreen from '../views/LockScreen.vue'
+import PhoneDialer from '../views/PhoneDialer.vue'
 
 const routes = [
   { path: '/lock', name: 'lock', component: LockScreen },
@@ -12,7 +13,8 @@ const routes = [
   { path: '/chat/:id', name: 'chat', component: ChatRoom, props: true },
   { path: '/profile/:id', name: 'profile', component: Profile, props: true },
   { path: '/help', name: 'help', component: Help },
-  { path: '/documents', name: 'documents', component: Documents }
+  { path: '/documents', name: 'documents', component: Documents },
+  { path: '/phone', name: 'phone', component: PhoneDialer }
 ]
 
 const router = createRouter({

@@ -39,10 +39,16 @@ function checkLock() {
 }
 
 onMounted(() => {
-  // Initialize lock state - default to locked if not set
-  if (localStorage.getItem('chat_locked') === null) {
+  // Initialize lock state - locked only if never unlocked before OR manually locked
+  const hasBeenUnlocked = localStorage.getItem('has_been_unlocked') === 'true'
+  const isManuallyLocked = localStorage.getItem('chat_locked') === 'true'
+  
+  if (!hasBeenUnlocked || isManuallyLocked) {
     localStorage.setItem('chat_locked', 'true')
+  } else {
+    localStorage.removeItem('chat_locked')
   }
+  
   checkLock()
 })
 

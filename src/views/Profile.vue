@@ -24,7 +24,7 @@
 
     <!-- Media Section -->
     <div class="media-section">
-      <h2>Media</h2>
+      <p>Media</p>
       <MediaGrid :media="unlockedMedia" empty-message="Nessun media" />
     </div>
   </div>
@@ -174,14 +174,15 @@ const unlockedMedia = computed(() => {
 }
 
 .media-section {
-  flex: 1;
-  padding: 1rem;
-  overflow-y: auto;
+  background: white;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
 }
 
-.media-section h2 {
+.media-section p {
   margin: 0 0 1rem 0;
-  color: #333;
-  font-size: 1.2rem;
+  color: #757575;
+  font-size: .8rem;
 }
 </style>
