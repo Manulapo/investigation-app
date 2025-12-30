@@ -39,6 +39,7 @@ export interface Contact {
   name: string
   avatar: string
   description: string
+  phoneNumber?: string
   visibleAtTurn: number
 }
 
@@ -47,4 +48,5 @@ export interface GameState {
   currentGlobalTurn: number
   chatHistories: Record<string, ContactHistory>
   puzzleStatus: Record<string, PuzzleStatus>
+  phoneUnlockedContacts: string[]
 }

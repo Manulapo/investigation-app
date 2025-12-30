@@ -63,11 +63,8 @@ export function useGameEngine() {
       advanceTurn(response.nextTurn || (turnId + 1))
       resetFailed(key)
       
-      // Validate notification requirements
-      if (puzzleEvent.notification?.showNotification && (!puzzleEvent.notification?.notificationContact || !puzzleEvent.notification?.notificationMessage)) {
-        console.error(`Puzzle ${turnId} has showNotification: true but missing notificationContact or notificationMessage`)
-        return { status: 'error', text: 'Configurazione notifica incompleta' }
-      }
+      // Check if notification is properly configured
+      const hasValidNotification = puzzleEvent.notification?.notificationContact && puzzleEvent.notification?.notificationMessage
       
       // Find triggered narratives
       const narrativeData = findTriggeredNarratives(contact, response.messageId)
@@ -79,7 +76,7 @@ export function useGameEngine() {
         evidenceText: response.evidenceText, 
         messageId: response.messageId, 
         successMedia: response.successMedia, 
-        showNotification: puzzleEvent.notification?.showNotification || false, 
+        showNotification: hasValidNotification, 
         notificationContact: puzzleEvent.notification?.notificationContact, 
         notificationMessage: puzzleEvent.notification?.notificationMessage,
         narrativeMessages: narrativeData.messages,

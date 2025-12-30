@@ -9,11 +9,7 @@
       "preQuestion": "Prima di iniziare, conferma la tua identità: Qual è il protocollo di sicurezza? (risposta: blue eagle)",
       "maxAttempts": 3,
       "penaltySeconds": 15,
-      "notification": {
-        "showNotification": true,
-        "notificationContact": "c2",
-        "notificationMessage": "Hai ricevuto un messaggio dal Detective Rossi"
-      },
+      "notification": {},
       "solution": {
         "keywords": ["blue", "eagle"],
         "response": {

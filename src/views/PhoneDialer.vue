@@ -47,11 +47,22 @@
         <i class="fas fa-phone-slash"></i>
       </div>
       <h1>{{ contactName }}</h1>
-      <p>{{ contactName }} ha concluso la chiamata</p>
+      <p>{{ contactName }} non risponde</p>
       
       <button class="back-to-dialer-btn" @click="resetDialer">
         Torna al Dialer
       </button>
+    </div>
+
+    <!-- Call Accepted State -->
+    <div v-else-if="callStatus === 'accepted'" class="dialer-container">
+      <div class="phone-icon accepted">
+        <i class="fas fa-phone"></i>
+      </div>
+      <h1>{{ contactName }}</h1>
+      <p>Chiamata accettata. Reindirizzamento alla chat...</p>
+      
+      <div class="spinner"></div>
     </div>
 
     <!-- Number Not Found State -->
@@ -71,7 +82,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import Keypad from '../components/ui/Keypad.vue'
 import AppHeader from '../components/layout/AppHeader.vue'
@@ -79,11 +90,25 @@ import { usePhone } from '../composables/usePhone'
 
 const router = useRouter()
 const phoneNumber = ref('')
-const { callStatus, dialedNumber, contactName, makeCall, resetCall } = usePhone()
+const { callStatus, dialedNumber, contactName, acceptedContactId, makeCall, resetCall } = usePhone()
 
 const emit = defineEmits<{
   dial: [number: string]
 }>()
+
+// Watch for call accepted status and navigate to chat
+watch(callStatus, (newStatus) => {
+  if (newStatus === 'accepted' && acceptedContactId.value) {
+    // Wait 2 seconds to show the "Call Accepted" screen, then navigate
+    setTimeout(() => {
+      router.push({ name: 'chat', params: { id: acceptedContactId.value } })
+      // Reset after navigation
+      setTimeout(() => {
+        resetDialer()
+      }, 100)
+    }, 2000)
+  }
+})
 
 function addDigit(digit: number) {
   if (phoneNumber.value.length < 10) {
@@ -146,6 +171,11 @@ function goBack() {
 
   &.dialing {
     color: #075e54;
+    animation: pulse-icon 1.5s ease-in-out infinite;
+  }
+
+  &.accepted {
+    color: #25d366;
     animation: pulse-icon 1.5s ease-in-out infinite;
   }
 

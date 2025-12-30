@@ -570,7 +570,7 @@ const sendMessage = async () => {
 
   // Handle post-success actions
   if (result.status === 'success') {
-    if (result.showNotification && result.notificationContact && result.notificationMessage) {
+    if (result.notificationContact && result.notificationMessage) {
       setTimeout(() => {
         show(result.notificationMessage, result.notificationContact)
       }, totalMessageDelay + 500)

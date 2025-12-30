@@ -6,7 +6,8 @@ const STORAGE_KEY = 'project_detective_save_v1'
 const defaultState = {
   currentGlobalTurn: 1,
   chatHistories: {} as Record<string, ContactHistory>,
-  puzzleStatus: {} as Record<string, PuzzleStatus>
+  puzzleStatus: {} as Record<string, PuzzleStatus>,
+  phoneUnlockedContacts: [] as string[]
 }
 
 const state = reactive(load())
@@ -19,6 +20,10 @@ function load() {
       // Ensure puzzleStatus exists for backwards compatibility
       if (!loaded.puzzleStatus) {
         loaded.puzzleStatus = {}
+      }
+      // Ensure phoneUnlockedContacts exists for backwards compatibility
+      if (!loaded.phoneUnlockedContacts) {
+        loaded.phoneUnlockedContacts = []
       }
       return loaded
     }
@@ -118,6 +123,16 @@ export function useSaveManager() {
     state.hasNotification[contactId] = true
   }
 
+  function unlockContactByPhone(contactId: string) {
+    if (!state.phoneUnlockedContacts.includes(contactId)) {
+      state.phoneUnlockedContacts.push(contactId)
+    }
+  }
+
+  function isContactUnlockedByPhone(contactId: string): boolean {
+    return state.phoneUnlockedContacts.includes(contactId)
+  }
+
   function resetAll() {
     Object.keys(state).forEach(k => delete (state as any)[k])
     const fresh = JSON.parse(JSON.stringify(defaultState))
@@ -140,6 +155,8 @@ export function useSaveManager() {
     setPreQuestionShown,
     advanceTurn,
     markMessagesAsRead,
+    unlockContactByPhone,
+    isContactUnlockedByPhone,
     resetAll
   }
 }

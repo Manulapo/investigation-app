@@ -13,6 +13,7 @@
     "name": "Il Detective",
     "avatar": "https://laughterlog.com/wp-content/uploads/2024/01/inspector-clouseau.jpg",
     "description": "Detective della polizia locale specializzato in casi di corruzione e crimine organizzato. Ha lavorato undercover in diverse operazioni e mantiene contatti con informatori chiave.",
+    "phoneNumber": "9999",
     "visibleAtTurn": 2
   },
   {

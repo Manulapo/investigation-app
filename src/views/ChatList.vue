@@ -55,7 +55,17 @@ import { useSaveManager } from '../composables/useSaveManager'
 
 const router = useRouter()
 const { state, resetAll, getMessages, addMessage, setPreQuestionShown } = useSaveManager()
-const visibleContacts = computed(() => registry.filter((r: any) => r.visibleAtTurn <= state.currentGlobalTurn))
+const visibleContacts = computed(() => {
+  return registry.filter((r: any) => {
+    const meetsVisibleAtTurn = r.visibleAtTurn <= state.currentGlobalTurn
+    // If contact has phoneNumber, it requires a phone call to unlock
+    if (r.phoneNumber) {
+      return meetsVisibleAtTurn && state.phoneUnlockedContacts.includes(r.id)
+    }
+    // Otherwise, appears automatically at the right turn
+    return meetsVisibleAtTurn
+  })
+})
 const currentLevel = computed(() => state.currentGlobalTurn)
 
 const menuOpen = ref(false)

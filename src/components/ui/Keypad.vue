@@ -10,7 +10,7 @@
       <i class="fas fa-backspace"></i>
     </button>
     <button class="key-btn" @click="$emit('digit', 0)">
-      <span>0</span>
+      <span class="num">0</span>
     </button>
     <button class="key-btn" :class="actionButtonClass" @click="$emit('action')" :disabled="actionDisabled">
       <i :class="actionIcon"></i>
@@ -46,8 +46,8 @@ defineEmits<{
     border: none;
     border-radius: 50%;
     background: #f5f5f5;
-    font-size: 1.2rem;
-    font-weight: 600;
+    font-size: 1.5rem;
+    font-weight: 400;
     cursor: pointer;
     transition: all 0.2s;
     display: flex;
@@ -55,11 +55,7 @@ defineEmits<{
     justify-content: center;
     flex-direction: column;
     color: #333;
-
-    &:hover {
-      background: #e0e0e0;
-      transform: scale(1.05);
-    }
+    line-height: 1;
 
     &:active {
       transform: scale(0.95);
@@ -70,12 +66,6 @@ defineEmits<{
       flex-direction: column;
       align-items: center;
       justify-content: center;
-
-      .num {
-        font-size: 1.5rem;
-        font-weight: 400;
-        line-height: 1;
-      }
 
       .letters {
         font-size: 0.65rem;
