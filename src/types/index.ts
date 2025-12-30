@@ -5,6 +5,16 @@ export type Media = {
   alt?: string
 }
 
+export type Document = {
+  id: string
+  type: 'image' | 'pdf' | 'audio'
+  src: string
+  alt?: string
+  initial: boolean
+  triggerMessageId?: string
+  contactId?: string
+}
+
 export type Message = {
   id: string
   content: string

@@ -47,7 +47,7 @@
 <script setup lang="ts">
 import { computed, ref, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import registry from '../data/registry.json'
+import { registry } from '../data/registry'
 import ContactItem from '../components/ui/ContactItem.vue'
 import SideMenu from '../components/ui/SideMenu.vue'
 import AppHeader from '../components/layout/AppHeader.vue'
@@ -76,8 +76,9 @@ async function ensureInitialMessages() {
     const messages = getMessages(contact.id)
     if (messages.length === 0) {
       try {
-        const module = await import(`../data/contacts/${contact.file}.json`)
-        const contactData = module.default
+        const module = await import(`../data/contacts/${contact.file}`)
+        const contactKey = Object.keys(module)[0]
+        const contactData = module[contactKey]
         
         // Add initial message
         if (contactData.initialMessage) {

@@ -17,7 +17,7 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 import { ref, onMounted, onUnmounted, watch } from 'vue'
-import registry from '../data/registry.json'
+import { registry } from '../data/registry'
 import { toasts } from '../composables/useNotification'
 import { useNotification } from '../composables/useNotification'
 

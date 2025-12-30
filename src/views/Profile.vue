@@ -36,7 +36,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import registry from '../data/registry.json'
+import { registry } from '../data/registry'
 import AppHeader from '../components/layout/AppHeader.vue'
 import { useSaveManager } from '../composables/useSaveManager'
 import { useDocuments } from '../composables/useDocuments'
@@ -58,8 +58,9 @@ const goToChat = (id: string) => {
 watch(contact, async (newContact) => {
   if (newContact?.file) {
     try {
-      const module = await import(`../data/contacts/${newContact.file}.json`)
-      contactData.value = module.default
+      const module = await import(`../data/contacts/${newContact.file}`)
+      const contactKey = Object.keys(module)[0]
+      contactData.value = module[contactKey]
     } catch {
       contactData.value = null
     }

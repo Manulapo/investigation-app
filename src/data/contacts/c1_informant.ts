@@ -1,0 +1,87 @@
+export const c1_informant = {
+  id: "c1",
+  initialMessage: "Benvenuto detective. Sono il tuo informatore anonimo. Ho delle informazioni cruciali per te sul caso 'Ombra'. Procedi con cautela, le pareti hanno orecchie.",
+  timeline: [
+    {
+      id: "event_c1_1",
+      turnId: 1,
+      type: "puzzle",
+      preQuestion: "Prima di iniziare, conferma la tua identità: Qual è il protocollo di sicurezza? (risposta: blue eagle)",
+      maxAttempts: 3,
+      penaltySeconds: 15,
+      notification: {},
+      solution: {
+        keywords: ["blue", "eagle"],
+        response: {
+          text: "Corretto. Il protocollo 'Aquila Blu' conferma che l'obiettivo è il senatore Marco Bianchi.",
+          messageId: "msg_turn1_success",
+          mediaId: ["c1_m1", "c1_m5"],
+          evidenceText: "Il senatore Marco Bianchi è coinvolto in uno schema di corruzione che coinvolge tangenti per 2 milioni di euro. L'incontro cruciale è previsto domani alle 22:00 al Porto Vecchio."
+        }
+      },
+      hints: [
+        "Blu cosa? Ho bisogno del nome in codice.",
+        "Ricorda: il protocollo richiede un animale.",
+        "Hai provato con l'aquila?"
+      ],
+      fallbacks: [
+        "Non capisco.",
+        "Codice sbagliato. Riprova.",
+        "Smetti di perdere tempo, dammi il codice.",
+        "Formato non valido. Rivedi le istruzioni."
+      ]
+    },
+    {
+      id: "event_c1_2",
+      turnId: 1,
+      type: "narrative",
+      triggerAfter: "msg_turn1_success",
+      messages: [
+        "A proposito, detective... c'è qualcosa che devi sapere.",
+        "Il senatore Bianchi non è solo. Ha potenti alleati nelle alte sfere.",
+        "Fai attenzione a chi ti fidi."
+      ],
+      mediaId: ["c1_m2", "c1_m3"]
+    },
+    {
+      id: "event_c1_3",
+      turnId: 3,
+      type: "narrative",
+      triggerAfter: null,
+      messages: [
+        "Bentornato detective. La situazione si fa sempre più pericolosa."
+      ]
+    },
+    {
+      id: "event_c1_4",
+      turnId: 3,
+      type: "puzzle",
+      preQuestion: "Per il livello finale con me, qual è il codice di emergenza? (risposta: red wolf)",
+      maxAttempts: 3,
+      penaltySeconds: 20,
+      notification: {
+        notificationContact: "c3",
+        notificationMessage: "Hai ricevuto un messaggio dal risolutore"
+      },
+      solution: {
+        keywords: ["red", "wolf"],
+        response: {
+          text: "Ottimo lavoro. Hai completato il livello finale. Ora contatta il Risolutore per chiudere il caso.",
+          messageId: "msg_turn3_success",
+          mediaId: ["c1_m4"],
+          evidenceText: "Il codice 'Lupo Rosso' indica che l'incontro è previsto per domani alle 22:00 al Porto Vecchio. Tutte le prove sono state raccolte."
+        }
+      },
+      hints: [
+        "Rosso cosa? Il codice di emergenza richiede precisione.",
+        "Pensa a un animale selvatico.",
+        "Il lupo è noto per la sua astuzia."
+      ],
+      fallbacks: [
+        "Codice errato.",
+        "Accesso negato al livello successivo.",
+        "Riprova con il codice corretto."
+      ]
+    }
+  ]
+}

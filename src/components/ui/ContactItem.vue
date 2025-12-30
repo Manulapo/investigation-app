@@ -30,8 +30,9 @@ onMounted(async () => {
   try {
     const contactFile = props.contact?.file
     if (contactFile) {
-      const module = await import(`../../data/contacts/${contactFile}.json`)
-      contactData.value = module.default
+      const module = await import(`../../data/contacts/${contactFile}`)
+      const contactKey = Object.keys(module)[0]
+      contactData.value = module[contactKey]
     }
   } catch (error) {
     console.error('Error loading contact data:', error)

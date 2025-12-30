@@ -88,7 +88,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
-import registry from '../data/registry.json'
+import { registry } from '../data/registry'
 import MessageBubble from '../components/ui/MessageBubble.vue'
 import AppHeader from '../components/layout/AppHeader.vue'
 import { useSaveManager } from '../composables/useSaveManager'
@@ -212,9 +212,11 @@ const loadContactData = async () => {
   try {
     const contactFile = contact.value?.file
     if (contactFile) {
-      // Import the JSON file dynamically
-      const module = await import(`../data/contacts/${contactFile}.json`)
-      contactData.value = module.default
+      // Import the TS file dynamically
+      const module = await import(`../data/contacts/${contactFile}`)
+      // Get the contact data from the exported constant
+      const contactKey = Object.keys(module)[0]
+      contactData.value = module[contactKey]
       
       // Add initial message if chat is empty
       if (messages.value.length === 0) {

@@ -1,4 +1,4 @@
-[
+export const penaltyResponses: string[] = [
   "⚠️ SISTEMA BLOCCATO. Attendere prego.",
   "🔒 [ERR_429] Troppe richieste. Cooldown attivo.",
   "🛡️ Ricalibrazione crittografia... attendere.",
