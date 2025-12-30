@@ -48,7 +48,6 @@ defineEmits<{
   background: #075e54;
   color: white;
   padding: 0.75rem 1rem;
-  gap: 0.75rem;
   flex-shrink: 0;
   min-height: 60px;
   z-index: 100;
@@ -56,7 +55,8 @@ defineEmits<{
 
 .left-btn,
 .right-btn {
-  background: rgba(255, 255, 255, 0.15);
+  position: absolute;
+  background:transparent;
   border: none;
   color: white;
   width: 40px;
@@ -68,11 +68,6 @@ defineEmits<{
   cursor: pointer;
   transition: all 0.2s;
   flex-shrink: 0;
-
-  &:hover {
-    background: rgba(255, 255, 255, 0.25);
-    transform: scale(1.05);
-  }
 
   &:active {
     transform: scale(0.95);
@@ -90,7 +85,7 @@ defineEmits<{
 .header-title {
   margin: 0;
   font-size: 1.2rem;
-  font-weight: 500;
+  font-weight: 700;
   text-align: center;
   flex: 1;
   order: 0;

@@ -105,6 +105,8 @@ const unlockedMedia = computed(() => {
   align-items: center;
   gap: 0.75rem;
   flex: 1;
+  margin-left: 3em;
+
 }
 
 .avatar {

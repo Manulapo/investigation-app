@@ -1,7 +1,5 @@
 <template>
   <div class="lock-screen">
-    <AppHeader :title="config.title" />
-    
     <div class="lock-container">
       <div class="lock-icon">
         <i class="fas fa-lock"></i>

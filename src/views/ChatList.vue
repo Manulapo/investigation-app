@@ -219,8 +219,8 @@ code {
   position: fixed;
   bottom: 2rem;
   right: 2rem;
-  width: 60px;
-  height: 60px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   background: #075e54;
   color: white;
@@ -232,17 +232,7 @@ code {
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease;
-  z-index: 1000;
-
-  &:hover {
-    background: #128c7e;
-    transform: scale(1.1);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
-  }
-
-  &:active {
-    transform: scale(0.95);
-  }
+  z-index: 999;
 }
 
 </style>

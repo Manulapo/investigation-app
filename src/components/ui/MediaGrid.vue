@@ -13,7 +13,7 @@
       <div v-else-if="m.type === 'audio'" class="card-icon">
         <div class="icon-wrapper">
           <i class="fas fa-music"></i>
-          <span v-if="m.alt" class="icon-title">{{ m.alt }}</span>
+          <span class="icon-title">{{ m.alt || 'Audio' }}</span>
         </div>
       </div>
     </div>
@@ -86,7 +86,6 @@ function handleCardClick(media: any) {
 
 function openFullscreen(media: any) {
   fullscreenMedia.value = media
-  console.log('Opening fullscreen for media:', media)
   resetZoom()
 }
 
@@ -185,11 +184,6 @@ onUnmounted(() => {
   justify-content: center;
 }
 
-.card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
 .card-image img {
   object-fit: cover;
 }
@@ -201,6 +195,14 @@ onUnmounted(() => {
   width: 100%;
   height: 100%;
   background: #f5f5f5;
+
+  .fa-file-pdf{
+    color: #d9534f; /* Red color for PDF icon */
+  }
+
+  .fa-music {
+    color: #aa5bde; /* Blue color for audio icon */
+  }
 }
 
 .icon-wrapper {
