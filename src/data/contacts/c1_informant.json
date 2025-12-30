@@ -1,9 +1,11 @@
 {
   "id": "c1",
   "initialMessage": "Benvenuto detective. Sono il tuo informatore anonimo. Ho delle informazioni cruciali per te sul caso 'Ombra'. Procedi con cautela, le pareti hanno orecchie.",
-  "puzzles": [
+  "timeline": [
     {
+      "id": "event_c1_1",
       "turnId": 1,
+      "type": "puzzle",
       "preQuestion": "Prima di iniziare, conferma la tua identità: Qual è il protocollo di sicurezza? (risposta: blue eagle)",
       "maxAttempts": 3,
       "penaltySeconds": 15,
@@ -35,7 +37,30 @@
       ]
     },
     {
+      "id": "event_c1_2",
+      "turnId": 1,
+      "type": "narrative",
+      "triggerAfter": "msg_turn1_success",
+      "messages": [
+        "A proposito, detective... c'è qualcosa che devi sapere.",
+        "Il senatore Bianchi non è solo. Ha potenti alleati nelle alte sfere.",
+        "Fai attenzione a chi ti fidi."
+      ],
+      "mediaId": ["c1_m2", "c1_m3"]
+    },
+    {
+      "id": "event_c1_3",
       "turnId": 3,
+      "type": "narrative",
+      "triggerAfter": null,
+      "messages": [
+        "Bentornato detective. La situazione si fa sempre più pericolosa."
+      ]
+    },
+    {
+      "id": "event_c1_4",
+      "turnId": 3,
+      "type": "puzzle",
       "preQuestion": "Per il livello finale con me, qual è il codice di emergenza? (risposta: red wolf)",
       "maxAttempts": 3,
       "penaltySeconds": 20,

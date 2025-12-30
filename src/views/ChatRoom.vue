@@ -99,7 +99,7 @@ const props = defineProps<{ id: string }>()
 const router = useRouter()
 const contactId = computed(() => props.id || 'c1')
 const { state, getMessages, addMessage, isLocked, getLockedUntil, setPreQuestionShown, isPreQuestionShown, markMessagesAsRead } = useSaveManager()
-const { parseInput } = useGameEngine()
+const { parseInput, getNarrativeMessagesForTurnStart, getPuzzleForTurn } = useGameEngine()
 const { show } = useNotification()
 const { getDocumentById, unlockDocuments } = useDocuments()
 
@@ -184,16 +184,55 @@ const loadContactData = async () => {
         }
       }
       
-      // Determine current turn for this contact and trigger appropriate puzzle
+      // Determine current turn and show narrative messages for turn start
       const currentTurn = getCurrentTurnForContact(contactId.value)
-      const nextPuzzle = contactData.value.puzzles?.find((p: any) => p.turnId === currentTurn)
+      const narrativeData = getNarrativeMessagesForTurnStart(contactId.value, currentTurn)
       
-      if (nextPuzzle?.preQuestion && !isPreQuestionShown(`${contactId.value}_${currentTurn}`)) {
+      let narrativeDelay = 0
+      narrativeData.messages.forEach((message: string, index: number) => {
+        const delay = messages.value.length === 0 ? messageDelayCounter * 2 : narrativeDelay
+        addDelayedMessage(contactId.value, {
+          id: `msg_narrative_initial_${currentTurn}_${index}`,
+          content: message,
+          sender: 'contact'
+        }, delay)
+        if (messages.value.length === 0) {
+          messageDelayCounter++
+        } else {
+          narrativeDelay += 2
+        }
+      })
+      
+      // Add narrative media if any
+      if (narrativeData.mediaIds.length > 0) {
+        unlockDocuments(narrativeData.mediaIds)
+        const mediaArray = findMediaArray(narrativeData.mediaIds)
+        mediaArray.forEach((media: any) => {
+          const delay = messages.value.length === 0 ? messageDelayCounter * 2 : narrativeDelay
+          addDelayedMessage(contactId.value, {
+            id: `msg_narrative_media_initial_${currentTurn}_${Math.random()}`,
+            content: '',
+            sender: 'contact',
+            media: [media]
+          }, delay)
+          if (messages.value.length === 0) {
+            messageDelayCounter++
+          } else {
+            narrativeDelay += 2
+          }
+        })
+      }
+      
+      // Show puzzle preQuestion
+      const puzzleEvent = getPuzzleForTurn(contactId.value, currentTurn)
+      
+      if (puzzleEvent?.preQuestion && !isPreQuestionShown(`${contactId.value}_${currentTurn}`)) {
+        const preQuestionDelay = messages.value.length === 0 ? messageDelayCounter * 2 : narrativeDelay
         addDelayedMessage(contactId.value, {
           id: `msg_prequestion_${contactId.value}_${currentTurn}`,
-          content: nextPuzzle.preQuestion,
+          content: puzzleEvent.preQuestion,
           sender: 'contact'
-        }, messages.value.length === 0 ? messageDelayCounter * 2 : 0)
+        }, preQuestionDelay)
         if (messages.value.length === 0) messageDelayCounter++
         // Mark preQuestion as shown so it doesn't show again
         setPreQuestionShown(`${contactId.value}_${currentTurn}`, true)
@@ -242,26 +281,56 @@ watch(isCooldown, (val) => {
         updateCooldownTimer()
       }
     }, 100)
-  } else {
-    cooldownCountdown.value = 0
   }
 })
 
 watch(currentTurn, (newTurn) => {
-  // Only show preQuestion from watcher if NOT in a message send flow
-  // Message send flow handles preQuestion with proper timing
-  if (isMessageSending.value) return
-  
-  if (contactData.value && messages.value.length > 0) {
-    const nextPuzzle = contactData.value.puzzles?.find((p: any) => p.turnId === newTurn)
-    if (nextPuzzle?.preQuestion && !isPreQuestionShown(`${contactId.value}_${newTurn}`)) {
-      addMessage(contactId.value, {
-        id: `msg_prequestion_${contactId.value}_${newTurn}`,
-        content: nextPuzzle.preQuestion,
-        sender: 'contact',
-        timestamp: Date.now()
+  if (newTurn > 1 && !isMessageSending.value) {
+    const narrativeData = getNarrativeMessagesForTurnStart(contactId.value, newTurn)
+    let delay = 0
+    
+    narrativeData.messages.forEach((message: string, index: number) => {
+      setTimeout(() => {
+        addMessage(contactId.value, {
+          id: `msg_narrative_turnstart_${newTurn}_${index}`,
+          content: message,
+          sender: 'contact',
+          timestamp: Date.now()
+        })
+      }, delay)
+      delay += 2000
+    })
+    
+    // Add narrative media if any
+    if (narrativeData.mediaIds.length > 0) {
+      unlockDocuments(narrativeData.mediaIds)
+      const mediaArray = findMediaArray(narrativeData.mediaIds)
+      mediaArray.forEach((media: any, idx: number) => {
+        setTimeout(() => {
+          addMessage(contactId.value, {
+            id: `msg_narrative_media_turnstart_${newTurn}_${idx}`,
+            content: '',
+            sender: 'contact',
+            media: [media],
+            timestamp: Date.now()
+          })
+        }, delay)
+        delay += 2000
       })
-      setPreQuestionShown(`${contactId.value}_${newTurn}`, true)
+    }
+    
+    // Show puzzle preQuestion
+    const puzzleEvent = getPuzzleForTurn(contactId.value, newTurn)
+    if (puzzleEvent?.preQuestion && !isPreQuestionShown(`${contactId.value}_${newTurn}`)) {
+      setTimeout(() => {
+        addMessage(contactId.value, {
+          id: `msg_prequestion_${contactId.value}_${newTurn}`,
+          content: puzzleEvent.preQuestion,
+          sender: 'contact',
+          timestamp: Date.now()
+        })
+        setPreQuestionShown(`${contactId.value}_${newTurn}`, true)
+      }, delay)
     }
   }
 })
@@ -467,6 +536,31 @@ const sendMessage = async () => {
     })
   }
 
+  // Add narrative messages after success (if any)
+  if (result.status === 'success' && result.narrativeMessages && result.narrativeMessages.length > 0) {
+    result.narrativeMessages.forEach((message: string, index: number) => {
+      addDelayedMessage(contactId.value, {
+        id: `msg_narrative_${Date.now()}_${index}`,
+        content: message,
+        sender: 'contact'
+      }, messageDelayCounter++ * 2)
+    })
+  }
+
+  // Add narrative media if any
+  if (result.narrativeMediaIds && result.narrativeMediaIds.length > 0) {
+    unlockDocuments(result.narrativeMediaIds)
+    const narrativeMediaArray = findMediaArray(result.narrativeMediaIds)
+    narrativeMediaArray.forEach((media: any) => {
+      addDelayedMessage(contactId.value, {
+        id: `msg_narrative_media_${Date.now()}_${Math.random()}`,
+        content: '',
+        sender: 'contact',
+        media: [media]
+      }, messageDelayCounter++ * 2)
+    })
+  }
+
   const totalMessageDelay = (messageDelayCounter - 1) * 2 * 1000 // -1 because the last message has no typing delay
 
   // Turn off typing after all messages are sent
@@ -483,11 +577,11 @@ const sendMessage = async () => {
     }
 
     setTimeout(() => {
-      const nextPuzzle = contactData.value?.puzzles?.find((p: any) => p.turnId === currentTurn.value)
-      if (nextPuzzle?.preQuestion && !isPreQuestionShown(`${contactId.value}_${currentTurn.value}`)) {
+      const puzzleEvent = getPuzzleForTurn(contactId.value, currentTurn.value)
+      if (puzzleEvent?.preQuestion && !isPreQuestionShown(`${contactId.value}_${currentTurn.value}`)) {
         addMessage(contactId.value, {
           id: `msg_prequestion_${contactId.value}_${currentTurn.value}`,
-          content: nextPuzzle.preQuestion,
+          content: puzzleEvent.preQuestion,
           sender: 'contact',
           timestamp: Date.now()
         })

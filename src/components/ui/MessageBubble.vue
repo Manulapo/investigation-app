@@ -92,6 +92,7 @@ function openFullscreen(media: Media) {
 
   &.is-contact {
     justify-content: flex-start;
+    margin: 0;
   }
 }
 

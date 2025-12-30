@@ -1,9 +1,21 @@
 {
   "id": "c2",
   "initialMessage": "Salve detective. Sono il Detective Rossi. Ho ricevuto informazioni che potrebbero interessarti sul caso 'Ombra'.",
-  "puzzles": [
+  "timeline": [
     {
+      "id": "event_c2_1",
       "turnId": 2,
+      "type": "narrative",
+      "triggerAfter": null,
+      "messages": [
+        "Detective, ho informazioni cruciali da condividere con te.",
+        "Ma prima devo verificare che tu sia chi dici di essere."
+      ]
+    },
+    {
+      "id": "event_c2_2",
+      "turnId": 2,
+      "type": "puzzle",
       "preQuestion": "Per verificare la tua autorizzazione, rispondi: Qual è il tuo numero di distintivo? (risposta: detective badge)",
       "maxAttempts": 3,
       "penaltySeconds": 15,
@@ -34,20 +46,32 @@
       ]
     },
     {
+      "id": "event_c2_3",
+      "turnId": 2,
+      "type": "narrative",
+      "triggerAfter": "msg_turn2_success",
+      "messages": [
+        "Perfetto. Ora possiamo lavorare insieme.",
+        "Le cose stanno per diventare interessanti, detective."
+      ]
+    },
+    {
+      "id": "event_c2_4",
       "turnId": 5,
-      "preQuestion": "Per verificare la tua autorizzazione, rispondi: Qual è il tuo numero di distintivo? (risposta: detective badge)",
+      "type": "puzzle",
+      "preQuestion": "Per verificare la tua autorizzazione finale, rispondi: Qual è il tuo numero di distintivo? (risposta: detective badge)",
       "maxAttempts": 3,
       "penaltySeconds": 30,
       "notification": {
         "showNotification": true,
         "notificationContact": "c3",
-        "notificationMessage": "Hai ricevuto un messaggio dall risolutore"
+        "notificationMessage": "Hai ricevuto un messaggio dal risolutore"
       },
       "solution": {
         "keywords": ["detective", "badge"],
         "response": {
           "text": "Autorizzazione confermata. Ecco le informazioni riservate sul caso 'Ombra'.",
-          "messageId": "msg_turn2_success",
+          "messageId": "msg_turn5_success",
           "evidenceText": "Il distintivo numero 4782 appartiene all'agente speciale Luca Martini, attualmente sotto copertura nell'operazione 'Ombra'."
         }
       },
