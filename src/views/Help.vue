@@ -1,10 +1,12 @@
 <template>
   <transition name="fade-page" appear>
     <div class="help-page">
-    <div class="help-header">
-      <router-link to="/" class="back-btn">←</router-link>
-      <h1>Guida al Gioco</h1>
-    </div>
+    <AppHeader 
+      title="Guida al Gioco"
+      show-left-button
+      left-icon="fas fa-chevron-left"
+      @left-click="goBack"
+    />
 
     <div class="help-content">
       <section>
@@ -43,13 +45,8 @@
         <ul>
           <li>Presta attenzione alle parole chiave nelle risposte.</li>
           <li>Se fai troppi errori, subirai un periodo di attesa.</li>
-          <li>Usa gli indizi se sei bloccato.</li>
+          <li>Usa la lampadina 💡 nell'header della chat per ricevere suggerimenti.</li>
         </ul>
-      </section>
-
-      <section>
-        <h2>Debug</h2>
-        <p>Per testare, le risposte corrette sono indicate tra parentesi nelle domande.</p>
       </section>
     </div>
   </div>
@@ -57,7 +54,14 @@
 </template>
 
 <script setup lang="ts">
-// No script needed for static help page
+import { useRouter } from 'vue-router'
+import AppHeader from '../components/layout/AppHeader.vue'
+
+const router = useRouter()
+
+function goBack() {
+  router.back()
+}
 </script>
 
 <style scoped lang="scss">
@@ -68,35 +72,15 @@
   background: #ece5dd;
 }
 
-.help-header {
-  background: #075e54;
-  color: white;
-  padding: 0.75rem 1rem;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  flex-shrink: 0;
-}
-
-.back-btn {
-  font-size: 1.5rem;
-  cursor: pointer;
-  padding: 0.25rem 0.5rem;
-  color: white;
-  text-decoration: none;
-}
-
-.help-header h1 {
-  margin: 0;
-  font-size: 1.2rem;
-  font-weight: 600;
-}
-
 .help-content {
   flex: 1;
   padding: 1rem;
   overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.help-content::-webkit-scrollbar {
+  display: none;
 }
 
 .help-content section {
@@ -112,7 +96,6 @@
   color: #075e54;
   font-size: 1.1rem;
 }
-
 .help-content p {
   margin: 0.5rem 0;
   line-height: 1.4;

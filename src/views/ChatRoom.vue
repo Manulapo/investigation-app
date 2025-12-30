@@ -4,7 +4,10 @@
     <AppHeader 
       show-left-button
       left-icon="fas fa-chevron-left"
+      show-hint-button
+      :hint-enabled="isHintAvailable"
       @left-click="goBack"
+      @hint-click="requestHint"
     >
       <router-link :to="`/profile/${contactId}`" class="contact-info">
         <img :src="contact?.avatar" :alt="contact?.name" class="avatar" />
@@ -98,7 +101,7 @@ const props = defineProps<{ id: string }>()
 
 const router = useRouter()
 const contactId = computed(() => props.id || 'c1')
-const { state, getMessages, addMessage, isLocked, getLockedUntil, setPreQuestionShown, isPreQuestionShown, markMessagesAsRead } = useSaveManager()
+const { state, getMessages, addMessage, isLocked, getLockedUntil, setPreQuestionShown, isPreQuestionShown, markMessagesAsRead, getUsedHintsForPuzzle, useHint } = useSaveManager()
 const { parseInput, getNarrativeMessagesForTurnStart, getPuzzleForTurn } = useGameEngine()
 const { show } = useNotification()
 const { getDocumentById, unlockDocuments } = useDocuments()
@@ -144,6 +147,48 @@ const contact = computed(() => registry.find((c: any) => c.id === contactId.valu
 const messages = computed(() => getMessages(contactId.value))
 const currentTurn = computed(() => getCurrentTurnForContact(contactId.value))
 const fullscreenMedia = ref<any>(null)
+
+// Hint system
+const currentPuzzle = computed(() => {
+  if (!contactData.value) return null
+  return getPuzzleForTurn(contactId.value, currentTurn.value)
+})
+
+const isHintAvailable = computed(() => {
+  if (!currentPuzzle.value || !currentPuzzle.value.hints || currentPuzzle.value.hints.length === 0) {
+    return false
+  }
+  const puzzleKey = `${contactId.value}_${currentTurn.value}`
+  const usedHints = getUsedHintsForPuzzle(puzzleKey)
+  return usedHints < currentPuzzle.value.hints.length
+})
+
+function requestHint() {
+  if (!isHintAvailable.value || !currentPuzzle.value) return
+  
+  const puzzleKey = `${contactId.value}_${currentTurn.value}`
+  const usedHints = getUsedHintsForPuzzle(puzzleKey)
+  const hintText = currentPuzzle.value.hints[usedHints]
+  
+  if (hintText) {
+    // Add hint as a message from contact
+    addDelayedMessage(contactId.value, {
+      id: `msg_hint_${puzzleKey}_${usedHints}`,
+      content: hintText,
+      sender: 'contact'
+    }, 0)
+    
+    // Mark hint as used
+    useHint(puzzleKey)
+    
+    // Trigger typing animation
+    isTyping.value = true
+    setTimeout(() => {
+      isTyping.value = false
+      scrollToBottom()
+    }, 1000)
+  }
+}
 
 // Helper function to add messages with delay
 let messageDelayCounter = 0

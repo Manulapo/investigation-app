@@ -49,4 +49,6 @@ export interface GameState {
   chatHistories: Record<string, ContactHistory>
   puzzleStatus: Record<string, PuzzleStatus>
   phoneUnlockedContacts: string[]
+  totalHintsUsed: number
+  usedHintsPerPuzzle: Record<string, number>
 }

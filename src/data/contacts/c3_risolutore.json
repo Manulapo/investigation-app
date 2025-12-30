@@ -33,10 +33,8 @@
         }
       },
       "hints": [
-        { 
-          "keywords": ["caso"], 
-          "response": "Il nome in codice si riferisce al caso stesso." 
-        }
+        "Il nome in codice si riferisce al caso stesso.",
+        "Guarda il titolo dell'operazione."
       ],
       "fallbacks": [
         "Codice errato. Riprova con attenzione.",

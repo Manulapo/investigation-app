@@ -1,9 +1,11 @@
 <template>
   <div class="documents-page">
-    <div class="documents-header">
-      <router-link to="/" class="back-btn">←</router-link>
-      <h1>Documenti Iniziali</h1>
-    </div>
+    <AppHeader 
+      title="Documenti Iniziali"
+      show-left-button
+      left-icon="fas fa-chevron-left"
+      @left-click="goBack"
+    />
 
     <div class="documents-content">
       <section class="description-section">
@@ -19,10 +21,17 @@
 </template>
 
 <script setup lang="ts">
+import { useRouter } from 'vue-router'
 import MediaGrid from '../components/ui/MediaGrid.vue'
+import AppHeader from '../components/layout/AppHeader.vue'
 import { useDocuments } from '../composables/useDocuments'
 
+const router = useRouter()
 const { unlockedDocuments } = useDocuments()
+
+function goBack() {
+  router.back()
+}
 </script>
 
 <style scoped lang="scss">
@@ -36,46 +45,18 @@ const { unlockedDocuments } = useDocuments()
   overflow: hidden;
 }
 
-.documents-header {
-  background: #075e54;
-  color: white;
-  padding: 0.75rem 1rem;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  flex-shrink: 0;
-  z-index: 10;
-}
-
-.back-btn {
-  font-size: 1.5rem;
-  cursor: pointer;
-  padding: 0.25rem 0.5rem;
-  text-decoration: none;
-  color: white;
-  transition: background 0.2s;
-  border-radius: 4px;
-
-  &:hover {
-    background: rgba(255, 255, 255, 0.1);
-  }
-}
-
-.documents-header h1 {
-  margin: 0;
-  font-size: 1.2rem;
-  font-weight: 600;
-  flex: 1;
-}
-
 .documents-content {
   flex: 1;
   padding: 1rem;
   overflow-y: auto;
+  scrollbar-width: none;
   display: flex;
   flex-direction: column;
   gap: 1rem;
+}
+
+.documents-content::-webkit-scrollbar {
+  display: none;
 }
 
 .description-section {

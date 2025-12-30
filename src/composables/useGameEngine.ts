@@ -84,16 +84,7 @@ export function useGameEngine() {
       }
     }
 
-    // CHECK 3: Specific Hint Match
-    const hint = (puzzleEvent.hints || []).find((h: any) => {
-      const hk = (h.keywords || []).map((k: string) => k.toLowerCase())
-      return hk.some((k: string) => words.includes(k))
-    })
-    if (hint) {
-      return { status: 'hint', text: hint.response }
-    }
-
-    // CHECK 4: General Failure (Randomized)
+    // CHECK 3: General Failure (Randomized)
     const attempts = incrementFailed(key)
     const fallbackText = randomItem(puzzleEvent.fallbacks || ['Wrong.'])
     

@@ -7,7 +7,9 @@ const defaultState = {
   currentGlobalTurn: 1,
   chatHistories: {} as Record<string, ContactHistory>,
   puzzleStatus: {} as Record<string, PuzzleStatus>,
-  phoneUnlockedContacts: [] as string[]
+  phoneUnlockedContacts: [] as string[],
+  totalHintsUsed: 0,
+  usedHintsPerPuzzle: {} as Record<string, number>
 }
 
 const state = reactive(load())
@@ -24,6 +26,13 @@ function load() {
       // Ensure phoneUnlockedContacts exists for backwards compatibility
       if (!loaded.phoneUnlockedContacts) {
         loaded.phoneUnlockedContacts = []
+      }
+      // Ensure hint tracking exists for backwards compatibility
+      if (loaded.totalHintsUsed === undefined) {
+        loaded.totalHintsUsed = 0
+      }
+      if (!loaded.usedHintsPerPuzzle) {
+        loaded.usedHintsPerPuzzle = {}
       }
       return loaded
     }
@@ -133,6 +142,18 @@ export function useSaveManager() {
     return state.phoneUnlockedContacts.includes(contactId)
   }
 
+  function getUsedHintsForPuzzle(puzzleKey: string): number {
+    return state.usedHintsPerPuzzle[puzzleKey] || 0
+  }
+
+  function useHint(puzzleKey: string) {
+    if (!state.usedHintsPerPuzzle[puzzleKey]) {
+      state.usedHintsPerPuzzle[puzzleKey] = 0
+    }
+    state.usedHintsPerPuzzle[puzzleKey]++
+    state.totalHintsUsed++
+  }
+
   function resetAll() {
     Object.keys(state).forEach(k => delete (state as any)[k])
     const fresh = JSON.parse(JSON.stringify(defaultState))
@@ -157,6 +178,8 @@ export function useSaveManager() {
     markMessagesAsRead,
     unlockContactByPhone,
     isContactUnlockedByPhone,
+    getUsedHintsForPuzzle,
+    useHint,
     resetAll
   }
 }

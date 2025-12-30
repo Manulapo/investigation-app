@@ -20,10 +20,9 @@
         }
       },
       "hints": [
-        { 
-          "keywords": ["blue"], 
-          "response": "Blu cosa? Ho bisogno del nome in codice." 
-        }
+        "Blu cosa? Ho bisogno del nome in codice.",
+        "Ricorda: il protocollo richiede un animale.",
+        "Hai provato con l'aquila?"
       ],
       "fallbacks": [
         "Non capisco.",
@@ -75,10 +74,9 @@
         }
       },
       "hints": [
-        { 
-          "keywords": ["red"], 
-          "response": "Rosso cosa? Il codice di emergenza richiede precisione." 
-        }
+        "Rosso cosa? Il codice di emergenza richiede precisione.",
+        "Pensa a un animale selvatico.",
+        "Il lupo è noto per la sua astuzia."
       ],
       "fallbacks": [
         "Codice errato.",

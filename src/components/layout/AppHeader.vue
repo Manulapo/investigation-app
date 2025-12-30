@@ -11,6 +11,18 @@
     </div>
     <h2 v-else-if="title" class="header-title">{{ title }}</h2>
 
+    <!-- Hint Button (Bulb Icon) -->
+    <button 
+      v-if="showHintButton" 
+      class="hint-btn" 
+      :class="{ disabled: !hintEnabled }"
+      :disabled="!hintEnabled"
+      @click="$emit('hint-click')"
+      title="Suggerimento"
+    >
+      <i class="fas fa-lightbulb"></i>
+    </button>
+
     <!-- Level Badge (optional) -->
     <div v-if="showLevel" class="level-badge">Level {{ level }}</div>
 
@@ -30,11 +42,14 @@ defineProps<{
   rightIcon?: string
   showLevel?: boolean
   level?: number
+  showHintButton?: boolean
+  hintEnabled?: boolean
 }>()
 
 defineEmits<{
   'left-click': []
   'right-click': []
+  'hint-click': []
 }>()
 </script>
 
@@ -54,7 +69,8 @@ defineEmits<{
 }
 
 .left-btn,
-.right-btn {
+.right-btn,
+.hint-btn {
   position: absolute;
   background:transparent;
   border: none;
@@ -65,21 +81,35 @@ defineEmits<{
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
   transition: all 0.2s;
   flex-shrink: 0;
 
-  &:active {
+  &:active:not(.disabled) {
     transform: scale(0.95);
   }
 
   i {
     font-size: 1.2rem;
   }
+
+  &.disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
 }
 
 .left-btn {
   order: -1;
+  left: 1rem;
+}
+
+.hint-btn {
+  right: 1rem;
+  order: 2;
+}
+
+.right-btn {
+  right: 1rem;
 }
 
 .header-title {

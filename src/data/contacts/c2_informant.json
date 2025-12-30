@@ -34,10 +34,8 @@
         }
       },
       "hints": [
-        { 
-          "keywords": ["badge"], 
-          "response": "Il numero di distintivo è essenziale per l'accesso." 
-        }
+        "Il numero di distintivo è essenziale per l'accesso.",
+        "Pensa alla tua identità di detective."
       ],
       "fallbacks": [
         "Codice non riconosciuto.",
@@ -76,10 +74,8 @@
         }
       },
       "hints": [
-        { 
-          "keywords": ["badge"], 
-          "response": "Il numero di distintivo è essenziale per l'accesso." 
-        }
+        "Il numero di distintivo è essenziale per l'accesso.",
+        "Ricorda la risposta precedente."
       ],
       "fallbacks": [
         "Codice non riconosciuto.",
