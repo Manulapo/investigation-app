@@ -81,7 +81,7 @@ defineEmits<{
 .left-btn {
   order: -1;
 }
-
+x
 .header-title {
   margin: 0;
   font-size: 1.2rem;
