@@ -101,7 +101,7 @@ const props = defineProps<{ id: string }>()
 
 const router = useRouter()
 const contactId = computed(() => props.id || 'c1')
-const { state, getMessages, addMessage, isLocked, getLockedUntil, setPreQuestionShown, isPreQuestionShown, markMessagesAsRead, getUsedHintsForPuzzle, useHint } = useSaveManager()
+const { state, getMessages, addMessage, isLocked, getLockedUntil, setPreQuestionShown, isPreQuestionShown, markMessagesAsRead, getUsedHintsForPuzzle, useHint, isNarrativeShown, setNarrativeShown } = useSaveManager()
 const { parseInput, getNarrativeMessagesForTurnStart, getPuzzleForTurn } = useGameEngine()
 const { show } = useNotification()
 const { getDocumentById, unlockDocuments } = useDocuments()
@@ -237,16 +237,20 @@ const loadContactData = async () => {
       
       let narrativeDelay = 0
       narrativeData.messages.forEach((message: string, index: number) => {
-        const delay = messages.value.length === 0 ? messageDelayCounter * 2 : narrativeDelay
-        addDelayedMessage(contactId.value, {
-          id: `msg_narrative_initial_${currentTurn}_${index}`,
-          content: message,
-          sender: 'contact'
-        }, delay)
-        if (messages.value.length === 0) {
-          messageDelayCounter++
-        } else {
-          narrativeDelay += 2
+        const narrativeId = `narrative_initial_${currentTurn}_${index}`
+        if (!isNarrativeShown(narrativeId)) {
+          const delay = messages.value.length === 0 ? messageDelayCounter * 2 : narrativeDelay
+          addDelayedMessage(contactId.value, {
+            id: `msg_narrative_initial_${currentTurn}_${index}`,
+            content: message,
+            sender: 'contact'
+          }, delay)
+          setNarrativeShown(narrativeId)
+          if (messages.value.length === 0) {
+            messageDelayCounter++
+          } else {
+            narrativeDelay += 2
+          }
         }
       })
       
@@ -255,17 +259,21 @@ const loadContactData = async () => {
         unlockDocuments(narrativeData.mediaIds)
         const mediaArray = findMediaArray(narrativeData.mediaIds)
         mediaArray.forEach((media: any) => {
-          const delay = messages.value.length === 0 ? messageDelayCounter * 2 : narrativeDelay
-          addDelayedMessage(contactId.value, {
-            id: `msg_narrative_media_initial_${currentTurn}_${Math.random()}`,
-            content: '',
-            sender: 'contact',
-            media: [media]
-          }, delay)
-          if (messages.value.length === 0) {
-            messageDelayCounter++
-          } else {
-            narrativeDelay += 2
+          const narrativeMediaId = `narrative_media_initial_${currentTurn}_${Math.random()}`
+          if (!isNarrativeShown(narrativeMediaId)) {
+            const delay = messages.value.length === 0 ? messageDelayCounter * 2 : narrativeDelay
+            addDelayedMessage(contactId.value, {
+              id: `msg_narrative_media_initial_${currentTurn}_${Math.random()}`,
+              content: '',
+              sender: 'contact',
+              media: [media]
+            }, delay)
+            setNarrativeShown(narrativeMediaId)
+            if (messages.value.length === 0) {
+              messageDelayCounter++
+            } else {
+              narrativeDelay += 2
+            }
           }
         })
       }
@@ -337,15 +345,19 @@ watch(currentTurn, (newTurn) => {
     let delay = 0
     
     narrativeData.messages.forEach((message: string, index: number) => {
-      setTimeout(() => {
-        addMessage(contactId.value, {
-          id: `msg_narrative_turnstart_${newTurn}_${index}`,
-          content: message,
-          sender: 'contact',
-          timestamp: Date.now()
-        })
-      }, delay)
-      delay += 2000
+      const narrativeId = `narrative_turnstart_${newTurn}_${index}`
+      if (!isNarrativeShown(narrativeId)) {
+        setTimeout(() => {
+          addMessage(contactId.value, {
+            id: `msg_narrative_turnstart_${newTurn}_${index}`,
+            content: message,
+            sender: 'contact',
+            timestamp: Date.now()
+          })
+          setNarrativeShown(narrativeId)
+        }, delay)
+        delay += 2000
+      }
     })
     
     // Add narrative media if any
@@ -353,16 +365,20 @@ watch(currentTurn, (newTurn) => {
       unlockDocuments(narrativeData.mediaIds)
       const mediaArray = findMediaArray(narrativeData.mediaIds)
       mediaArray.forEach((media: any, idx: number) => {
-        setTimeout(() => {
-          addMessage(contactId.value, {
-            id: `msg_narrative_media_turnstart_${newTurn}_${idx}`,
-            content: '',
-            sender: 'contact',
-            media: [media],
-            timestamp: Date.now()
-          })
-        }, delay)
-        delay += 2000
+        const narrativeMediaId = `narrative_media_turnstart_${newTurn}_${idx}`
+        if (!isNarrativeShown(narrativeMediaId)) {
+          setTimeout(() => {
+            addMessage(contactId.value, {
+              id: `msg_narrative_media_turnstart_${newTurn}_${idx}`,
+              content: '',
+              sender: 'contact',
+              media: [media],
+              timestamp: Date.now()
+            })
+            setNarrativeShown(narrativeMediaId)
+          }, delay)
+          delay += 2000
+        }
       })
     }
     

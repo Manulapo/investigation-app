@@ -9,7 +9,8 @@ const defaultState = {
   puzzleStatus: {} as Record<string, PuzzleStatus>,
   phoneUnlockedContacts: [] as string[],
   totalHintsUsed: 0,
-  usedHintsPerPuzzle: {} as Record<string, number>
+  usedHintsPerPuzzle: {} as Record<string, number>,
+  shownNarratives: {} as Record<string, boolean>
 }
 
 const state = reactive(load())
@@ -33,6 +34,10 @@ function load() {
       }
       if (!loaded.usedHintsPerPuzzle) {
         loaded.usedHintsPerPuzzle = {}
+      }
+      // Ensure narrative tracking exists for backwards compatibility
+      if (!loaded.shownNarratives) {
+        loaded.shownNarratives = {}
       }
       return loaded
     }
@@ -154,6 +159,14 @@ export function useSaveManager() {
     state.totalHintsUsed++
   }
 
+  function isNarrativeShown(narrativeId: string): boolean {
+    return state.shownNarratives[narrativeId] === true
+  }
+
+  function setNarrativeShown(narrativeId: string, shown: boolean = true) {
+    state.shownNarratives[narrativeId] = shown
+  }
+
   function resetAll() {
     Object.keys(state).forEach(k => delete (state as any)[k])
     const fresh = JSON.parse(JSON.stringify(defaultState))
@@ -180,6 +193,8 @@ export function useSaveManager() {
     isContactUnlockedByPhone,
     getUsedHintsForPuzzle,
     useHint,
+    isNarrativeShown,
+    setNarrativeShown,
     resetAll
   }
 }
