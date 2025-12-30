@@ -41,7 +41,7 @@
           v-model="inputValue"
           :disabled="isCooldown"
           class="input-field"
-          placeholder="T1: la tua risposta"
+          placeholder="Inserisci messaggio nel formato corretto..."
           @keyup.enter="sendMessage"
         />
         <button :disabled="!inputValue || isCooldown" class="send-btn" @click="sendMessage"><i class="fas fa-paper-plane"></i></button>
@@ -91,6 +91,7 @@ import AppHeader from '../components/layout/AppHeader.vue'
 import { useSaveManager } from '../composables/useSaveManager'
 import { useGameEngine } from '../composables/useGameEngine'
 import { useNotification } from '../composables/useNotification'
+import { useDocuments } from '../composables/useDocuments'
 
 
 const props = defineProps<{ id: string }>()
@@ -100,6 +101,7 @@ const contactId = computed(() => props.id || 'c1')
 const { state, getMessages, addMessage, isLocked, getLockedUntil, setPreQuestionShown, isPreQuestionShown, markMessagesAsRead } = useSaveManager()
 const { parseInput } = useGameEngine()
 const { show } = useNotification()
+const { getDocumentById, unlockDocuments } = useDocuments()
 
 // Fullscreen and zoom state
 const imageElement = ref<HTMLImageElement | null>(null)
@@ -203,7 +205,7 @@ const loadContactData = async () => {
 }
 
 const findMedia = (mediaId: string) => {
-  return contactData.value?.media?.find((m: any) => m.id === mediaId)
+  return getDocumentById(mediaId)
 }
 
 const findMediaArray = (mediaIds: string | string[]) => {
@@ -450,6 +452,10 @@ const sendMessage = async () => {
   }
 
   if (result.mediaId) {
+    // Unlock documents
+    const ids = Array.isArray(result.mediaId) ? result.mediaId : [result.mediaId]
+    unlockDocuments(ids)
+    
     const mediaArray = findMediaArray(result.mediaId)
     mediaArray.forEach((media: any) => {
       addDelayedMessage(contactId.value, {

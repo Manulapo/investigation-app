@@ -39,12 +39,14 @@ import { useRoute, useRouter } from 'vue-router'
 import registry from '../data/registry.json'
 import AppHeader from '../components/layout/AppHeader.vue'
 import { useSaveManager } from '../composables/useSaveManager'
+import { useDocuments } from '../composables/useDocuments'
 import MediaGrid from '../components/ui/MediaGrid.vue'
 
 const route = useRoute()
 const router = useRouter()
 const contactId = route.params.id as string
 const { state } = useSaveManager()
+const { getDocumentsByContactId, isDocumentUnlocked } = useDocuments()
 
 const contact = computed(() => registry.find((c: any) => c.id === contactId))
 const contactData = ref<any>(null)
@@ -69,26 +71,11 @@ function messageExists(id: string) {
 }
 
 const unlockedMedia = computed(() => {
-  const media = contactData.value?.media || []
-  // Find all success messages that have been posted
-  const successMessages = Object.values(state.chatHistories).flat().filter((m: any) => 
-    m.id?.startsWith('msg_turn') && m.id?.endsWith('_success')
-  )
+  // Get all documents for this contact
+  const contactDocuments = getDocumentsByContactId(contactId)
   
-  // For each success message, find the corresponding puzzle and get its mediaId(s)
-  const unlockedMediaIds = new Set<string>()
-  successMessages.forEach((msg: any) => {
-    const puzzles = contactData.value?.puzzles || []
-    const puzzle = puzzles.find((p: any) => p.solution?.response?.messageId === msg.id)
-    if (puzzle?.solution?.response?.mediaId) {
-      const mediaIds = Array.isArray(puzzle.solution.response.mediaId) 
-        ? puzzle.solution.response.mediaId 
-        : [puzzle.solution.response.mediaId]
-      mediaIds.forEach((id:string) => unlockedMediaIds.add(id))
-    }
-  })
-  
-  return media.filter((m: any) => unlockedMediaIds.has(m.id))
+  // Filter only unlocked documents
+  return contactDocuments.filter((doc: any) => isDocumentUnlocked(doc.id))
 })
 </script>
 

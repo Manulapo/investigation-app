@@ -1,6 +1,7 @@
 import c1Data from '../data/contacts/c1_informant.json'
 import c2Data from '../data/contacts/c2_informant.json'
 import c3Data from '../data/contacts/c3_risolutore.json'
+import penaltyResponses from '../data/penaltyResponses.json'
 import { useSaveManager } from './useSaveManager'
 
 const REGEX = /^T(\d+):\s*(.+)$/i
@@ -42,7 +43,7 @@ export function useGameEngine() {
 
     // CHECK 1: Is the System Locked?
     if (isLocked(key)) {
-      const penaltyText = randomItem(puzzle.penaltyResponses || ['Sistema Bloccato. Cooldown in corso...'])
+      const penaltyText = randomItem(penaltyResponses)
       return { status: 'locked', text: penaltyText }
     }
 
@@ -82,7 +83,7 @@ export function useGameEngine() {
     if (attempts >= (puzzle.maxAttempts || 3)) {
       const until = Date.now() + (puzzle.penaltySeconds || 10) * 1000
       setLockUntil(key, until)
-      const lockMsg = randomItem(puzzle.penaltyResponses || ['Sistema Bloccato.'])
+      const lockMsg = randomItem(penaltyResponses)
       return { status: 'locked', text: lockMsg }
     }
 

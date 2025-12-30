@@ -12,7 +12,7 @@
 
       <section class="gallery-section">
         <h2>Galleria Documenti</h2>
-        <MediaGrid :media="initialDocuments" empty-message="Nessun documento disponibile" />
+        <MediaGrid :media="unlockedDocuments" empty-message="Nessun documento disponibile" />
       </section>
     </div>
   </div>
@@ -20,27 +20,9 @@
 
 <script setup lang="ts">
 import MediaGrid from '../components/ui/MediaGrid.vue'
+import { useDocuments } from '../composables/useDocuments'
 
-const initialDocuments = [
-  {
-    "id": "d1",
-    "type": "image",
-    "src": "https://picsum.photos/300/200?random=10",
-    "alt": "Rapporto Preliminare"
-  },
-  {
-    "id": "d2",
-    "type": "pdf",
-    "src": "https://example.com/document.pdf",
-    "alt": "Verbale Interrogatorio"
-  },
-  {
-    "id": "d3",
-    "type": "image",
-    "src": "https://picsum.photos/300/200?random=11",
-    "alt": "Foto Scena Crimine"
-  }
-]
+const { unlockedDocuments } = useDocuments()
 </script>
 
 <style scoped lang="scss">

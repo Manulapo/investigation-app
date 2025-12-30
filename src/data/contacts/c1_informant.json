@@ -17,7 +17,7 @@
         "response": {
           "text": "Corretto. Il protocollo 'Aquila Blu' conferma che l'obiettivo è il senatore Marco Bianchi.",
           "messageId": "msg_turn1_success",
-          "mediaId": ["m1", "m5"],
+          "mediaId": ["c1_m1", "c1_m5"],
           "evidenceText": "Il senatore Marco Bianchi è coinvolto in uno schema di corruzione che coinvolge tangenti per 2 milioni di euro. L'incontro cruciale è previsto domani alle 22:00 al Porto Vecchio."
         }
       },
@@ -32,11 +32,6 @@
         "Codice sbagliato. Riprova.",
         "Smetti di perdere tempo, dammi il codice.",
         "Formato non valido. Rivedi le istruzioni."
-      ],
-      "penaltyResponses": [
-        "⚠️ SISTEMA BLOCCATO. Attendere prego.",
-        "🔒 [ERR_429] Troppe richieste. Cooldown attivo.",
-        "🛡️ Ricalibrazione crittografia... attendere."
       ]
     },
     {
@@ -54,7 +49,7 @@
         "response": {
           "text": "Ottimo lavoro. Hai completato il livello finale. Ora contatta il Risolutore per chiudere il caso.",
           "messageId": "msg_turn3_success",
-          "mediaId": ["m4"],
+          "mediaId": ["c1_m4"],
           "evidenceText": "Il codice 'Lupo Rosso' indica che l'incontro è previsto per domani alle 22:00 al Porto Vecchio. Tutte le prove sono state raccolte."
         }
       },
@@ -68,44 +63,7 @@
         "Codice errato.",
         "Accesso negato al livello successivo.",
         "Riprova con il codice corretto."
-      ],
-      "penaltyResponses": [
-        "🚫 ACCESSO NEGATO TEMPORANEAMENTE",
-        "🔐 CODICE DI EMERGENZA ERRATO",
-        "⚠️ LIVELLO DI SICUREZZA INCREMENTATO"
       ]
-    }
-  ],
-  "media": [
-    {
-      "id": "m1",
-      "type": "image",
-      "src": "https://picsum.photos/300/200?random=1",
-      "triggerMessageId": "msg_turn1_success"
-    },
-    {
-      "id": "m2",
-      "type": "image",
-      "src": "https://picsum.photos/300/200?random=2",
-      "triggerMessageId": "msg_turn3_success"
-    },
-    {
-      "id": "m3",
-      "type": "image",
-      "src": "https://picsum.photos/300/200?random=3",
-      "triggerMessageId": "msg_turn3_success"
-    },
-    {
-      "id": "m4",
-      "type": "image",
-      "src": "https://picsum.photos/300/200?random=4",
-      "triggerMessageId": "msg_turn3_success"
-    },
-    {
-      "id": "m5",
-      "type": "audio",
-      "src": "https://drive.google.com/file/d/1dZ4mMLld8fQgPR_pxZmMb-tP2Q1cnBIr/view?usp=drive_link",
-      "triggerMessageId": "msg_turn3_success"
     }
   ]
 }

@@ -16,7 +16,7 @@
           "text": "Esatto. L'operazione 'Ombra' è finalmente conclusa.",
           "messageId": "msg_turn4_success",
           "evidenceText": "Il senatore Marco Bianchi è stato arrestato questa notte. Le prove raccolte includono registrazioni audio, documenti finanziari e testimonianze chiave. Il caso 'Ombra' è risolto.",
-          "mediaId": ["m1"]
+          "mediaId": ["c3_m1"]
         }
       },
       "hints": [
@@ -29,20 +29,7 @@
         "Codice errato. Riprova con attenzione.",
         "Accesso negato. Il nome non corrisponde.",
         "Tentativo fallito. Verifica le informazioni precedenti."
-      ],
-      "penaltyResponses": [
-        "🚫 ACCESSO DEFINITIVO NEGATO",
-        "🔐 SISTEMA DI SICUREZZA MASSIMA ATTIVATO",
-        "⚠️ OPERAZIONE 'OMBRA' COMPROMESSA"
       ]
-    }
-  ],
-  "media": [
-    {
-      "id": "m1",
-      "type": "image",
-      "src": "https://picsum.photos/300/200?random=10",
-      "triggerMessageId": "msg_turn4_success"
     }
   ]
 }
