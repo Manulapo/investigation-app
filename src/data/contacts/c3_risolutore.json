@@ -1,0 +1,55 @@
+{
+  "id": "c3",
+  "initialMessage": "Benvenuto detective. Sono il Risolutore, l'ultimo pezzo del puzzle. Ho le prove definitive per chiudere il caso 'Ombra'.",
+  "timeline": [
+    {
+      "id": "event_c3_1",
+      "turnId": 4,
+      "type": "narrative",
+      "triggerAfter": null,
+      "messages": [
+        "Detective, sei arrivato alla fase finale.",
+        "Tutto quello che hai scoperto fino ad ora sta per avere senso.",
+        "Preparati per la rivelazione finale."
+      ]
+    },
+    {
+      "id": "event_c3_2",
+      "turnId": 4,
+      "type": "puzzle",
+      "preQuestion": "Per accedere alle prove finali, dimmi: Qual è il nome in codice dell'operazione? (risposta: ombra)",
+      "maxAttempts": 3,
+      "penaltySeconds": 30,
+      "notification": {},
+      "solution": {
+        "keywords": ["ombra"],
+        "response": {
+          "text": "Esatto. L'operazione 'Ombra' è finalmente conclusa.",
+          "messageId": "msg_turn4_success",
+          "evidenceText": "Il senatore Marco Bianchi è stato arrestato questa notte. Le prove raccolte includono registrazioni audio, documenti finanziari e testimonianze chiave. Il caso 'Ombra' è risolto.",
+          "mediaId": ["c3_m1"]
+        }
+      },
+      "hints": [
+        "Il nome in codice si riferisce al caso stesso.",
+        "Guarda il titolo dell'operazione."
+      ],
+      "fallbacks": [
+        "Codice errato. Riprova con attenzione.",
+        "Accesso negato. Il nome non corrisponde.",
+        "Tentativo fallito. Verifica le informazioni precedenti."
+      ]
+    },
+    {
+      "id": "event_c3_3",
+      "turnId": 4,
+      "type": "narrative",
+      "triggerAfter": "msg_turn4_success",
+      "messages": [
+        "Ottimo lavoro, detective.",
+        "Hai dimostrato di essere all'altezza della situazione.",
+        "Il caso 'Ombra' è ufficialmente chiuso."
+      ]
+    }
+  ]
+}
