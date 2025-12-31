@@ -59,8 +59,16 @@ import { useSaveManager } from '../composables/useSaveManager'
 
 const router = useRouter()
 const { state, resetAll, getMessages, addMessage, setPreQuestionShown } = useSaveManager()
+
+// Helper function to get the last message timestamp for a contact
+const getLastTimestamp = (contactId: string): number => {
+  const messages = getMessages(contactId)
+  if (messages.length === 0) return 0
+  return messages[messages.length - 1].timestamp || 0
+}
+
 const visibleContacts = computed(() => {
-  return registry.filter((r: any) => {
+  const filtered = registry.filter((r: any) => {
     const meetsVisibleAtTurn = r.visibleAtTurn <= state.currentGlobalTurn
     // If contact has phoneNumber, it requires a phone call to unlock
     if (r.phoneNumber) {
@@ -68,6 +76,13 @@ const visibleContacts = computed(() => {
     }
     // Otherwise, appears automatically at the right turn
     return meetsVisibleAtTurn
+  })
+  
+  // Sort by last message timestamp (most recent first)
+  return filtered.sort((a: any, b: any) => {
+    const timeA = getLastTimestamp(a.id)
+    const timeB = getLastTimestamp(b.id)
+    return timeB - timeA // Descending order (newest first)
   })
 })
 const currentLevel = computed(() => state.currentGlobalTurn)
@@ -173,7 +188,7 @@ function goToPhone() {
 <style scoped lang="scss">
 .chat-list-wrapper {
   width: 100%;
-  height: 100%;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   background: #fff;
