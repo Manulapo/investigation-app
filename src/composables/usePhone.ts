@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { registry } from '../data/registry'
+import registry from '../data/registry.json'
 import { useSaveManager } from './useSaveManager'
 import type { Contact } from '../types'
 

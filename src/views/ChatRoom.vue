@@ -88,7 +88,11 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
-import { registry } from '../data/registry'
+import registry from '../data/registry.json'
+import c1Data from '../data/contacts/c1_informant.json'
+import c2Data from '../data/contacts/c2_informant.json'
+import c3Data from '../data/contacts/c3_risolutore.json'
+import c4Data from '../data/contacts/c4_risolutore.json'
 import MessageBubble from '../components/ui/MessageBubble.vue'
 import AppHeader from '../components/layout/AppHeader.vue'
 import { useSaveManager } from '../composables/useSaveManager'
@@ -207,16 +211,20 @@ const addDelayedMessage = (contactId: string, messageData: any, delaySeconds: nu
 }
 
 // Load contact data and add initial message if chat is empty
+const contactDataMap: Record<string, any> = {
+  c1_informant: c1Data,
+  c2_informant: c2Data,
+  c3_risolutore: c3Data,
+  c4_risolutore: c4Data
+}
+
 const contactData = ref<any>(null)
-const loadContactData = async () => {
+const loadContactData = () => {
   try {
     const contactFile = contact.value?.file
     if (contactFile) {
-      // Import the TS file dynamically
-      const module = await import(`../data/contacts/${contactFile}`)
-      // Get the contact data from the exported constant
-      const contactKey = Object.keys(module)[0]
-      contactData.value = module[contactKey]
+      // Get contact data from direct JSON imports
+      contactData.value = contactDataMap[contactFile]
       
       // Add initial message if chat is empty
       if (messages.value.length === 0) {

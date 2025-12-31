@@ -47,7 +47,11 @@
 <script setup lang="ts">
 import { computed, ref, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import { registry } from '../data/registry'
+import registry from '../data/registry.json'
+import c1Data from '../data/contacts/c1_informant.json'
+import c2Data from '../data/contacts/c2_informant.json'
+import c3Data from '../data/contacts/c3_risolutore.json'
+import c4Data from '../data/contacts/c4_risolutore.json'
 import ContactItem from '../components/ui/ContactItem.vue'
 import SideMenu from '../components/ui/SideMenu.vue'
 import AppHeader from '../components/layout/AppHeader.vue'
@@ -70,18 +74,23 @@ const currentLevel = computed(() => state.currentGlobalTurn)
 
 const menuOpen = ref(false)
 
+const contactDataMap: Record<string, any> = {
+  c1_informant: c1Data,
+  c2_informant: c2Data,
+  c3_risolutore: c3Data,
+  c4_risolutore: c4Data
+}
+
 // Pre-populate initial messages for visible contacts that haven't been opened yet
-async function ensureInitialMessages() {
+function ensureInitialMessages() {
   for (const contact of visibleContacts.value) {
     const messages = getMessages(contact.id)
     if (messages.length === 0) {
       try {
-        const module = await import(`../data/contacts/${contact.file}`)
-        const contactKey = Object.keys(module)[0]
-        const contactData = module[contactKey]
+        const contactData = contactDataMap[contact.file]
         
         // Add initial message
-        if (contactData.initialMessage) {
+        if (contactData?.initialMessage) {
           addMessage(contact.id, {
             id: `msg_initial_${contact.id}`,
             content: contactData.initialMessage,
@@ -90,7 +99,7 @@ async function ensureInitialMessages() {
           })
         }
         
-        const firstPuzzle = contactData.puzzles?.[0]
+        const firstPuzzle = contactData?.puzzles?.[0]
         if (firstPuzzle?.preQuestion && firstPuzzle.turnId === 1) {
           addMessage(contact.id, {
             id: `msg_prequestion_${contact.id}_1`,

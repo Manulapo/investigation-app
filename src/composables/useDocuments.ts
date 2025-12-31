@@ -1,5 +1,5 @@
 import { ref, computed } from 'vue'
-import { documents as allDocuments } from '../data/documents'
+import allDocuments from '../data/documents.json'
 
 const unlockedDocumentIds = ref<string[]>([])
 

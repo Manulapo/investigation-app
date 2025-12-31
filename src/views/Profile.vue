@@ -36,7 +36,11 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { registry } from '../data/registry'
+import registry from '../data/registry.json'
+import c1Data from '../data/contacts/c1_informant.json'
+import c2Data from '../data/contacts/c2_informant.json'
+import c3Data from '../data/contacts/c3_risolutore.json'
+import c4Data from '../data/contacts/c4_risolutore.json'
 import AppHeader from '../components/layout/AppHeader.vue'
 import { useSaveManager } from '../composables/useSaveManager'
 import { useDocuments } from '../composables/useDocuments'
@@ -51,16 +55,21 @@ const { getDocumentsByContactId, isDocumentUnlocked } = useDocuments()
 const contact = computed(() => registry.find((c: any) => c.id === contactId))
 const contactData = ref<any>(null)
 
+const contactDataMap: Record<string, any> = {
+  c1_informant: c1Data,
+  c2_informant: c2Data,
+  c3_risolutore: c3Data,
+  c4_risolutore: c4Data
+}
+
 const goToChat = (id: string) => {
   router.push(`/chat/${id}`)
 }
 
-watch(contact, async (newContact) => {
+watch(contact, (newContact) => {
   if (newContact?.file) {
     try {
-      const module = await import(`../data/contacts/${newContact.file}`)
-      const contactKey = Object.keys(module)[0]
-      contactData.value = module[contactKey]
+      contactData.value = contactDataMap[newContact.file]
     } catch {
       contactData.value = null
     }

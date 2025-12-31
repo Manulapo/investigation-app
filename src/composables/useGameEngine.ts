@@ -1,10 +1,11 @@
-import { c1_informant as c1Data } from '../data/contacts/c1_informant'
-import { c2_informant as c2Data } from '../data/contacts/c2_informant'
-import { c3_risolutore as c3Data } from '../data/contacts/c3_risolutore'
-import { penaltyResponses } from '../data/penaltyResponses'
+import c1Data from '../data/contacts/c1_informant.json'
+import c2Data from '../data/contacts/c2_informant.json'
+import c3Data from '../data/contacts/c3_risolutore.json'
+import penaltyResponsesData from '../data/penaltyResponses.json'
 import { useSaveManager } from './useSaveManager'
 
 const REGEX = /^T(\d+):\s*(.+)$/i
+const penaltyResponses: string[] = penaltyResponsesData
 
 export function useGameEngine() {
   const { incrementFailed, resetFailed, setLockUntil, isLocked, getLockedUntil, advanceTurn, isPreQuestionShown, setPreQuestionShown } = useSaveManager()
