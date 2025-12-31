@@ -1,0 +1,35 @@
+{
+  "id": "marcus",
+  "initialMessage": "Salve detective sono Marcus Ferbs, il socio di Marcus.",
+  "timeline": [
+    {
+      "id": "event_marcus_1",
+      "turnId": 7,
+      "type": "puzzle",
+      "preQuestion": "Parlato con Morgana?",
+      "maxAttempts": 3,
+      "penaltySeconds": 60,
+      "notification": {
+        "notificationContact": "lab",
+        "notificationMessage": "Hai ricevuto un messaggio dal laboratorio forense"
+      },
+      "solution": {
+        "keywords": ["si"],
+        "response": {
+          "text": ["Buonasera, ho ricevuto la vostra lettera dove mi segnalate anomalie nella fattura ricevuta a carico mio per l'ordine presso la farmacia Edonis Pharma. Elias non bada a spese ma io devo fare in modo che i conti tornino e il costo dello smaltimento degli scarti dello zinco era decisamente troppo oneroso"],
+          "messageId": "msg_turn7_success",
+          "mediaId": [],
+          "evidenceText": []
+        }
+      },
+      "hints": [
+        "Che aspettate? Chiedetele!"
+      ],
+      "fallbacks": [
+        "Non capisco.",
+        "Sbagliato",
+        "Riprova"
+      ]
+    }
+  ]
+}

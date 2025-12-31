@@ -1,0 +1,20 @@
+{
+  "id": "beatrice",
+  "initialMessage": "Salve, sono Beatrice, la zia di Elias. So che stai indagando sulla sua scomparsa e voglio aiutarti.",
+  "timeline": [
+    {
+      "id": "event_beatrice_1",
+      "turnId": 2,
+      "type": "narrative",
+      "triggerAfter": null,
+      "messages": [
+        "Elias era sempre così. Sempre convinto che il mondo girasse attorno alla sua testa. Questa festa? Non per celebrare un compleanno. Era una celebrazione di sé stesso.",
+
+        "Ho provato a parlargli dei miei reumatismi, sapete cosa mi ha risposto? ‘Zia, il dolore è una questione di prospettiva.’... Un uomo che parla così non ascolta nessuno. Non mi sorprende che fosse circondato da gente che lo odiava in silenzio.",
+
+        "Beh se non altro mi ha lasciato questo biglietto da visita di questa farmacia. Prenditi cura della tua pelle, mi disse con quel suo senso cinico"
+      ],
+      "mediaId": ["i4"]
+    }
+  ]
+}

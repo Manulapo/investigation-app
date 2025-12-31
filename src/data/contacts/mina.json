@@ -1,0 +1,48 @@
+{
+  "id": "mina",
+  "initialMessage": "Sono Mina Santullo, Addetta al guardaroba. Ho visto molte cose quella sera.",
+  "timeline": [
+    {
+      "id": "event_mina_1",
+      "turnId": 7,
+      "type": "narrative",
+      "triggerAfter": null,
+      "messages": [
+        "Il Dottor Grey? Sì, se n'è andato presto. Molto prima della torta. Era strano. Di solito è gentile, mi lascia la mancia. Ieri sera era... sudato. Ha preso il soprabito e il cappello quasi strappandomeli di mano. Aveva la sua borsa medica stretta al petto come se racchiudesse qualcosa di vitale. E non ha aspettato l'autista. È uscito a piedi nella notte. Chi cammina con quelle scarpe costose sul ghiaietto?", 
+
+        "Se non altro per fortuna alla festa c’era la Signorina Morgana, quante risate ci siamo fatte commentando le scelte discutibili dei vestiti da gala delle signorine presenti. A proposito anche lei ha farfugliato qualcosa sullo stato del Dottor Grey."
+      ],
+      "mediaId": []
+    },
+    {
+      "id": "event_mina_2",
+      "turnId": 7,
+      "type": "puzzle",
+      "preQuestion": "Parlato con Morgana?",
+      "maxAttempts": 3,
+      "penaltySeconds": 60,
+      "notification": {
+        "notificationContact": "lab",
+        "notificationMessage": "Hai ricevuto un messaggio dal laboratorio forense"
+      },
+      "solution": {
+        "keywords": ["si"],
+        "response": {
+          "text": ["Intrigante, chissá quali segreti proibiti si nascondono in quella busta....", "ahahahah sto scherzando ovviamente, saranno state sicuramente noiosissime analisi di routine",
+          "Comunque, povero Arthur, é morto solo come un cane, il dottore é sparito quella notte stessa e nessuno l'ha piú visto da allora. Mi dmando se avesse avuto qualcosa a che fare con la sua morte..."],
+          "messageId": "msg_turn7_success",
+          "mediaId": [],
+          "evidenceText": []
+        }
+      },
+      "hints": [
+        "Che aspettate? Chiedetele!"
+      ],
+      "fallbacks": [
+        "Non capisco.",
+        "Sbagliato",
+        "Riprova"
+      ]
+    }
+  ]
+}

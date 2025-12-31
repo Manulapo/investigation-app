@@ -1,0 +1,31 @@
+{
+  "id": "loc",
+  "initialMessage": "Salve, siamo delle Investigazioni Locali. Siamo qui per assistervi nell'analisi delle prove raccolte sul caso dell'Ispettore Rusty Thompson.",
+  "timeline": [
+    {
+      "id": "event_loc_1",
+      "turnId": 4,
+      "type": "puzzle",
+      "preQuestion": "Prima di darvi informazioni abbiamo bisogno di sapere il giorno di morte del Signor Socks",
+      "maxAttempts": 3,
+      "penaltySeconds": 10,
+      "notification": {},
+      "solution": {
+        "keywords": ["17"],
+        "response": {
+          "text": ["Corretto, ecco cosa abbiamo trovato"],
+          "messageId": "msg_turn4_success",
+          "mediaId": ["i7", "i8"],
+          "evidenceText": "Ma prima di tutto, vi lascio alcune delle prove e delle piste che Rusty stava seguendo e che aveva condiviso con me prima di sparire:"
+        }
+      },
+      "hints": [
+        "Ricorda, la data è indicata da qualche parte nel fascicolo."
+      ],
+      "fallbacks": [
+        "Non capisco.",
+        "Riprova"
+      ]
+    }
+  ]
+}

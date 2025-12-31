@@ -1,0 +1,78 @@
+{
+  "id": "loc",
+  "initialMessage": "Salve, siamo del laboratorio forense. Siamo qui per assistervi nell'analisi delle prove raccolte sul caso dell'Ispettore Rusty Thompson.",
+  "timeline": [
+    {
+      "id": "event_lab_1",
+      "turnId": 5,
+      "type": "narrative",
+      "triggerAfter": "msg_turn4_success",
+      "messages": [
+        "Di seguito i risultati dell'autopsia richiesta sul sig. Thorne"
+      ],
+      "mediaId": ["i9"]
+    },
+    {
+      "id": "event_lab_2",
+      "turnId": 5,
+      "type": "puzzle",
+      "preQuestion": "Qual è la prima causa di morte dichiarata del Sig. Thorne?",
+      "maxAttempts": 3,
+      "penaltySeconds": 10,
+      "notification": {
+        "notificationContact": "robert",
+        "notificationMessage": "Hai ricevuto un messaggio da Robert"
+      },
+      "solution": {
+        "keywords": ["dissanguamento"],
+        "response": {
+          "text": ["Come scritto nell'autopsia, il dissanguamento non é stata causata da un taglio, la vittima sembrava essere giá morta quando ha subito la ferita. Questo ci porta a pensare che la causa primaria della morte sia stata un'altra."]
+        }
+      },
+      "hints": [
+        "La causa di morte presunta dvrebbe essere menzionata nel referto.",
+        "Dovrebbe essere da qualche parte nelle deposizioni."
+      ],
+      "fallbacks": [
+        "Non é questa la causa di morte.",
+        "Riprova",
+        "Non capisco quale sia la causa di morte."
+      ]
+    },
+    {
+      "id": "event_lab_3",
+      "turnId": 8,
+      "type": "puzzle",
+      "preQuestion": "Arrivo messaggio laboratorio: Ho inoltrato anche al dipartimento l'autopsia. Ci sono delle informazioni anche sul maggiordomo che aveva richiesto Rusty. Avete bisogno di sapere altro su qualche vittima?",
+      "maxAttempts": 3,
+      "penaltySeconds": 10,
+      "notification": {
+        "notificationContact": "clara",
+        "notificationMessage": "Hai ricevuto un messaggio da Clara"
+      },
+      "solution": {
+        "keywords": ["arthur"],
+        "response": {
+          "text": ["ISPEZIONE ESTERNA E ANOMALIE FISICHE L'esame del cadavere ha evidenziato diverse anomalie sistemiche pregresse, non riconducibili all'influenza:",
+
+          "Alopecia anomala: Si riscontra una perdita di capelli diffusa e irregolare. ",
+
+          "Alterazioni ungueali: Le unghie delle mani presentano striature trasversali biancastre (bande opache) che attraversano la lamina ungueale.",
+
+          "Apparato Digerente: La mucosa gastrica è gravemente infiammata ed erosa (gastroenterite emorragica acuta).",
+
+          "Cuore: Il decesso è sopraggiunto per arresto cardio-respiratorio improvviso, causato verosimilmente dal collasso del sistema nervoso autonomo."]
+        }
+      },
+      "hints": [
+        "Elias Thorne non é l'unico che vanta di una morte sospetta.",
+        "Forse il maggiordomo indirettamente ha qualche informazione sul caso."
+      ],
+      "fallbacks": [
+        "Abbiamo gia parlato di questo.",
+        "Riprova",
+        "Non credo sia rilevante."
+      ]
+    }
+  ]
+}

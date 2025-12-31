@@ -69,11 +69,19 @@ export function useGameEngine() {
       // Find triggered narratives
       const narrativeData = findTriggeredNarratives(contact, response.messageId)
       
+      // Normalize text and evidenceText to arrays
+      const textArray = Array.isArray(response.text) ? response.text : [response.text]
+      const evidenceTextArray = response.evidenceText 
+        ? (Array.isArray(response.evidenceText) ? response.evidenceText : [response.evidenceText])
+        : []
+      
       return { 
         status: 'success', 
-        text: response.text, 
+        text: textArray[0], // First message as main response
+        textMessages: textArray.slice(1), // Additional messages
         mediaId: response.mediaId, 
-        evidenceText: response.evidenceText, 
+        evidenceText: evidenceTextArray[0], // First evidence as main
+        evidenceTextMessages: evidenceTextArray.slice(1), // Additional evidence
         messageId: response.messageId, 
         successMedia: response.successMedia, 
         showNotification: hasValidNotification, 

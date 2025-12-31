@@ -8,6 +8,88 @@
     "visibleAtTurn": 1
   },
   {
+    "id": "beatrice",
+    "file": "beatrice",
+    "name": "Beatrice Thorne",
+    "avatar": "https://www.shutterstock.com/image-photo/portrait-smiling",
+    "description": "TODO",
+    "visibleAtTurn": 2
+  },
+  {
+    "id": "edgar",
+    "file": "edgar",
+    "name": "Edgar Thorne",
+    "avatar": "https://www.shutterstock.com/image-photo/portrait-smiling",
+    "description": "TODO",
+    "visibleAtTurn": 2
+  },
+  {
+    "id": "martha",
+    "file": "martha",
+    "name": "Martha Higgins",
+    "avatar": "https://www.shutterstock.com/image-photo/portrait-smiling",
+    "description": "TODO",
+    "visibleAtTurn": 2
+  },
+  {
+    "id": "loc",
+    "file": "loc",
+    "name": "Investigazione Locale",
+    "avatar": "https://www.shutterstock.com/image-photo/portrait-smiling",
+    "description": "TODO",
+    "visibleAtTurn": 4
+  },
+  {
+    "id": "lab",
+    "file": "lab",
+    "name": "Laboratorio Forense",
+    "avatar": "https://www.shutterstock.com/image-photo/portrait-smiling",
+    "description": "TODO",
+    "visibleAtTurn": 3
+  },
+  {
+    "id": "thomas",
+    "file": "thomas",
+    "name": "Thomas O' Neill",
+    "avatar": "https://www.shutterstock.com/image-photo/portrait-smiling",
+    "description": "TODO",
+    "visibleAtTurn": 7
+  },
+  {
+    "id": "mina",
+    "file": "mina",
+    "name": "Mina Santullo",
+    "avatar": "https://www.shutterstock.com/image-photo/portrait-smiling",
+    "description": "TODO",
+    "visibleAtTurn": 7
+  },
+  {
+    "id": "clara",
+    "file": "clara",
+    "name": "Clara Thorne",
+    "avatar": "https://www.shutterstock.com/image-photo/portrait-smiling",
+    "description": "TODO",
+    "visibleAtTurn": 9
+  },
+  {
+    "id": "edonispharma",
+    "file": "edonispharma",
+    "name": "Edonis Pharma",
+    "avatar": "https://www.shutterstock.com/image-photo/portrait-smiling",
+    "description": "TODO",
+    "phoneNumber": "4151672929",
+    "visibleAtTurn": 9
+  },
+  {
+    "id": "marcus",
+    "file": "marcus",
+    "name": "Marcus ferbs",
+    "avatar": "https://www.shutterstock.com/image-photo/portrait-smiling",
+    "description": "TODO",
+    "phoneNumber": "4151672929",
+    "visibleAtTurn": 10
+  },
+  {
     "id": "c2",
     "file": "c2_informant",
     "name": "Il Detective",

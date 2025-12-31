@@ -1,0 +1,18 @@
+{
+  "id": "clara",
+  "initialMessage": "Salve Detective, sono Clara, la figlia...",
+  "timeline": [
+    {
+      "id": "event_clara_1",
+      "turnId": 9,
+      "type": "narrative",
+      "triggerAfter": null,
+      "messages": [
+        "Ho appena letto il referto dell'autopsia e... non riesco a crederci. È assurdo. Mio padre era un maniaco della salute! Era fissato con la cura del corpo, terrorizzato dall'invecchiamento. Seguiva una dieta ferrea e usava creme e integratori specifici per la pelle e i capelli, tutto prescritto dal suo medico di fiducia, il Dottor Grey.",
+
+        "Passava ore al telefono con quelli della Farmacia Edonis Pharma per farsi preparare i suoi composti 'miracolosi'. Se c'è qualcosa di strano nelle sostanze che ha assunto, loro devono saperlo. Vi prego, controllate i medicinali."
+      ],
+      "mediaId": []
+    }
+  ]
+}

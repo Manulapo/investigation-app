@@ -1,91 +1,115 @@
 [
   {
-    "id": "d1",
+    "id": "i_i1",
     "type": "image",
     "src": "https://picsum.photos/300/200?random=10",
     "alt": "Rapporto Preliminare",
     "initial": true
   },
   {
-    "id": "d2",
+    "id": "i_d1",
     "type": "pdf",
     "src": "https://example.com/document.pdf",
     "alt": "Verbale Interrogatorio",
     "initial": true
   },
   {
-    "id": "d3",
+    "id": "i_i2",
     "type": "image",
     "src": "https://picsum.photos/300/200?random=11",
     "alt": "Foto Scena Crimine",
     "initial": true
   },
+
   {
-    "id": "c1_m1",
+    "id": "i3",
     "type": "image",
-    "src": "https://picsum.photos/300/200?random=1",
-    "triggerMessageId": "msg_turn1_success",
-    "contactId": "c1",
+    "src": "/investigation-app/assets/images/rusty2.png",
+    "alt": "Biglietto Da Rusty",
+    "contactId": "robert",
     "initial": false
   },
   {
-    "id": "c1_m2",
+    "id": "d2",
+    "type": "pdf",
+    "src": "/investigation-app/assets/pdf/delgadoDeposizione.pdf",
+    "alt": "Confessione Dalgado",
+    "contactId": "robert",
+    "initial": false
+  },
+  {
+    "id": "i4",
     "type": "image",
-    "src": "https://picsum.photos/300/200?random=2",
-    "triggerMessageId": "msg_turn3_success",
-    "contactId": "c1",
+    "src": "/investigation-app/assets/images/business_card.png",
+    "contactId": "beatrice",
     "initial": false
   },
   {
-    "id": "c1_m3",
+    "id": "i5",
     "type": "image",
-    "src": "https://picsum.photos/300/200?random=3",
-    "triggerMessageId": "msg_turn3_success",
-    "contactId": "c1",
+    "src": "/investigation-app/assets/images/assegno.png",
+    "contactId": "edgar",
     "initial": false
   },
   {
-    "id": "c1_m4",
+    "id": "i6",
     "type": "image",
-    "src": "https://picsum.photos/300/200?random=4",
-    "triggerMessageId": "msg_turn3_success",
-    "contactId": "c1",
+    "src": "/investigation-app/assets/images/biglietto_v.png",
+    "contactId": "robert",
     "initial": false
   },
   {
-    "id": "c1_m5",
-    "type": "audio",
-    "src": "https://drive.google.com/file/d/1dZ4mMLld8fQgPR_pxZmMb-tP2Q1cnBIr/view?usp=drive_link",
-    "triggerMessageId": "msg_turn3_success",
-    "contactId": "c1",
+    "id": "i7",
+    "type": "image",
+    "src": "/investigation-app/assets/images/cognac.png",
+    "contactId": "loc",
     "initial": false
   },
   {
-    "id": "c2_m1",
+    "id": "i8",
+    "type": "image",
+    "src": "/investigation-app/assets/images/referto_arthur.jpg",
+    "contactId": "loc",
+    "initial": false
+  },
+    {
+    "id": "i9",
+    "type": "image",
+    "src": "/investigation-app/assets/images/autopsia.png",
+    "contactId": "lab",
+    "initial": false
+  },
+    {
+    "id": "d3",
+    "type": "pdf",
+    "src": "/investigation-app/assets/pdf/pharma_raff.pdf",
+    "alt": "documento EP 12165",
+    "contactId": "edonispharma",
+    "initial": false
+  },
+  {
+    "id": "i7",
     "type": "image",
     "src": "https://picsum.photos/300/200?random=7",
-    "triggerMessageId": "msg_turn1_success",
     "contactId": "c2",
     "initial": false
   },
   {
-    "id": "c2_m2",
+    "id": "i8",
     "type": "image",
     "src": "https://picsum.photos/300/200?random=8",
-    "triggerMessageId": "msg_turn3_success",
     "contactId": "c2",
     "initial": false
   },
   {
-    "id": "c2_m3",
+    "id": "i9",
     "type": "image",
     "src": "https://picsum.photos/300/200?random=9",
-    "triggerMessageId": "msg_turn1_success",
     "contactId": "c2",
     "initial": false
   },
   {
-    "id": "c2_m4",
+    "id": "d2",
     "type": "pdf",
     "src": "https://drive.google.com/file/d/1oOMEqMMoQQ_5o1vHhYknI_l3l8mlTB43/view?usp=drive_link",
     "alt": "Rapporto Investigativo Caso Ombra",
@@ -93,10 +117,9 @@
     "initial": false
   },
   {
-    "id": "c3_m1",
+    "id": "i10",
     "type": "image",
     "src": "https://picsum.photos/300/200?random=10",
-    "triggerMessageId": "msg_turn4_success",
     "contactId": "c3",
     "initial": false
   }

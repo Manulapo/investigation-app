@@ -1,0 +1,22 @@
+{
+  "id": "thomas",
+  "initialMessage": "Sono Thomas, l'apprendista diretto di Arthur!",
+  "timeline": [
+    {
+      "id": "event_thomas_1",
+      "turnId": 7,
+      "type": "narrative",
+      "triggerAfter": null,
+      "messages": [
+        "Non è colpa del Signor Socks, lo giuro! Lui non beve mai in servizio. Mai! In cinquant'anni non ha mai sgarrato. Ma quella sera... il Dottor Grey era furioso.", 
+
+        "L'ho sentito nelle stanze della servitù, poco prima dell'inizio del Gala. Stava visitando il Signor Socks per quella brutta tosse. Il Dottore ha detto, e me lo ricordo bene perché aveva quella voce che fa venire i brividi: 'Arthur, i tuoi polmoni fischiano come una teiera.",
+
+        "Ti ho fatto un'iniezione di antibiotici molto forte. Se tocchi anche solo un goccio di alcol stasera, ti fermerà il cuore prima che tu possa dire Salute. Chiaro? Acqua e letto.' Il Signor Socks ha annuito, ha detto 'Sì, Dottore'. Ma poi... quando il Signor Thorne non lo ha nemmeno salutato per il Giubileo... ho visto Arthur piangere in dispensa.",
+
+        "Era silenzioso, ma tremava. Ha detto: 'Cinquant'anni, Tommy. E sono meno importante di un vaso.' Credo che... credo che volesse solo festeggiare da solo, per una volta."
+      ],
+      "mediaId": []
+    }
+  ]
+}

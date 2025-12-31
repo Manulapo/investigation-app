@@ -13,10 +13,10 @@
       "solution": {
         "keywords": ["jerry", "thompson"],
         "response": {
-          "text": "Corretto, procediamo. Cari colleghi, sono felice che siate stati chiamati a risolvere questo assurdo caso che ha coinvolto il nostro Ispettore Rusty. Il caso era ormai chiuso con la deposizione della signorina Julianna, ma poco dopo sono accaduti eventi assurdi: la morte del maggiordomo, due giorni dopo quella di Thorne, e la scomparsa dell’Ispettore. C’è qualcosa di molto strano: Rusty lo aveva scoperto ed era molto vicino alla verità, ecco perché è scomparso. Anche se sono stato spostato su un altro caso, sarò comunque qui per aiutarvi a scoprire la verità e a trovare Rusty. Giustizia sarà fatta. Ma prima di tutto, vi lascio alcune delle prove e delle piste che Rusty stava seguendo e che aveva condiviso con me prima di sparire:",
+          "text": ["Corretto, procediamo.", "Cari colleghi, sono felice che siate stati chiamati a risolvere questo assurdo caso che ha coinvolto il nostro Ispettore Rusty. Il caso era ormai chiuso con la deposizione della signorina Julianna, ma poco dopo sono accaduti eventi assurdi: la morte del maggiordomo, due giorni dopo quella di Thorne, e la scomparsa dell’Ispettore.", "C’è qualcosa di molto strano: Rusty lo aveva scoperto ed era molto vicino alla verità, ecco perché è scomparso. Anche se sono stato spostato su un altro caso, sarò comunque qui per aiutarvi a scoprire la verità e a trovare Rusty. Giustizia sarà fatta."],
           "messageId": "msg_turn1_success",
-          "mediaId": ["c1_m1"],
-          "evidenceText": "Il senatore Marco Bianchi è coinvolto in uno schema di corruzione che coinvolge tangenti per 2 milioni di euro. L'incontro cruciale è previsto domani alle 22:00 al Porto Vecchio."
+          "mediaId": ["i3", "d2"],
+          "evidenceText": "Ma prima di tutto, vi lascio alcune delle prove e delle piste che Rusty stava seguendo e che aveva condiviso con me prima di sparire:"
         }
       },
       "hints": [
@@ -26,61 +26,86 @@
       ],
       "fallbacks": [
         "Non capisco.",
-        "Codice sbagliato. Riprova.",
-        "Smetti di perdere tempo, dammi il codice.",
-        "Formato non valido. Rivedi le istruzioni."
+        "Riprova",
+        "Smetti di perdere tempo, dimmi il nome."
       ]
     },
     {
       "id": "event_robert_2",
-      "turnId": 1,
+      "turnId": 3,
       "type": "narrative",
-      "triggerAfter": "msg_turn1_success",
+      "triggerAfter": "msg_turn2_success",
       "messages": [
-        "A proposito, detective... c'è qualcosa che devi sapere.",
-        "Il senatore Bianchi non è solo. Ha potenti alleati nelle alte sfere.",
-        "Fai attenzione a chi ti fidi."
+        "Mi sono appena ricordato che poco prima di sparire l'Ispettore è entrato in ufficio molto incuriosito da questo biglietto che aveva trovato nella stanza del maggiordomo dopo la sua morte."
       ],
-      "mediaId": ["c1_m2", "c1_m3"]
+      "mediaId": []
     },
     {
       "id": "event_robert_3",
       "turnId": 3,
-      "type": "narrative",
-      "triggerAfter": null,
-      "messages": [
-        "Bentornato detective. La situazione si fa sempre più pericolosa."
+      "type": "puzzle",
+      "preQuestion": "Ma prima di continuare con l'analisi, da chi è stato assunto il maggiordomo?",
+      "maxAttempts": 3,
+      "penaltySeconds": 10,
+      "notification": {
+        "notificationContact": "lab",
+        "notificationMessage": "Hai ricevuto un messaggio dal laboratorio forense"
+      },
+      "solution": {
+        "keywords": ["william", "thorne"],
+        "response": {
+          "text": ["Corretto, procediamo.", "Sicuramente c'è di più da scoprire anche sul maggiordomo.. sembra essere morto di influenza, ma chiederei conferma alla scientifica per sicurezza."],
+          "mediaId": ["i6"],
+          "evidenceText": []
+        }
+      },
+      "hints": [
+        "Ricorda, ho bisogno di nome e cognome.",
+        "Dovrebbe essere da qualche parte nel fascicolo."
+      ],
+      "fallbacks": [
+        "Non capisco.",
+        "Riprova",
+        "Smetti di perdere tempo, dimmi il nome."
       ]
     },
     {
       "id": "event_robert_4",
-      "turnId": 3,
+      "turnId": 6,
+      "type": "narrative",
+      "triggerAfter": "msg_turn5_success",
+      "messages": [
+        "Rusty mi aveva accennato qualcosa a cui stava lavorando riguardo la morte del maggiordomo. Ha sentito anche il parare di alcuni camerieri a lui vicini nella Villa."
+      ],
+      "mediaId": []
+    },
+    {
+      "id": "event_robert_5",
+      "turnId": 6,
       "type": "puzzle",
-      "preQuestion": "Per il livello finale con me, qual è il codice di emergenza? (risposta: red wolf)",
+      "preQuestion": "Quanti anni di servizio aveva il Sig. Socks presso Villa Thorne?",
       "maxAttempts": 3,
-      "penaltySeconds": 20,
+      "penaltySeconds": 10,
       "notification": {
-        "notificationContact": "c3",
-        "notificationMessage": "Hai ricevuto un messaggio dal risolutore"
+        "notificationContact": "thomas",
+        "notificationMessage": "Hai ricevuto un messaggio da Thomas"
       },
       "solution": {
-        "keywords": ["red", "wolf"],
+        "keywords": ["50"],
         "response": {
-          "text": "Ottimo lavoro. Hai completato il livello finale. Ora contatta il Risolutore per chiudere il caso.",
-          "messageId": "msg_turn3_success",
-          "mediaId": ["c1_m4"],
-          "evidenceText": "Il codice 'Lupo Rosso' indica che l'incontro è previsto per domani alle 22:00 al Porto Vecchio. Tutte le prove sono state raccolte."
+          "text": ["Corretto, procediamo.", "Sicuramente c'è di più da scoprire anche sul maggiordomo.. sembra essere morto di influenza, ma chiederei conferma alla scientifica per sicurezza."],
+          "mediaId": ["i6"],
+          "evidenceText": []
         }
       },
       "hints": [
-        "Rosso cosa? Il codice di emergenza richiede precisione.",
-        "Pensa a un animale selvatico.",
-        "Il lupo è noto per la sua astuzia."
+        "Ricorda, ho bisogno di nome e cognome.",
+        "Dovrebbe essere da qualche parte nel fascicolo."
       ],
       "fallbacks": [
-        "Codice errato.",
-        "Accesso negato al livello successivo.",
-        "Riprova con il codice corretto."
+        "Non capisco.",
+        "Riprova",
+        "Smetti di perdere tempo, dimmi il nome."
       ]
     }
   ]

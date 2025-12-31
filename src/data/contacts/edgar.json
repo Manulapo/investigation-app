@@ -1,0 +1,20 @@
+{
+  "id": "edgar",
+  "initialMessage": "Salve, sono Edgar, il cugino della vittima. Potrei avere delle informazioni utili per la vostra indagine.",
+  "timeline": [
+    {
+      "id": "event_edgar_1",
+      "turnId": 2,
+      "type": "narrative",
+      "triggerAfter": null,
+      "messages": [
+        "Elias mi ha sempre trattato come un fallito. Ma questo non significa che volessi vederlo morto.",
+        "Tutti pensano che i parenti siano i primi sospetti. È comodo. Ma quella casa era piena di gente che aveva molto più da perdere di me...Ad esempio quel Conte Alistiar Vance.",
+        "Un nobile... pfui. Tutti sanno che il suo casato è ormai in decadenza completa, eppure lui continua a farsi vedere in giro a fare la parte del gran signore.", 
+        "Lui ed Elias erano rivali diretti da una vita; hanno passato anni a scannarsi pubblicamente per l'acquisizione di proprietà e opere d'arte.",
+        "La stilettatat piú grande gliel'ha data Elias quando ha rilevato l'intera tenuta Vance ad un prezzo RI DI CO LO"
+      ],
+      "mediaId": ["i5"]
+    }
+  ]
+}

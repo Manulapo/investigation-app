@@ -207,6 +207,37 @@ const addDelayedMessage = (contactId: string, messageData: any, delaySeconds: nu
   }
 }
 
+// Helper function to check if triggered narratives should be shown
+const checkTriggeredNarratives = () => {
+  if (!contactData.value) return { messages: [], mediaIds: [], events: [] }
+  
+  const timeline = contactData.value.timeline || []
+  const allMessages = messages.value
+  
+  // Find all triggered narrative events
+  const triggeredNarratives: any[] = []
+  
+  timeline.forEach((event: any) => {
+    if (event.type === 'narrative' && event.triggerAfter) {
+      // Check if the trigger message exists in any contact's history
+      const triggerExists = Object.keys(state.chatHistories).some(cId => {
+        const contactMessages = state.chatHistories[cId] || []
+        return contactMessages.some((msg: any) => msg.id === event.triggerAfter)
+      })
+      
+      if (triggerExists) {
+        triggeredNarratives.push(event)
+      }
+    }
+  })
+  
+  return {
+    messages: triggeredNarratives.flatMap((event: any) => event.messages || []),
+    mediaIds: triggeredNarratives.flatMap((event: any) => event.mediaId || []),
+    events: triggeredNarratives
+  }
+}
+
 // Load contact data and add initial message if chat is empty
 const contactData = ref<any>(null)
 const loadContactData = () => {
@@ -233,6 +264,15 @@ const loadContactData = () => {
       const currentTurn = getCurrentTurnForContact(contactId.value)
       const narrativeData = getNarrativeMessagesForTurnStart(contactId.value, currentTurn)
       
+      // Check for triggered narratives (from other contacts' success messages)
+      const triggeredData = checkTriggeredNarratives()
+      
+      // Show typing indicator if there are narrative messages to display
+      if ((narrativeData.messages.length > 0 && narrativeData.messages.some((_: any, index: number) => !isNarrativeShown(`narrative_initial_${currentTurn}_${index}`))) ||
+          (triggeredData.messages.length > 0 && triggeredData.events && triggeredData.events.some((event: any) => !isNarrativeShown(`narrative_triggered_${event.id}`)))) {
+        isTyping.value = true
+      }
+      
       let narrativeDelay = 0
       narrativeData.messages.forEach((message: string, index: number) => {
         const narrativeId = `narrative_initial_${currentTurn}_${index}`
@@ -252,16 +292,37 @@ const loadContactData = () => {
         }
       })
       
+      // Add triggered narrative messages
+      triggeredData.messages.forEach((message: string, index: number) => {
+        const event = triggeredData.events && triggeredData.events[0] // Use first event for simplicity
+        if (!event) return
+        const narrativeId = `narrative_triggered_${event.id}_${index}`
+        if (!isNarrativeShown(narrativeId)) {
+          const delay = messages.value.length === 0 ? messageDelayCounter * 2 : narrativeDelay
+          addDelayedMessage(contactId.value, {
+            id: `msg_narrative_triggered_${event.id}_${index}`,
+            content: message,
+            sender: 'contact'
+          }, delay)
+          setNarrativeShown(narrativeId)
+          if (messages.value.length === 0) {
+            messageDelayCounter++
+          } else {
+            narrativeDelay += 2
+          }
+        }
+      })
+      
       // Add narrative media if any
       if (narrativeData.mediaIds.length > 0) {
         unlockDocuments(narrativeData.mediaIds)
         const mediaArray = findMediaArray(narrativeData.mediaIds)
-        mediaArray.forEach((media: any) => {
-          const narrativeMediaId = `narrative_media_initial_${currentTurn}_${Math.random()}`
+        mediaArray.forEach((media: any, mediaIndex: number) => {
+          const narrativeMediaId = `narrative_media_initial_${currentTurn}_${media.id || mediaIndex}`
           if (!isNarrativeShown(narrativeMediaId)) {
             const delay = messages.value.length === 0 ? messageDelayCounter * 2 : narrativeDelay
             addDelayedMessage(contactId.value, {
-              id: `msg_narrative_media_initial_${currentTurn}_${Math.random()}`,
+              id: `msg_narrative_media_initial_${currentTurn}_${media.id || mediaIndex}`,
               content: '',
               sender: 'contact',
               media: [media]
@@ -274,6 +335,41 @@ const loadContactData = () => {
             }
           }
         })
+      }
+      
+      // Add triggered narrative media if any
+      if (triggeredData.mediaIds.length > 0 && triggeredData.events && triggeredData.events.length > 0) {
+        unlockDocuments(triggeredData.mediaIds)
+        const triggeredMediaArray = findMediaArray(triggeredData.mediaIds)
+        triggeredMediaArray.forEach((media: any, mediaIndex: number) => {
+          const event = triggeredData.events![0] // Assume first event for media
+          const narrativeMediaId = `narrative_triggered_media_${event.id}_${media.id || mediaIndex}`
+          if (!isNarrativeShown(narrativeMediaId)) {
+            const delay = messages.value.length === 0 ? messageDelayCounter * 2 : narrativeDelay
+            addDelayedMessage(contactId.value, {
+              id: `msg_narrative_triggered_media_${event.id}_${media.id || mediaIndex}`,
+              content: '',
+              sender: 'contact',
+              media: [media]
+            }, delay)
+            setNarrativeShown(narrativeMediaId)
+            if (messages.value.length === 0) {
+              messageDelayCounter++
+            } else {
+              narrativeDelay += 2
+            }
+          }
+        })
+      }
+      
+      // Turn off typing indicator after all narrative messages are sent
+      const totalNarrativeDelay = messages.value.length === 0 
+        ? (messageDelayCounter * 2 * 1000) 
+        : (narrativeDelay * 1000)
+      if (totalNarrativeDelay > 0) {
+        setTimeout(() => {
+          isTyping.value = false
+        }, totalNarrativeDelay)
       }
       
       // Show puzzle preQuestion
@@ -564,12 +660,34 @@ const sendMessage = async () => {
   // Queue follow-up messages
   messageDelayCounter = 1
   
+  // Add additional text messages if any
+  if (result.textMessages && result.textMessages.length > 0) {
+    result.textMessages.forEach((msg: string) => {
+      addDelayedMessage(contactId.value, {
+        id: `msg_text_${Date.now()}_${Math.random()}`,
+        content: msg,
+        sender: 'contact'
+      }, messageDelayCounter++ * 2)
+    })
+  }
+  
   if (result.evidenceText) {
     addDelayedMessage(contactId.value, {
       id: `msg_evidence_${Date.now()}`,
       content: result.evidenceText,
       sender: 'contact'
     }, messageDelayCounter++ * 2)
+  }
+  
+  // Add additional evidence messages if any
+  if (result.evidenceTextMessages && result.evidenceTextMessages.length > 0) {
+    result.evidenceTextMessages.forEach((msg: string) => {
+      addDelayedMessage(contactId.value, {
+        id: `msg_evidence_${Date.now()}_${Math.random()}`,
+        content: msg,
+        sender: 'contact'
+      }, messageDelayCounter++ * 2)
+    })
   }
 
   if (result.successMedia) {

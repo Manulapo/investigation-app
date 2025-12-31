@@ -1,0 +1,35 @@
+{
+  "id": "martha",
+  "initialMessage": "Salve, sono la domestica delle stanze di Elias. Ho qualcosa da dire riguardo alla sua morte.",
+  "timeline": [
+    {
+      "id": "event_edonispharma_1",
+      "turnId": 9,
+      "type": "puzzle",
+      "preQuestion": "Benvenuto in Edonis Pharma, la tua scelta del benessere, Prego per proseguire inserire codice cliente",
+      "maxAttempts": 3,
+      "penaltySeconds": 10,
+      "notification": {
+        "notificationContact": "marcus",
+        "notificationMessage": "Hai ricevuto un messaggio da Marcus"
+      },
+      "solution": {
+        "keywords": ["12165"],
+        "response": {
+          "text": ["ecco a lei lo storico ordine, il suo codice cliente é 12165. Mi raccomando tenga tutto in ordine, non vorremmo che qualche altro cliente curioso metta le mani sui suoi segreti."],
+          "messageId": "msg_turn9_success",
+          "mediaId": ["d3"]
+        }
+      },
+      "hints": [
+        "Ricorda, il codice è un numero di quattro cifre.",
+        "si tratta di un anno storico importante, il vaso Ming potrebbe aiutarti."
+      ],
+      "fallbacks": [
+        "Non capisco.",
+        "Sbagliato",
+        "Riprova"
+      ]
+    }
+  ]
+}
