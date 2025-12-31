@@ -1,13 +1,44 @@
 import { ref, computed } from 'vue'
 import allDocuments from '../data/documents.json'
 
+const STORAGE_KEY = 'investigation_unlocked_documents'
+
 const unlockedDocumentIds = ref<string[]>([])
 
-// Initialize with documents that have initial: true
+// Load unlocked documents from localStorage
+const loadFromStorage = (): string[] => {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY)
+    return stored ? JSON.parse(stored) : []
+  } catch (error) {
+    console.error('Error loading unlocked documents from localStorage:', error)
+    return []
+  }
+}
+
+// Save unlocked documents to localStorage
+const saveToStorage = () => {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(unlockedDocumentIds.value))
+  } catch (error) {
+    console.error('Error saving unlocked documents to localStorage:', error)
+  }
+}
+
+// Initialize with documents from localStorage or initial documents
 const initializeDocuments = () => {
   if (unlockedDocumentIds.value.length === 0) {
-    const initialDocs = allDocuments.filter((doc: any) => doc.initial === true)
-    unlockedDocumentIds.value = initialDocs.map((doc: any) => doc.id)
+    // First try to load from localStorage
+    const stored = loadFromStorage()
+    
+    if (stored.length > 0) {
+      unlockedDocumentIds.value = stored
+    } else {
+      // If nothing in storage, initialize with initial documents
+      const initialDocs = allDocuments.filter((doc: any) => doc.initial === true)
+      unlockedDocumentIds.value = initialDocs.map((doc: any) => doc.id)
+      saveToStorage()
+    }
   }
 }
 
@@ -31,11 +62,17 @@ export function useDocuments() {
   function unlockDocument(id: string) {
     if (!unlockedDocumentIds.value.includes(id)) {
       unlockedDocumentIds.value.push(id)
+      saveToStorage()
     }
   }
 
   function unlockDocuments(ids: string[]) {
-    ids.forEach(id => unlockDocument(id))
+    ids.forEach(id => {
+      if (!unlockedDocumentIds.value.includes(id)) {
+        unlockedDocumentIds.value.push(id)
+      }
+    })
+    saveToStorage()
   }
 
   function getDocumentById(id: string) {
