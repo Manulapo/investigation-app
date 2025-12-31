@@ -48,10 +48,7 @@
 import { computed, ref, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import registry from '../data/registry.json'
-import c1Data from '../data/contacts/c1_informant.json'
-import c2Data from '../data/contacts/c2_informant.json'
-import c3Data from '../data/contacts/c3_risolutore.json'
-import c4Data from '../data/contacts/c4_risolutore.json'
+import { contactDataMap } from '../data/contactDataMap'
 import ContactItem from '../components/ui/ContactItem.vue'
 import SideMenu from '../components/ui/SideMenu.vue'
 import AppHeader from '../components/layout/AppHeader.vue'
@@ -89,13 +86,6 @@ const currentLevel = computed(() => state.currentGlobalTurn)
 
 const menuOpen = ref(false)
 
-const contactDataMap: Record<string, any> = {
-  c1_informant: c1Data,
-  c2_informant: c2Data,
-  c3_risolutore: c3Data,
-  c4_risolutore: c4Data
-}
-
 // Pre-populate initial messages for visible contacts that haven't been opened yet
 function ensureInitialMessages() {
   for (const contact of visibleContacts.value) {
@@ -114,7 +104,7 @@ function ensureInitialMessages() {
           })
         }
         
-        const firstPuzzle = contactData?.puzzles?.[0]
+        const firstPuzzle = contactData?.timeline?.find((event: any) => event.type === 'puzzle' && event.turnId === 1)
         if (firstPuzzle?.preQuestion && firstPuzzle.turnId === 1) {
           addMessage(contact.id, {
             id: `msg_prequestion_${contact.id}_1`,

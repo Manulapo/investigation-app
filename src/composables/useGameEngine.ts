@@ -1,6 +1,5 @@
-import c1Data from '../data/contacts/c1_informant.json'
-import c2Data from '../data/contacts/c2_informant.json'
-import c3Data from '../data/contacts/c3_risolutore.json'
+import { contactDataMap } from '../data/contactDataMap'
+import registry from '../data/registry.json'
 import penaltyResponsesData from '../data/penaltyResponses.json'
 import { useSaveManager } from './useSaveManager'
 
@@ -11,10 +10,10 @@ export function useGameEngine() {
   const { incrementFailed, resetFailed, setLockUntil, isLocked, getLockedUntil, advanceTurn, isPreQuestionShown, setPreQuestionShown } = useSaveManager()
 
   function findContactFile(id: string) {
-    if (id === 'c1') return c1Data as any
-    if (id === 'c2') return c2Data as any
-    if (id === 'c3') return c3Data as any
-    return null
+    // Use the centralized contactDataMap
+    const contact = registry.find((c: any) => c.id === id)
+    if (!contact) return null
+    return contactDataMap[contact.file] || null
   }
 
   function randomItem(arr: string[]): string {

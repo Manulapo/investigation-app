@@ -1,10 +1,10 @@
 [
   {
-    "id": "c1",
-    "file": "c1_informant",
-    "name": "L'Informatore",
-    "avatar": "https://thumbs.dreamstime.com/b/suspicious-young-afro-man-looking-camera-magnifier-mental-disorder-illness-suspicious-young-man-looking-camera-168439499.jpg",
-    "description": "Fonte anonima con accesso a informazioni riservate. Specializzato in intelligence urbana e sorveglianza discreta. Ha fornito prove cruciali in diversi casi di corruzione politica.",
+    "id": "robert",
+    "file": "robert",
+    "name": "Robert Redford",
+    "avatar": "/investigation-app/assets/avatar/robert.png",
+    "description": "TODO",
     "visibleAtTurn": 1
   },
   {

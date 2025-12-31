@@ -15,10 +15,7 @@
 import { computed, ref, onMounted } from 'vue'
 import { format } from 'date-fns'
 import { useSaveManager } from '../../composables/useSaveManager'
-import c1Data from '../../data/contacts/c1_informant.json'
-import c2Data from '../../data/contacts/c2_informant.json'
-import c3Data from '../../data/contacts/c3_risolutore.json'
-import c4Data from '../../data/contacts/c4_risolutore.json'
+import { contactDataMap } from '../../data/contactDataMap'
 
 const props = defineProps<{
   contact: any
@@ -29,13 +26,6 @@ defineEmits(['select'])
 const { getMessages } = useSaveManager()
 const messages = computed(() => getMessages(props.contact.id))
 const contactData = ref<any>(null)
-
-const contactDataMap: Record<string, any> = {
-  c1_informant: c1Data,
-  c2_informant: c2Data,
-  c3_risolutore: c3Data,
-  c4_risolutore: c4Data
-}
 
 onMounted(() => {
   try {

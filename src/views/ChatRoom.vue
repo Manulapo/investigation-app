@@ -89,10 +89,7 @@
 import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import registry from '../data/registry.json'
-import c1Data from '../data/contacts/c1_informant.json'
-import c2Data from '../data/contacts/c2_informant.json'
-import c3Data from '../data/contacts/c3_risolutore.json'
-import c4Data from '../data/contacts/c4_risolutore.json'
+import { contactDataMap } from '../data/contactDataMap'
 import MessageBubble from '../components/ui/MessageBubble.vue'
 import AppHeader from '../components/layout/AppHeader.vue'
 import { useSaveManager } from '../composables/useSaveManager'
@@ -211,13 +208,6 @@ const addDelayedMessage = (contactId: string, messageData: any, delaySeconds: nu
 }
 
 // Load contact data and add initial message if chat is empty
-const contactDataMap: Record<string, any> = {
-  c1_informant: c1Data,
-  c2_informant: c2Data,
-  c3_risolutore: c3Data,
-  c4_risolutore: c4Data
-}
-
 const contactData = ref<any>(null)
 const loadContactData = () => {
   try {

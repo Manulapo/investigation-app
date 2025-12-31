@@ -1,0 +1,87 @@
+{
+  "id": "robert",
+  "initialMessage": "Benvenuti. Sono il vostro informatore sul caso Thorne.",
+  "timeline": [
+    {
+      "id": "event_robert_1",
+      "turnId": 1,
+      "type": "puzzle",
+      "preQuestion": "Ma prima di iniziare, voglio vedere se posso fidarmi di voi: Prego inserire il nome completo dell’ispettore che state cercando.",
+      "maxAttempts": 3,
+      "penaltySeconds": 10,
+      "notification": {},
+      "solution": {
+        "keywords": ["jerry", "thompson"],
+        "response": {
+          "text": "Corretto, procediamo. Cari colleghi, sono felice che siate stati chiamati a risolvere questo assurdo caso che ha coinvolto il nostro Ispettore Rusty. Il caso era ormai chiuso con la deposizione della signorina Julianna, ma poco dopo sono accaduti eventi assurdi: la morte del maggiordomo, due giorni dopo quella di Thorne, e la scomparsa dell’Ispettore. C’è qualcosa di molto strano: Rusty lo aveva scoperto ed era molto vicino alla verità, ecco perché è scomparso. Anche se sono stato spostato su un altro caso, sarò comunque qui per aiutarvi a scoprire la verità e a trovare Rusty. Giustizia sarà fatta. Ma prima di tutto, vi lascio alcune delle prove e delle piste che Rusty stava seguendo e che aveva condiviso con me prima di sparire:",
+          "messageId": "msg_turn1_success",
+          "mediaId": ["c1_m1"],
+          "evidenceText": "Il senatore Marco Bianchi è coinvolto in uno schema di corruzione che coinvolge tangenti per 2 milioni di euro. L'incontro cruciale è previsto domani alle 22:00 al Porto Vecchio."
+        }
+      },
+      "hints": [
+        "Ricorda, ho bisogno di nome e cognome.",
+        "Se sei la persona giusta, dovresti sapere il nome completo.",
+        "Dovrebbe essere da qualche parte nel fascicolo."
+      ],
+      "fallbacks": [
+        "Non capisco.",
+        "Codice sbagliato. Riprova.",
+        "Smetti di perdere tempo, dammi il codice.",
+        "Formato non valido. Rivedi le istruzioni."
+      ]
+    },
+    {
+      "id": "event_robert_2",
+      "turnId": 1,
+      "type": "narrative",
+      "triggerAfter": "msg_turn1_success",
+      "messages": [
+        "A proposito, detective... c'è qualcosa che devi sapere.",
+        "Il senatore Bianchi non è solo. Ha potenti alleati nelle alte sfere.",
+        "Fai attenzione a chi ti fidi."
+      ],
+      "mediaId": ["c1_m2", "c1_m3"]
+    },
+    {
+      "id": "event_robert_3",
+      "turnId": 3,
+      "type": "narrative",
+      "triggerAfter": null,
+      "messages": [
+        "Bentornato detective. La situazione si fa sempre più pericolosa."
+      ]
+    },
+    {
+      "id": "event_robert_4",
+      "turnId": 3,
+      "type": "puzzle",
+      "preQuestion": "Per il livello finale con me, qual è il codice di emergenza? (risposta: red wolf)",
+      "maxAttempts": 3,
+      "penaltySeconds": 20,
+      "notification": {
+        "notificationContact": "c3",
+        "notificationMessage": "Hai ricevuto un messaggio dal risolutore"
+      },
+      "solution": {
+        "keywords": ["red", "wolf"],
+        "response": {
+          "text": "Ottimo lavoro. Hai completato il livello finale. Ora contatta il Risolutore per chiudere il caso.",
+          "messageId": "msg_turn3_success",
+          "mediaId": ["c1_m4"],
+          "evidenceText": "Il codice 'Lupo Rosso' indica che l'incontro è previsto per domani alle 22:00 al Porto Vecchio. Tutte le prove sono state raccolte."
+        }
+      },
+      "hints": [
+        "Rosso cosa? Il codice di emergenza richiede precisione.",
+        "Pensa a un animale selvatico.",
+        "Il lupo è noto per la sua astuzia."
+      ],
+      "fallbacks": [
+        "Codice errato.",
+        "Accesso negato al livello successivo.",
+        "Riprova con il codice corretto."
+      ]
+    }
+  ]
+}
