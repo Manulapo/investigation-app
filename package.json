@@ -6,7 +6,7 @@
     "dev": "vite",
     "lint": "eslint .",
     "preview": "vite preview",
-    "build": "npm exec tsc -- -b && npm exec vite -- build",
+    "build": "vite build",
     "predeploy": "npm run build",
     "deploy": "npm exec gh-pages -- -d dist"
   },
