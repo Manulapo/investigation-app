@@ -62,7 +62,6 @@ const props = defineProps<{
 }>()
 
 const fullscreenMedia = ref<any>(null)
-const imageElement = ref<HTMLImageElement | null>(null)
 const zoomLevel = ref(1)
 const position = ref({ x: 0, y: 0 })
 const isDragging = ref(false)
@@ -185,7 +184,9 @@ onUnmounted(() => {
 }
 
 .card-image img {
-  object-fit: cover;
+  object-fit: contain;
+  height: 100%;
+  width: 100%;
 }
 
 .card-icon {

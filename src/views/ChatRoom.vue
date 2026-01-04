@@ -10,7 +10,7 @@
       @hint-click="requestHint"
     >
       <router-link :to="`/profile/${contactId}`" class="contact-info">
-        <img :src="contact?.avatar" :alt="contact?.name" class="avatar" />
+        <Avatar :src="contact?.avatar!" :alt="contact?.name" class="avatar" />
         <div class="contact-details">
           <div class="contact-name">{{ contact?.name }}</div>
           <div class="contact-status">{{ isTyping ? 'sta scrivendo...' : 'Online' }}</div>
@@ -96,6 +96,7 @@ import { useSaveManager } from '../composables/useSaveManager'
 import { useGameEngine } from '../composables/useGameEngine'
 import { useNotification } from '../composables/useNotification'
 import { useDocuments } from '../composables/useDocuments'
+import Avatar from '../components/ui/Avatar.vue'
 
 
 const props = defineProps<{ id: string }>()
@@ -805,8 +806,8 @@ const sendMessage = async () => {
 }
 
 .avatar {
-  width: 40px;
-  height: 40px;
+  width: 40px !important;
+  height: 40px !important;
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid rgba(255, 255, 255, 0.3);

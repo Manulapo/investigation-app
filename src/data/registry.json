@@ -11,72 +11,72 @@
     "id": "beatrice",
     "file": "beatrice",
     "name": "Beatrice Thorne",
-    "avatar": "https://www.shutterstock.com/image-photo/portrait-smiling",
-    "description": "TODO",
+    "avatar": "",
+    "description": "Il dolore è solo una questione di prospettiva.",
     "visibleAtTurn": 2
   },
   {
     "id": "edgar",
     "file": "edgar",
     "name": "Edgar Thorne",
-    "avatar": "https://www.shutterstock.com/image-photo/portrait-smiling",
-    "description": "TODO",
+    "avatar": "",
+    "description": "I legami di sangue non contano nulla. La lealtà è tutto.",
     "visibleAtTurn": 2
   },
   {
     "id": "martha",
     "file": "martha",
     "name": "Martha Higgins",
-    "avatar": "https://www.shutterstock.com/image-photo/portrait-smiling",
-    "description": "TODO",
+    "avatar": "",
+    "description": "Ordine, disciplina e decoro.",
     "visibleAtTurn": 2
   },
   {
     "id": "loc",
     "file": "loc",
     "name": "Investigazione Locale",
-    "avatar": "https://www.shutterstock.com/image-photo/portrait-smiling",
-    "description": "TODO",
+    "avatar": "",
+    "description": "Casi archiviati: priorità naturale.",
     "visibleAtTurn": 4
   },
   {
     "id": "lab",
     "file": "lab",
     "name": "Laboratorio Forense",
-    "avatar": "https://www.shutterstock.com/image-photo/portrait-smiling",
-    "description": "TODO",
+    "avatar": "",
+    "description": "La scienza non mente mai.",
     "visibleAtTurn": 3
   },
   {
     "id": "thomas",
     "file": "thomas",
     "name": "Thomas O' Neill",
-    "avatar": "https://www.shutterstock.com/image-photo/portrait-smiling",
-    "description": "TODO",
+    "avatar": "",
+    "description": "Sempre in servizio.",
     "visibleAtTurn": 7
   },
   {
     "id": "mina",
     "file": "mina",
     "name": "Mina Santullo",
-    "avatar": "https://www.shutterstock.com/image-photo/portrait-smiling",
-    "description": "TODO",
+    "avatar": "",
+    "description": "Custodisco cappotti e segreti",
     "visibleAtTurn": 7
   },
   {
     "id": "clara",
     "file": "clara",
     "name": "Clara Thorne",
-    "avatar": "https://www.shutterstock.com/image-photo/portrait-smiling",
-    "description": "TODO",
+    "avatar": "",
+    "description": "Alla ricerca del regalo perfetto.",
     "visibleAtTurn": 9
   },
   {
     "id": "edonispharma",
     "file": "edonispharma",
     "name": "Edonis Pharma",
-    "avatar": "https://www.shutterstock.com/image-photo/portrait-smiling",
-    "description": "TODO",
+    "avatar": "",
+    "description": "Il meglio che il denaro possa comprare",
     "phoneNumber": "4151672929",
     "visibleAtTurn": 9
   },
@@ -84,34 +84,9 @@
     "id": "marcus",
     "file": "marcus",
     "name": "Marcus ferbs",
-    "avatar": "https://www.shutterstock.com/image-photo/portrait-smiling",
-    "description": "TODO",
+    "avatar": "",
+    "description": "Abile ed indaffarato contable della Thorne Art & Investments",
     "phoneNumber": "4151672929",
     "visibleAtTurn": 10
-  },
-  {
-    "id": "c2",
-    "file": "c2_informant",
-    "name": "Il Detective",
-    "avatar": "https://laughterlog.com/wp-content/uploads/2024/01/inspector-clouseau.jpg",
-    "description": "Detective della polizia locale specializzato in casi di corruzione e crimine organizzato. Ha lavorato undercover in diverse operazioni e mantiene contatti con informatori chiave.",
-    "phoneNumber": "9999",
-    "visibleAtTurn": 2
-  },
-  {
-    "id": "c3",
-    "file": "c3_risolutore",
-    "name": "Il Risolutore",
-    "avatar": "https://www.shutterstock.com/image-photo/dnipro-ukraine-31-jan-2024-600nw-2432138019.jpg",
-    "description": "Agente speciale con autorità finale per chiudere i casi. Possiede le risorse e le prove conclusive necessarie per portare a termine le operazioni più complesse.",
-    "visibleAtTurn": 4
-  },
-  {
-    "id": "c4",
-    "file": "c4_risolutore",
-    "name": "Il killer",
-    "avatar": "/assets/images/c3.svg",
-    "description": "Agente speciale con autorità finale per chiudere i casi. Possiede le risorse e le prove conclusive necessarie per portare a termine le operazioni più complesse.",
-    "visibleAtTurn": 5
   }
 ]

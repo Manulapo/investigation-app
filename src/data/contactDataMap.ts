@@ -6,6 +6,9 @@ import locData from './contacts/loc.json'
 import labData from './contacts/lab.json'
 import thomasData from './contacts/thomas.json'
 import minaData from './contacts/mina.json'
+import edonisPharmaData from './contacts/edonisPharma.json'
+import claraData from './contacts/clara.json'
+import marcusData from './contacts/marcus.json'
 
 export const contactDataMap: Record<string, any> = {
   robert: robertData,
@@ -16,4 +19,7 @@ export const contactDataMap: Record<string, any> = {
   lab: labData,
   thomas: thomasData,
   mina: minaData,
+  edonisPharma: edonisPharmaData,
+  clara: claraData,
+  marcus: marcusData,
 }

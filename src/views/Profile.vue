@@ -7,7 +7,7 @@
       @left-click="goToChat(contactId)"
     >
       <div class="contact-info">
-        <img :src="contact?.avatar" :alt="contact?.name" class="avatar" />
+        <Avatar :src="contact?.avatar!" :alt="contact?.name" class="avatar" />
         <div class="contact-details">
           <div class="contact-name">{{ contact?.name }}</div>
           <div class="contact-status">Online</div>
@@ -17,7 +17,7 @@
 
     <!-- Profile Picture Section -->
     <div class="profile-picture-section">
-      <img :src="contact?.avatar" :alt="contact?.name" class="profile-picture" />
+      <Avatar :src="contact?.avatar!" :alt="contact?.name" class="profile-picture" />
     </div>
 
     <!-- Description Section -->
@@ -42,6 +42,7 @@ import AppHeader from '../components/layout/AppHeader.vue'
 import { useSaveManager } from '../composables/useSaveManager'
 import { useDocuments } from '../composables/useDocuments'
 import MediaGrid from '../components/ui/MediaGrid.vue'
+import Avatar from '../components/ui/Avatar.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -97,8 +98,8 @@ const unlockedMedia = computed(() => {
 }
 
 .avatar {
-  width: 40px;
-  height: 40px;
+  width: 40px !important;
+  height: 40px !important;
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid rgba(255, 255, 255, 0.3);
@@ -126,8 +127,8 @@ const unlockedMedia = computed(() => {
 }
 
 .profile-picture {
-  width: 120px;
-  height: 120px;
+  width: 120px !important;
+  height: 120px !important;
   border-radius: 50%;
   object-fit: cover;
   border: 3px solid #e0e0e0;

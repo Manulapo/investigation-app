@@ -13,10 +13,10 @@
       "solution": {
         "keywords": ["17"],
         "response": {
-          "text": ["Corretto, ecco cosa abbiamo trovato"],
+          "text": ["Corretto, Arthur Socks è stato trovato morto il 17 Marzo 1924."],
           "messageId": "msg_turn4_success",
           "mediaId": ["i7", "i8"],
-          "evidenceText": "Ma prima di tutto, vi lascio alcune delle prove e delle piste che Rusty stava seguendo e che aveva condiviso con me prima di sparire:"
+          "evidenceText": "Vi lascio alcune delle prove e delle piste che Rusty stava seguendo e che aveva condiviso con me prima di sparire:"
         }
       },
       "hints": [

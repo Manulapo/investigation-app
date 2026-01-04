@@ -1,6 +1,6 @@
 <template>
   <div class="contact-item" @click="$emit('select')">
-    <img :src="contact.avatar" :alt="contact.name" class="avatar" />
+   <Avatar :src="contact.avatar" :alt="contact.name" class="avatar" />
     <div class="info">
       <p class="name">{{ contact.name }}</p>
       <p class="preview">{{ lastMessage }}</p>
@@ -16,6 +16,7 @@ import { computed, ref, onMounted } from 'vue'
 import { format } from 'date-fns'
 import { useSaveManager } from '../../composables/useSaveManager'
 import { contactDataMap } from '../../data/contactDataMap'
+import Avatar from './Avatar.vue';
 
 const props = defineProps<{
   contact: any
@@ -86,14 +87,6 @@ const formattedTime = computed(() => {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-}
-
-.avatar {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  object-fit: cover;
-  flex-shrink: 0;
 }
 
 .info {
