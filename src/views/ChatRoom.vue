@@ -792,6 +792,8 @@ const sendMessage = async () => {
   left: 0;
   right: 0;
   bottom: 0;
+  overscroll-behavior: none;
+  touch-action: pan-y;
 }
 
 .contact-info {
@@ -835,6 +837,8 @@ const sendMessage = async () => {
   gap: 0.25rem;
   scrollbar-width: none;
   -ms-overflow-style: none;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
 }
 
 .messages-area::-webkit-scrollbar {

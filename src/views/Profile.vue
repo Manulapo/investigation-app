@@ -86,6 +86,9 @@ const unlockedMedia = computed(() => {
   display: flex;
   flex-direction: column;
   background: #ece5dd;
+  overflow: hidden;
+  overscroll-behavior: none;
+  touch-action: pan-y;
 }
 
 .contact-info {

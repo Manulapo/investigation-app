@@ -43,6 +43,8 @@ function goBack() {
   background: #ece5dd;
   color: black;
   overflow: hidden;
+  overscroll-behavior: none;
+  touch-action: pan-y;
 }
 
 .documents-content {
@@ -53,6 +55,8 @@ function goBack() {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
 }
 
 .documents-content::-webkit-scrollbar {

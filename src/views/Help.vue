@@ -70,6 +70,9 @@ function goBack() {
   display: flex;
   flex-direction: column;
   background: #ece5dd;
+  overflow: hidden;
+  overscroll-behavior: none;
+  touch-action: pan-y;
 }
 
 .help-content {
@@ -77,6 +80,8 @@ function goBack() {
   padding: 1rem;
   overflow-y: auto;
   scrollbar-width: none;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
 }
 
 .help-content::-webkit-scrollbar {
