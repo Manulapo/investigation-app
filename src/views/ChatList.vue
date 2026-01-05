@@ -183,6 +183,8 @@ function goToPhone() {
   flex-direction: column;
   background: #fff;
   overflow: hidden;
+  overscroll-behavior: none;
+  touch-action: pan-y;
 }
 
 .contacts-list {
@@ -190,6 +192,8 @@ function goToPhone() {
   overflow-y: auto;
   display: flex;
   flex-direction: column;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
 }
 
 .empty-state {
