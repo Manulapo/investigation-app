@@ -110,7 +110,15 @@ export function useSaveManager() {
   }
 
   function advanceTurn(next: number) {
-    if (next > state.currentGlobalTurn) state.currentGlobalTurn = next
+    if (next > state.currentGlobalTurn) {
+      state.currentGlobalTurn = next
+    } else {
+      state.currentGlobalTurn--
+    }
+  }
+
+  function setLevel(level: number) {
+    state.currentGlobalTurn = level
   }
 
   function markMessagesAsRead(contactId: string) {
@@ -167,6 +175,11 @@ export function useSaveManager() {
     state.shownNarratives[narrativeId] = shown
   }
 
+  function resetChatHistories() {
+    state.chatHistories = {}
+    state.puzzleStatus = {}
+  }
+
   function resetAll() {
     Object.keys(state).forEach(k => delete (state as any)[k])
     const fresh = JSON.parse(JSON.stringify(defaultState))
@@ -188,6 +201,7 @@ export function useSaveManager() {
     isPreQuestionShown,
     setPreQuestionShown,
     advanceTurn,
+    setLevel,
     markMessagesAsRead,
     unlockContactByPhone,
     isContactUnlockedByPhone,
@@ -195,6 +209,7 @@ export function useSaveManager() {
     useHint,
     isNarrativeShown,
     setNarrativeShown,
+    resetChatHistories,
     resetAll
   }
 }

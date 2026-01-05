@@ -186,7 +186,7 @@ onUnmounted(() => {
 .card-image img {
   object-fit: contain;
   height: 100%;
-  width: 100%;
+  width: 200px;
 }
 
 .card-icon {

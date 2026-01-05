@@ -1,15 +1,15 @@
 <template>
   <div class="toast-wrap">
-    <div v-for="t in toasts" :key="t.id" :class="['toast', { clickable: t.contactId, 'animate-in': !animatedToasts.has(t.id) }]" @click="handleClick(t)">
-      <div v-if="t.contactId" class="chat-notification">
-        <img :src="getContact(t.contactId)?.avatar" :alt="getContact(t.contactId)?.name" class="avatar" />
+    <div v-for="toast in toasts" :key="toast.id" :class="['toast', { clickable: toast.contactId, 'animate-in': !animatedToasts.has(toast.id) }]" @click="handleClick(toast)">
+      <div v-if="toast.contactId" class="chat-notification">
+         <Avatar :src="getContact(toast.contactId)?.avatar!" :alt="getContact(toast.contactId)?.name" class="avatar" />
         <div class="content">
-          <div class="name">{{ getContact(t.contactId)?.name }}</div>
-          <div class="message">{{ t.text }}</div>
+          <div class="name">{{ getContact(toast.contactId)?.name }}</div>
+          <div class="message">{{ toast.text }}</div>
         </div>
       </div>
-      <div v-else>{{ t.text }}</div>
-      <div class="progress-bar" :style="{ width: getProgressWidth(t) + '%' }"></div>
+      <div v-else>{{ toast.text }}</div>
+      <div class="progress-bar" :style="{ width: getProgressWidth(toast) + '%' }"></div>
     </div>
   </div>
 </template>
@@ -20,15 +20,13 @@ import { ref, onMounted, onUnmounted, watch } from 'vue'
 import registry from '../data/registry.json'
 import { toasts } from '../composables/useNotification'
 import { useNotification } from '../composables/useNotification'
+import Avatar from './ui/Avatar.vue'
 
 const router = useRouter()
-const { getToasts, removeToast } = useNotification()
-// Track which toasts have animated in
+const { removeToast } = useNotification()
 const animatedToasts = new Set<number>()
-// Track which toasts have been clicked to prevent double-clicks
 const clickedToastIds = new Set<number>()
 
-// Reactive progress tracking
 const progressUpdates = ref(0)
 
 function getContact(id: string) {
@@ -143,8 +141,8 @@ function handleClick(toast: any) {
 }
 
 .avatar {
-  width: 40px;
-  height: 40px;
+  width: 40px !important;
+  height: 40px !important;
   border-radius: 50%;
   object-fit: cover;
   flex-shrink: 0;

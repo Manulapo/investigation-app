@@ -1,6 +1,6 @@
 {
   "id": "martha",
-  "initialMessage": "Salve, sono la domestica delle stanze di Elias. Ho qualcosa da dire riguardo alla sua morte.",
+  "initialMessage": "Buongiorno da Edonis Pharma, come possiamo aiutarla oggi?",
   "timeline": [
     {
       "id": "event_edonispharma_1",

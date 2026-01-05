@@ -583,7 +583,6 @@ const handleAutoSolve = (event: any) => {
   const answers = event.detail.answers
   const answer = answers[currentTurn.value]
   if (answer) {
-    console.log('Auto-solve triggered with answer for turn', currentTurn.value, ':', answer)
     inputValue.value = answer
     setTimeout(() => sendMessage(), 100)
   } else {

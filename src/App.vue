@@ -6,7 +6,7 @@
       </transition>
     </div>
     <ToastNotification v-if="$route.name !== 'lock' && $route.name !== 'documents'" />
-    <!-- <DebugMenu /> -->
+    <DebugMenu />
   </div>
 </template>
 
