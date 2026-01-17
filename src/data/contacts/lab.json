@@ -10,7 +10,9 @@
       "messages": [
         "Di seguito i risultati dell'autopsia richiesta sul sig. Thorne"
       ],
-      "mediaId": ["i9"]
+      "mediaId": [
+        "i9"
+      ]
     },
     {
       "id": "event_lab_2",
@@ -24,9 +26,13 @@
         "notificationMessage": "Hai ricevuto un messaggio da Robert"
       },
       "solution": {
-        "keywords": ["dissanguamento"],
+        "keywords": [
+          "dissanguamento"
+        ],
         "response": {
-          "text": ["Come scritto nell'autopsia, il dissanguamento non é stata causata da un taglio, la vittima sembrava essere giá morta quando ha subito la ferita. Questo ci porta a pensare che la causa primaria della morte sia stata un'altra."]
+          "text": [
+            "Come scritto nell'autopsia, il dissanguamento non é stata causata da un taglio, la vittima sembrava essere giá morta quando ha subito la ferita. Questo ci porta a pensare che la causa primaria della morte sia stata un'altra."
+          ]
         }
       },
       "hints": [
@@ -51,18 +57,18 @@
         "notificationMessage": "Hai ricevuto un messaggio da Clara"
       },
       "solution": {
-        "keywords": ["arthur"],
+        "keywords": [
+          "arthur"
+        ],
         "response": {
-          "text": ["ISPEZIONE ESTERNA E ANOMALIE FISICHE DI ARTHUR SOCKS:", 
-          "L'esame del cadavere ha evidenziato diverse anomalie sistemiche pregresse, non riconducibili all'influenza:",
-
-          "Alopecia anomala: Si riscontra una perdita di capelli diffusa e irregolare. ",
-
-          "Alterazioni ungueali: Le unghie delle mani presentano striature trasversali biancastre (bande opache) che attraversano la lamina ungueale.",
-
-          "Apparato Digerente: La mucosa gastrica è gravemente infiammata ed erosa (gastroenterite emorragica acuta).",
-
-          "Cuore: Il decesso è sopraggiunto per arresto cardio-respiratorio improvviso, causato verosimilmente dal collasso del sistema nervoso autonomo."]
+          "text": [
+            "ISPEZIONE ESTERNA E ANOMALIE FISICHE DI ARTHUR SOCKS:",
+            "L'esame del cadavere ha evidenziato diverse anomalie sistemiche pregresse, non riconducibili all'influenza:",
+            "Alopecia anomala: Si riscontra una perdita di capelli diffusa e irregolare. ",
+            "Alterazioni ungueali: Le unghie delle mani presentano striature trasversali biancastre (bande opache) che attraversano la lamina ungueale.",
+            "Apparato Digerente: La mucosa gastrica è gravemente infiammata ed erosa (gastroenterite emorragica acuta).",
+            "Cuore: Il decesso è sopraggiunto per arresto cardio-respiratorio improvviso, causato verosimilmente dal collasso del sistema nervoso autonomo."
+          ]
         }
       },
       "hints": [
@@ -73,6 +79,50 @@
         "Abbiamo gia parlato di questo.",
         "Riprova",
         "Non credo sia rilevante."
+      ]
+    },
+    {
+      "id": "event_lab_4",
+      "turnId": 18,
+      "type": "narrative",
+      "triggerAfter": "msg_turn17_success",
+      "messages": [
+        "Abbiamo eseguito ulteriori analisi sul maggiordomo, Arthur Socks",
+        "Confermiamo le cause non naturali del decesso,abbiamo riscontrato anche alcune anomalie sistemiche pregresse non riconducibili  d una semplice influenza.",
+        "Il referto completo dell'autopsia rivela un possibile avvelenamento."
+      ],
+      "mediaId": []
+    },
+    {
+      "id": "event_lab_5",
+      "turnId": 18,
+      "type": "puzzle",
+      "preQuestion": "Quale è il nome della sostanza che ha causato la morte del maggiordomo, e quale è la sua massa atomica?",
+      "maxAttempts": 3,
+      "penaltySeconds": 45,
+      "notification": {
+        "notificationContact": "robert",
+        "notificationMessage": "Hai ricevuto un messaggio da Robert"
+      },
+      "solution": {
+        "keywords": [
+          "Tallio",
+          "204"
+        ],
+        "response": {
+          "text": [
+            "Interessante potrebbe spiegare i sintomi rilevati precedentemente nell'autopsia.",
+            "Faremo ulteriori analisi per confermare la presenza di tallio anche del corpo del sig. Thorne."
+          ]
+        }
+      },
+      "hints": [
+        "Abbiamo gia parlato di questo sostanza in precedenza.",
+        "è richiesto sia il nome che la massa atomica."
+      ],
+      "fallbacks": [
+        "Non ci siamo",
+        "Riprova"
       ]
     }
   ]

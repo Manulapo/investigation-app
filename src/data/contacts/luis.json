@@ -1,0 +1,62 @@
+{
+  "id": "luis",
+  "initialMessage": "Ciao, sono Luis, il parcheggiatore della villa Thorne.",
+  "timeline": [
+    {
+      "id": "event_luis_1",
+      "turnId": 22,
+      "type": "narrative",
+      "triggerAfter": null,
+      "messages": [
+        "Ho visto un sacco di cose strane quella notte, specialmente vicino al giardino.",
+        "Ma prima:",
+        "Cinque antichi Numi nati greci, ora Romani banchettano a cena. Se la verità é ció che cercate, farli sedere nel giusto ordine potrá farli parlare. La giysta combinazione di nomi, concede la verità.",
+        "Il Re degli Dell’olimpo esige il trono centrale, per dominare la scena.",
+        "Dioniso siede all'estrema sinistra, per primo, pronto a riempire i calici.",
+        "Poseidone siede alla destra del Vino, poiché l'acqua nutre la vite.",
+        "Ares siede all'estrema destra, a guardia del confine.",
+        "Afrodite non siede mai agli estremi, ma cerca la protezione tra il Re e la Guerra."
+      ],
+      "mediaId": [
+        "i15"
+      ]
+    },
+    {
+      "id": "event_luis_2",
+      "turnId": 22,
+      "type": "puzzle",
+      "preQuestion": "Qual è la combinazione corretta per sedere i Numi? La combinazione è composta da 5 iniziali dei loro nomi in ordine da sinistra a destra.",
+      "maxAttempts": 3,
+      "penaltySeconds": 20,
+      "notification": {
+        "notificationContact": "robert",
+        "notificationMessage": "Hai ricevuto un messaggio da Robert"
+      },
+      "solution": {
+        "keywords": [
+          "BNGUM"
+        ],
+        "response": {
+          "text": [
+            "Ero nel parcheggio sul retro. Ho visto il socio del morto, il signor Ferbs. È uscito sulla terrazza verso le 23:00.",
+            " Non sembrava un uomo che si gode la festa. Ha acceso un sigaro, ha fatto due tiri e l'ha buttato via quasi intero.",
+            "Camminava avanti e indietro fissando le finestre del piano di sopra. Poi ha guardato l'orologio, ha fatto un sorriso strano, brutto, direi, ed è rientrato. Sembrava uno che ha appena piazzato una scommessa vincente ai cavalli.",
+            "Così nervoso, eppure è arrivato anche tra i primi invitati tenendo quel suo costosissimo regalo in mano. Sembrava una bottiglia davvero costosa e pregiata!",
+            "E poi il dottore, Lysander Grey. È uscito di corsa, sembrava agitato, aveva la borsa medica stretta al petto. Mi ha chiesto quale fosse la strada più veloce per la stazione.",
+            "A detta sua doveva lasciare subito la città. Strano, no? Un dottore che scappa via di notte senza neanche aspettare l'autista."
+          ],
+          "messageId": "msg_turn12_success",
+          "mediaId": [],
+          "evidenceText": []
+        }
+      },
+      "hints": [
+        "serve soo il nome, non il marchio"
+      ],
+      "fallbacks": [
+        "Sbagliato",
+        "Riprova"
+      ]
+    }
+  ]
+}

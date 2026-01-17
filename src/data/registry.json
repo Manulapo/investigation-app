@@ -87,5 +87,54 @@
     "avatar": "",
     "description": "Abile ed indaffarato contable della Thorne Art & Investments",
     "visibleAtTurn": 10
+  },
+  {
+    "id": "elena",
+    "file": "elena",
+    "name": "Elena Ricci",
+    "avatar": "",
+    "description": "La nobiltà è un fardello che pochi possono permettersi.",
+    "visibleAtTurn": 12
+  },
+  {
+    "id": "gino",
+    "file": "gino",
+    "name": "Gino Rossi",
+    "avatar": "",
+    "description": "Non c'è niente che un bun bicchiere di scothc non possa risolvere.",
+    "visibleAtTurn": 13
+  },
+  {
+    "id": "damine",
+    "file": "damien",
+    "name": "Damien Halloway",
+    "avatar": "",
+    "description": "L'aret è per pochi, il privilegio di farla è per meno ancora.",
+    "visibleAtTurn": 14
+  },
+  {
+    "id": "slick",
+    "file": "slick",
+    "name": "Sam Peterson",
+    "avatar": "",
+    "description": "Fautore della buona musica dal 1896.",
+    "visibleAtTurn": 15
+  },
+  {
+    "id": "bank",
+    "file": "bank",
+    "name": "Helvetia Merchant Bank",
+    "avatar": "",
+    "description": "La tua banca, ovunque tu sia.",
+    "visibleAtTurn": 19,
+    "phoneNumber": "4178992397"
+  },
+  {
+    "id": "luis",
+    "file": "luis",
+    "name": "Luis Fernandez",
+    "avatar": "",
+    "description": "Il parcheggiatore ufficiale della famiglia Thorne.",
+    "visibleAtTurn": 22
   }
 ]

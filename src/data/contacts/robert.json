@@ -159,8 +159,8 @@
         "response": {
           "text": [
             "Mhm, Marcus Ferbs è sicuramente un uomo da tenere d'occhio, ma non ucciderebbe mai il uo socio, visto quanto avrebbe da perdere con la perdita di uno delle colonne portanti dell'azienda.",
-            "Intanto Ti emtto in contatto con la contessa Elena Ricci",
-            "Coe se una pettegola non bastasse, appea ha saputo delle indagini ha iniziato a vomitarci un flusso infinitodi parole, ma magari puo eserti utile."
+            "Intanto Ti emtto in contatto con la duchessa Elena Ricci",
+            "Come se una pettegola non bastasse, appea ha saputo delle indagini ha iniziato a vomitarci un flusso infinitodi parole, ma magari puo eserti utile."
           ],
           "mediaId": [],
           "evidenceText": []
@@ -201,8 +201,8 @@
       "maxAttempts": 3,
       "penaltySeconds": 10,
       "notification": {
-        "notificationContact": "elena",
-        "notificationMessage": "Hai ricevuto un messaggio da Elena"
+        "notificationContact": "lab",
+        "notificationMessage": "Hai ricevuto un messaggio dal laboratorio forense"
       },
       "solution": {
         "keywords": [
@@ -226,7 +226,142 @@
       ],
       "fallbacks": [
         "Non porta a niente",
-        "Mi sa che siamo ancora lontani"
+        "Sento che siamo ancora lontani..."
+      ]
+    },
+    {
+      "id": "event_robert_11",
+      "turnId": 19,
+      "type": "narrative",
+      "triggerAfter": "msg_turn19_success",
+      "messages": [
+        "Sono Arrivato proprio ora in villa Bellosguardo, sto controllando la stanza di Elias, vediamo un po' se riesco a trovare qualcosa di interessante.",
+        "Troppe cianfrusaglie per i miei gusti, ma aspetta un attimo... questo cassetto sembra chiuso a chiave!",
+        "Il Ritratto dei coniugi Arnolfini... mi chiedo come mai questo quadro e questo strano mecccanismo, sembra una bussola.",
+        "Aspetta un attimo... il meccanismo emette un click se ruoto l'ago in uno dei punti cardinali, cosa significa?"
+      ],
+      "mediaId": [
+        "i13"
+      ]
+    },
+    {
+      "id": "event_robert_12",
+      "turnId": 19,
+      "type": "puzzle",
+      "preQuestion": "Potete aiutarmi a trovare la giusta combinazione?",
+      "maxAttempts": 3,
+      "penaltySeconds": 10,
+      "notification": {},
+      "solution": {
+        "keywords": [
+          "NEWW"
+        ],
+        "response": {
+          "text": [
+            "Non sembra esserci molto qui dentro, alcuni documenti finanziari ed una lettera.",
+            "Mi chiedo se forse la Banca sia coinvolta in qualche modo in tutto questo...",
+            "Forse Dovremmo contattare la sede centrale per avere qualche informazione in più."
+          ],
+          "mediaId": [
+            "i14",
+            "d4"
+          ],
+          "evidenceText": []
+        }
+      },
+      "hints": [
+        "Le coordinate indicano tutte una delle 4 direzioni cardinali",
+        "La combinazione richiede 4 movimenti dell'ago",
+        "Ogni direzione può essere ripetuta",
+        "Mi servono 4 lettere in totale"
+      ],
+      "fallbacks": [
+        "Non porta a niente",
+        "Mi sa che siamo ancora lontani",
+        "Sembrava ci fossimo vicini"
+      ]
+    },
+    {
+      "id": "event_robert_13",
+      "turnId": 21,
+      "type": "puzzle",
+      "preQuestion": "Ho appena ricevuto i documenti dalla banca... qualcosa non mi torna, a quanto ammonta la quota di Marcus?",
+      "maxAttempts": 3,
+      "penaltySeconds": 10,
+      "notification": {
+        "notificationContact": "lab",
+        "notificationMessage": "Hai ricevuto un messaggio dal laboratorio forense"
+      },
+      "solution": {
+        "keywords": [
+          "150000"
+        ],
+        "response": {
+          "text": [
+            "Pare che i conti siano sbagliati, il bonifico di Marcus sarebbe dovuto essere molto più alto.",
+            "Sembra che Marcus si sia intascato una bella somma a insaputa d Elais. Mi chiedo se sia la prima volta.",
+            "Mentre mi dirigevo alla Villa ho inctrociato il parcheggiatore sembra avere delle informazioni interessanti, ti metto in contattto con lui."
+          ],
+          "mediaId": [],
+          "evidenceText": []
+        }
+      },
+      "hints": [
+        "formato: solo numeri, senza simboli o spazi",
+        "controlla i documenti ch hai e il bonifico effettuato"
+      ],
+      "fallbacks": [
+        "Non capisco",
+        "Riprova",
+        "No non ci siamo ancora"
+      ]
+    },
+    {
+      "id": "event_robert_14",
+      "turnId": 23,
+      "type": "narrative",
+      "triggerAfter": "msg_turn22_success",
+      "messages": [
+        "Hey, la stanza è pulita, l'unica cosa che rimane serrata è la cassaforte personale di Elias.",
+        "Sono convinto che ci sia qualcosa di importante lì dentro, se solo avessimo la combinazione...",
+        "Ci puoi dare un' occhiata? ti mndo una foto",
+        "La cassaforte ha un meccanismo di apertura a rotella, da zero a 9 per 5 cifre.",
+        "è molto vistosa ma non so quanto quetso ci possa aiutare..."
+      ],
+      "mediaId": [
+        "i16"
+      ]
+    },
+    {
+      "id": "event_robert_14",
+      "turnId": 22,
+      "type": "puzzle",
+      "preQuestion": "Ehy, non è che per caso hai un'idea di quale sia la combinazione della cassaforte?",
+      "maxAttempts": 3,
+      "penaltySeconds": 10,
+      "notification": {},
+      "solution": {
+        "keywords": [
+          "49806"
+        ],
+        "response": {
+          "text": [
+            "Si è aperta!, dentro c'è un documento molto interessante, sembra un referto medico.",
+            "Aspetta Ma questo è il testamento di Elias Thorne! Sembra che abbia cambiato il suo testamento poco prima di morire."
+          ],
+          "mediaId": [],
+          "evidenceText": []
+        }
+      },
+      "hints": [
+        "Forse la scritta incisa sulla cassaforte può aiutarci",
+        "La combinazione è composta da 5 cifre",
+        "ricorda che si conta da 0 a 9"
+      ],
+      "fallbacks": [
+        "Sempre chiusa",
+        "Riprova",
+        "Non si apre!"
       ]
     }
   ]

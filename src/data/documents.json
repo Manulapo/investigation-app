@@ -106,5 +106,56 @@
     "src": "/investigation-app/assets/images/coordinate.png",
     "contactId": "loc",
     "initial": false
+  },
+  {
+    "id": "i13",
+    "type": "image",
+    "src": "/investigation-app/assets/images/scrittoio_elias.png",
+    "contactId": "lab",
+    "initial": false
+  },
+  {
+    "id": "i14",
+    "type": "image",
+    "src": "/investigation-app/assets/images/bank_register.png",
+    "contactId": "robert",
+    "initial": false
+  },
+  {
+    "id": "d4",
+    "type": "pdf",
+    "src": "/investigation-app/assets/pdf/lysander_grey_lettera.pdf",
+    "alt": "Lettera su Lysander Grey",
+    "contactId": "robert"
+  },
+  {
+    "id": "i15",
+    "type": "image",
+    "src": "/investigation-app/assets/images/giardino.png",
+    "contactId": "luis",
+    "initial": false
+  },
+  {
+    "id": "i16",
+    "type": "image",
+    "src": "/investigation-app/assets/images/cassaforte.jpeg",
+    "contactId": "robert",
+    "initial": false
+  },
+  {
+    "id": "d5",
+    "type": "pdf",
+    "src": "/investigation-app/assets/pdf/testamento.pdf",
+    "alt": "Testamento di Elias Thorne",
+    "contactId": "robert",
+    "initial": false
+  },
+  {
+    "id": "d6",
+    "type": "pdf",
+    "src": "/investigation-app/assets/pdf/analisi.pdf",
+    "alt": "Analisi allergeni - Elias Thorne",
+    "contactId": "robert",
+    "initial": false
   }
 ]

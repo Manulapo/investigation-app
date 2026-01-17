@@ -1,0 +1,44 @@
+{
+  "id": "bank",
+  "initialMessage": "Benvenuto in Helvetia merchant bank, come possiamo aiutarla oggi?",
+  "timeline": [
+    {
+      "id": "event_bank_1",
+      "turnId": 20,
+      "type": "puzzle",
+      "preQuestion": "Per informazioni su moviment del conto, prego inserire il codice di ordine ed il giorno della transazione",
+      "maxAttempts": 3,
+      "penaltySeconds": 10,
+      "notification": {
+        "notificationContact": "robert",
+        "notificationMessage": "Hai ricevuto un messaggio da Robert"
+      },
+      "solution": {
+        "keywords": [
+          "20",
+          "44-ZH-000012"
+        ],
+        "response": {
+          "text": [
+            "ORDINE DI BONIFICO",
+            "Numero Ordine: 44-ZH-000012",
+            "Data: 20 Settembre 1924 Ordinante: Thorne Fine Arts & Investments",
+            "Beneficiario: Thorne Art & investments, Italy",
+            "IMPORTO: $ 1.450.000,00 ",
+            "CAUSALE: Saldo Asta n. 402"
+          ],
+          "messageId": "msg_turn20_success",
+          "mediaId": []
+        }
+      },
+      "hints": [
+        "Ricorda, il codice di ordine è alfanumerico.",
+        "La data della transazione e il codice sdovrebbero essere in un documento che hai già visto."
+      ],
+      "fallbacks": [
+        "Codice o data errati.",
+        "Errore di sistema, riprova."
+      ]
+    }
+  ]
+}

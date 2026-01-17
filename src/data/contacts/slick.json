@@ -1,9 +1,9 @@
 {
-  "id": "slich",
-  "initialMessage": "Salve, sono slichho suonato la sera dell'evento.",
+  "id": "slick",
+  "initialMessage": "Salve, sono slickho suonato la sera dell'evento.",
   "timeline": [
     {
-      "id": "event_slich_1",
+      "id": "event_slick_1",
       "turnId": 15,
       "type": "puzzle",
       "preQuestion": "*Nota: Quale messaggio si cela dietro la sinfonia da me creata per Elias?*",
