@@ -92,5 +92,19 @@
     "src": "/investigation-app/assets/images/registro_poker.png",
     "contactId": "gino",
     "initial": false
+  },
+  {
+    "id": "i11",
+    "type": "image",
+    "src": "/investigation-app/assets/images/morse_code.png",
+    "contactId": "loc",
+    "initial": false
+  },
+  {
+    "id": "i12",
+    "type": "image",
+    "src": "/investigation-app/assets/images/coordinate.png",
+    "contactId": "loc",
+    "initial": false
   }
 ]

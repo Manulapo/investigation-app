@@ -1,0 +1,49 @@
+{
+  "id": "damien",
+  "initialMessage": "Salve, mi chiamo Damien, il famoso artista",
+  "timeline": [
+    {
+      "id": "event_damien_1",
+      "turnId": 14,
+      "type": "narrative",
+      "triggerAfter": null,
+      "messages": [
+        "Mi chiedete quando ho visto Elias per l'ultima volta? È stato poco prima dell'inizio della mia performance. Era lì, con quella sua solita aria di sufficienza. Nonostante lui gestisse interamente la mia carriera e si vantasse di avermi 'scoperto', non si è nemmeno degnato di assistere alla mia esibizione.",
+        "Tipico di lui. Per Elias ero solo una firma su quei contratti esclusivi e restrittivi che mi faceva firmare, non un artista da rispettare. Mi ha lasciato lì, sul palco, come un qualsiasi oggetto della sua collezione."
+      ],
+      "mediaId": []
+    },
+    {
+      "id": "event_damien_2",
+      "turnId": 14,
+      "type": "puzzle",
+      "preQuestion": "A che ore all'incirca si svolge lì'esibisone di Damien",
+      "maxAttempts": 3,
+      "penaltySeconds": 60,
+      "notification": {
+        "notificationContact": "damien",
+        "notificationMessage": "Hai ricevuto un messaggio da Damien"
+      },
+      "solution": {
+        "keywords": [
+          "22"
+        ],
+        "response": {
+          "text": [],
+          "messageId": "msg_turn14_success",
+          "mediaId": [],
+          "evidenceText": [
+            "Se ho sentito qualcosa di strano dopo? Urla, schiamazzi, vetri rotti? Forse.",
+            "C'era molta confusione nell'aria, una tensione palpabile. Ma fortunatamente, tutto quel rumore volgare è stato coperto dalla bellezza. A coprire gli schiamazzi c'era una dolce sinfonia che Slich, uno dei musicisti presenti, stava suonando in quel momento.",
+            "Mi ha detto che l'aveva composta appositamente per Elias, per accompagnare la mia arte. Quella melodia ha coperto ogni altra cosa."
+          ]
+        }
+      },
+      "hints": [],
+      "fallbacks": [
+        "Sbagliato",
+        "Riprova"
+      ]
+    }
+  ]
+}

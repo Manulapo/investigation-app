@@ -170,6 +170,64 @@
         "Che aspetti?",
         "Vai a chiderglielo!"
       ]
+    },
+    {
+      "id": "event_robert_8",
+      "turnId": 16,
+      "type": "narrative",
+      "triggerAfter": "msg_turn10_success",
+      "messages": [
+        "Lo sapevo! anche il partner della figlia non me la racconta giusta, devi assolutamente chiedere alla scientifica di verificare meglio la sala fumatori ci potrebbe essere sfuggito qualcosa!"
+      ],
+      "mediaId": []
+    },
+    {
+      "id": "event_robert_9",
+      "turnId": 17,
+      "type": "narrative",
+      "triggerAfter": "msg_turn16_success",
+      "messages": [
+        "Interessante, questi pezzetti di carta potrebbero avere a che fare con chi stava parlando Vincent?",
+        "Chissa se possono essere decifrati...",
+        "magari potremmo avere più informazioni su cosa stava succedendo"
+      ],
+      "mediaId": []
+    },
+    {
+      "id": "event_robert_10",
+      "turnId": 17,
+      "type": "puzzle",
+      "preQuestion": "Ci sereve un luogo ed un motivo, riesci ad aiutarmi?",
+      "maxAttempts": 3,
+      "penaltySeconds": 10,
+      "notification": {
+        "notificationContact": "elena",
+        "notificationMessage": "Hai ricevuto un messaggio da Elena"
+      },
+      "solution": {
+        "keywords": [
+          "Livorno",
+          "Le Lacrime della Regina"
+        ],
+        "response": {
+          "text": [
+            "Ah, che interessante twist. Alla fine il popmposo ed infallibile uomo d'affari, aveva i suoi scheletri nell'armadio",
+            "Un momento però, Livorno a mezzanotte... non avrebbe mai fatto in tempo da Firenze se avesse apsettato l'orario presunt della morte di Elias!",
+            "Mh tutto questo sembra scagionarlo.. anche se qualcosa continua a non tornare. Devo assolutamente tornare alla Villa e verificare meglio nella stanza di Elias"
+          ],
+          "mediaId": [],
+          "evidenceText": []
+        }
+      },
+      "hints": [
+        "Abbiamo bisogno di sapere il luogo generico (città) al quale fanno riferimento le coordinate",
+        "dobbiamo anche capire il motivo, l'oggetto del movente.",
+        "controlla tutto il codice morse, il movente ha un nome preciso"
+      ],
+      "fallbacks": [
+        "Non porta a niente",
+        "Mi sa che siamo ancora lontani"
+      ]
     }
   ]
 }

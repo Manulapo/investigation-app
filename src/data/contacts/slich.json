@@ -1,0 +1,43 @@
+{
+  "id": "slich",
+  "initialMessage": "Salve, sono slichho suonato la sera dell'evento.",
+  "timeline": [
+    {
+      "id": "event_slich_1",
+      "turnId": 15,
+      "type": "puzzle",
+      "preQuestion": "*Nota: Quale messaggio si cela dietro la sinfonia da me creata per Elias?*",
+      "maxAttempts": 3,
+      "penaltySeconds": 10,
+      "notification": {
+        "notificationContact": "robert",
+        "notificationMessage": "Hai ricevuto un messaggio da Robert"
+      },
+      "solution": {
+        "keywords": [
+          "facade"
+        ],
+        "response": {
+          "text": [
+            "Noi suoniamo, non guardiamo. È la regola. Ma stasera sembrava impossibile concentrarsi sulla nostra musica. Prima quella ricca snob che si lamenta dei nostri pezzi e si imbarca in una filippica confusionaria e pomposa su quale sia la vera musica da accompagnamento, e poi… quella ragazza, la Dalgado... difficile non guardarla.",
+            "Era un nervo scoperto. Ha chiesto al pianista di suonare un pezzo triste, poi ha cambiato idea e voleva un Charleston veloce. Rideva, poi due minuti dopo l'ho vista vicino alle tende che strappava un fazzoletto con i denti. Quando è salita al piano di sopra verso le stanze di lui, aveva lo sguardo di chi va al patibolo. O di chi ci manda qualcun altro.",
+            "Per non parlare poi di quel Vincent, tipo strano anche lui. Appena ha visto che stavo per entrare nella sala fumatori ha gettato qualcosa frettolosamente nel cestino e se n’è andato subito senza rivolgermi parola. Era molto nervoso."
+          ],
+          "messageId": "msg_turn2_success",
+          "mediaId": [],
+          "evidenceText": "Era presente anche Morgana alla festa, la scrittrice di romanzi gialli e amica stretta di Throne, sono sicura che ne avrà di cose interessanti scritte su quella sera sul suo taqquino! Fossi in voi ci parlerei..."
+        }
+      },
+      "hints": [
+        "le note nascondono qualcosa",
+        "forse un anagramma",
+        "forse ci dicono la verità sul segreto della bellezza di Elias"
+      ],
+      "fallbacks": [
+        "Non capisco.",
+        "Sbagliato",
+        "Riprova"
+      ]
+    }
+  ]
+}

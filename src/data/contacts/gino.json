@@ -1,0 +1,57 @@
+{
+  "id": "gino",
+  "initialMessage": "Hey detective, perchè quel muso lungo? venga al bancone che le offro qualcosa",
+  "timeline": [
+    {
+      "id": "event_gino_1",
+      "turnId": 13,
+      "type": "narrative",
+      "triggerAfter": null,
+      "messages": [
+        "Bella festa, eh? Se vi piace vedere gente ricca che si pugnala alle spalle mentre sorride. Chi ho notato? Beh, quel tipo, il fidanzato della figlia... Calvino, giusto?.",
+        "L'ho tenuto d'occhio tutta la sera perché mi ha ordinato un whisky doppio e non l'ha nemmeno pagato. C'è stata una scena brutta verso le 21:00, proprio qui davanti al bancone. La musica copriva le parole, ma ho visto il linguaggio del corpo. Lui le ha afferrato il polso, sibilando qualcosa di cattivo nell'orecchio.",
+        " Clara si è ritratta spaventata e si è portata subito le mani al collo, coprendo quella collana sfarzosa che portava, come per proteggerla. ",
+        "Ho visto Vincent parlare animatamente nel ricevitore, ma tenendo il dito premuto sulla forcella per tutto il tempo. Gesticola guardando ossessivamente il suo orologio da taschino come a voler contare il tempo di una giusta recita.",
+        "Ah quasi dimenticavo, hanno pure lasciato questo registro della partita di Poker sul mio tavolo quella sera"
+      ],
+      "mediaId": [
+        "i10"
+      ]
+    },
+    {
+      "id": "event_gino_2",
+      "turnId": 13,
+      "type": "puzzle",
+      "preQuestion": "A quanto ammonta la vittoria della partita di Poker?",
+      "maxAttempts": 3,
+      "penaltySeconds": 60,
+      "notification": {
+        "notificationContact": "damien",
+        "notificationMessage": "Hai ricevuto un messaggio da Damien"
+      },
+      "solution": {
+        "keywords": [
+          "18500"
+        ],
+        "response": {
+          "text": [],
+          "messageId": "msg_turn13_success",
+          "mediaId": [],
+          "evidenceText": [
+            "E poi c'era l'altro, il socio di Thorne, Ferbs. Non ha bevuto nulla. Strano per lui. Continuava a guardare l'orologio e a fissare il tavolo dei regali. Sembrava uno che aspetta l'esplosione di un fuoco d'artificio che non parte mai.",
+            "Ah, e la figlia, Clara. Poverina. È venuta al bar a chiedere un bicchiere d'acqua per prendere un'aspirina. Tremava come una foglia. Farfugliava qualcosa su un regalo, sperando che piacesse al festeggiato. Era cosí preoccupata riguardo il suo regalo al padre… che razza di genitore non ama il regalo che ti fa un figlio.",
+            "Per fortuna intorno alle 23.45 ci siamo fatti due risate qui al bar con quel poveretto del giovane pittore, Damien."
+          ]
+        }
+      },
+      "hints": [
+        "conta bene",
+        "Non si tratta solo della vincita finale"
+      ],
+      "fallbacks": [
+        "Sbagliato",
+        "Riprova"
+      ]
+    }
+  ]
+}

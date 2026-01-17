@@ -11,11 +11,18 @@
       "penaltySeconds": 10,
       "notification": {},
       "solution": {
-        "keywords": ["17"],
+        "keywords": [
+          "17"
+        ],
         "response": {
-          "text": ["Corretto, Arthur Socks è stato trovato morto il 17 Marzo 1924."],
+          "text": [
+            "Corretto, Arthur Socks è stato trovato morto il 17 Marzo 1924."
+          ],
           "messageId": "msg_turn4_success",
-          "mediaId": ["i7", "i8"],
+          "mediaId": [
+            "i7",
+            "i8"
+          ],
           "evidenceText": "Vi lascio alcune delle prove e delle piste che Rusty stava seguendo e che aveva condiviso con me prima di sparire:"
         }
       },
@@ -24,6 +31,44 @@
       ],
       "fallbacks": [
         "Non capisco.",
+        "Riprova"
+      ]
+    },
+    {
+      "id": "event_loc_2",
+      "turnId": 16,
+      "type": "puzzle",
+      "preQuestion": "*Prova: Che ore erano quando hanno aperto i mercati di Tokio?*",
+      "maxAttempts": 3,
+      "penaltySeconds": 10,
+      "notification": {
+        "notification": {
+          "notificationContact": "robert",
+          "notificationMessage": "Hai ricevuto un messaggio da Robert"
+        }
+      },
+      "solution": {
+        "keywords": [
+          "01:00"
+        ],
+        "response": {
+          "text": [
+            "I mercati di Tokio? Impossibile, erano ancora chiusi quando la vicenda è accaduta.. molto sospetto."
+          ],
+          "messageId": "msg_turn16_success",
+          "mediaId": [
+            "i11",
+            "i12"
+          ],
+          "evidenceText": "Ecco quanto trovato nella sala fumatori. Nel Cestino c'erano alcuni pezzi di carta strappati."
+        }
+      },
+      "hints": [
+        "il formato è 'HH:mm'",
+        "Tieni di conto del fuso orario"
+      ],
+      "fallbacks": [
+        "Sbagliato",
         "Riprova"
       ]
     }

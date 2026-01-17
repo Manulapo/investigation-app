@@ -6,4 +6,3 @@ dist
 # Compiled JavaScript from TypeScript
 src/**/*.js
 src/**/*.js.map
-node_modules
