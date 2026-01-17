@@ -20,7 +20,6 @@
     "alt": "Foto Scena Crimine",
     "initial": true
   },
-
   {
     "id": "i3",
     "type": "image",
@@ -72,14 +71,14 @@
     "contactId": "loc",
     "initial": false
   },
-    {
+  {
     "id": "i9",
     "type": "image",
     "src": "/investigation-app/assets/images/autopsia.png",
     "contactId": "lab",
     "initial": false
   },
-    {
+  {
     "id": "d3",
     "type": "pdf",
     "src": "/investigation-app/assets/pdf/pharma_raff.pdf",
@@ -88,39 +87,10 @@
     "initial": false
   },
   {
-    "id": "i7",
-    "type": "image",
-    "src": "https://picsum.photos/300/200?random=7",
-    "contactId": "c2",
-    "initial": false
-  },
-  {
-    "id": "i8",
-    "type": "image",
-    "src": "https://picsum.photos/300/200?random=8",
-    "contactId": "c2",
-    "initial": false
-  },
-  {
-    "id": "i9",
-    "type": "image",
-    "src": "https://picsum.photos/300/200?random=9",
-    "contactId": "c2",
-    "initial": false
-  },
-  {
-    "id": "d2",
-    "type": "pdf",
-    "src": "https://drive.google.com/file/d/1oOMEqMMoQQ_5o1vHhYknI_l3l8mlTB43/view?usp=drive_link",
-    "alt": "Rapporto Investigativo Caso Ombra",
-    "contactId": "c2",
-    "initial": false
-  },
-  {
     "id": "i10",
     "type": "image",
-    "src": "https://picsum.photos/300/200?random=10",
-    "contactId": "c3",
+    "src": "/investigation-app/assets/images/registro_poker.png",
+    "contactId": "gino",
     "initial": false
   }
 ]

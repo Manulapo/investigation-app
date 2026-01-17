@@ -1,5 +1,5 @@
 {
-  "id": "martha",
+  "id": "edonispharma",
   "initialMessage": "Buongiorno da Edonis Pharma, come possiamo aiutarla oggi?",
   "timeline": [
     {
@@ -14,11 +14,17 @@
         "notificationMessage": "Hai ricevuto un messaggio da Marcus"
       },
       "solution": {
-        "keywords": ["12165"],
+        "keywords": [
+          "12165"
+        ],
         "response": {
-          "text": ["ecco a lei lo storico ordine, il suo codice cliente é 12165. Mi raccomando tenga tutto in ordine, non vorremmo che qualche altro cliente curioso metta le mani sui suoi segreti."],
+          "text": [
+            "ecco a lei lo storico ordine, il suo codice cliente é 12165. Mi raccomando tenga tutto in ordine, non vorremmo che qualche altro cliente curioso metta le mani sui suoi segreti."
+          ],
           "messageId": "msg_turn9_success",
-          "mediaId": ["d3"]
+          "mediaId": [
+            "d3"
+          ]
         }
       },
       "hints": [

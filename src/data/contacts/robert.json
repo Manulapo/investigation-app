@@ -11,11 +11,21 @@
       "penaltySeconds": 10,
       "notification": {},
       "solution": {
-        "keywords": ["jerry", "thompson"],
+        "keywords": [
+          "jerry",
+          "thompson"
+        ],
         "response": {
-          "text": ["Corretto, procediamo.", "Cari colleghi, sono felice che siate stati chiamati a risolvere questo assurdo caso che ha coinvolto il nostro Ispettore Rusty. Il caso era ormai chiuso con la deposizione della signorina Julianna, ma poco dopo sono accaduti eventi assurdi: la morte del maggiordomo, due giorni dopo quella di Thorne, e la scomparsa dell’Ispettore.", "C’è qualcosa di molto strano: Rusty lo aveva scoperto ed era molto vicino alla verità, ecco perché è scomparso. Anche se sono stato spostato su un altro caso, sarò comunque qui per aiutarvi a scoprire la verità e a trovare Rusty. Giustizia sarà fatta."],
+          "text": [
+            "Corretto, procediamo.",
+            "Cari colleghi, sono felice che siate stati chiamati a risolvere questo assurdo caso che ha coinvolto il nostro Ispettore Rusty. Il caso era ormai chiuso con la deposizione della signorina Julianna, ma poco dopo sono accaduti eventi assurdi: la morte del maggiordomo, due giorni dopo quella di Thorne, e la scomparsa dell’Ispettore.",
+            "C’è qualcosa di molto strano: Rusty lo aveva scoperto ed era molto vicino alla verità, ecco perché è scomparso. Anche se sono stato spostato su un altro caso, sarò comunque qui per aiutarvi a scoprire la verità e a trovare Rusty. Giustizia sarà fatta."
+          ],
           "messageId": "msg_turn1_success",
-          "mediaId": ["i3", "d2"],
+          "mediaId": [
+            "i3",
+            "d2"
+          ],
           "evidenceText": "Ma prima di tutto, vi lascio alcune delle prove e delle piste che Rusty stava seguendo e che aveva condiviso con me prima di sparire:"
         }
       },
@@ -52,10 +62,18 @@
         "notificationMessage": "Hai ricevuto un messaggio dal laboratorio forense"
       },
       "solution": {
-        "keywords": ["william", "thorne"],
+        "keywords": [
+          "william",
+          "thorne"
+        ],
         "response": {
-          "text": ["Corretto, procediamo.", "Sicuramente c'è di più da scoprire anche sul maggiordomo.. sembra essere morto di influenza, ma chiederei conferma alla scientifica per sicurezza."],
-          "mediaId": ["i6"],
+          "text": [
+            "Corretto, procediamo.",
+            "Sicuramente c'è di più da scoprire anche sul maggiordomo.. sembra essere morto di influenza, ma chiederei conferma alla scientifica per sicurezza."
+          ],
+          "mediaId": [
+            "i6"
+          ],
           "evidenceText": []
         }
       },
@@ -91,10 +109,15 @@
         "notificationMessage": "Hai ricevuto un messaggio da Thomas"
       },
       "solution": {
-        "keywords": ["50"],
+        "keywords": [
+          "50"
+        ],
         "response": {
-          "text": ["Corretto, procediamo.", "Sicuramente c'è di più da scoprire anche sul maggiordomo.. sembra essere morto di influenza, ma chiederei conferma alla scientifica per sicurezza."],
-          "mediaId": ["i6"],
+          "text": [
+            "Corretto, procediamo.",
+            "Sicuramente c'è di più da scoprire anche sul maggiordomo.. sembra essere morto di influenza, ma chiederei conferma alla scientifica per sicurezza."
+          ],
+          "mediaId": [],
           "evidenceText": []
         }
       },
@@ -106,6 +129,46 @@
         "Non capisco.",
         "Riprova",
         "Smetti di perdere tempo, dimmi il nome."
+      ]
+    },
+    {
+      "id": "event_robert_6",
+      "turnId": 6,
+      "type": "narrative",
+      "triggerAfter": "msg_turn10_success",
+      "messages": [
+        "Quel Marcus non me la racconta giusta! Voglio indagare un po' di più sul suo conto... potrebbe avere molte cose in sospeso con il signor Thorne."
+      ],
+      "mediaId": []
+    },
+    {
+      "id": "event_robert_7",
+      "turnId": 11,
+      "type": "puzzle",
+      "preQuestion": "Avete già parlato con Morgana riguardo alla sua impressione su Marcus?",
+      "maxAttempts": 3,
+      "penaltySeconds": 10,
+      "notification": {
+        "notificationContact": "elena",
+        "notificationMessage": "Hai ricevuto un messaggio da Elena"
+      },
+      "solution": {
+        "keywords": [
+          "si"
+        ],
+        "response": {
+          "text": [
+            "Mhm, Marcus Ferbs è sicuramente un uomo da tenere d'occhio, ma non ucciderebbe mai il uo socio, visto quanto avrebbe da perdere con la perdita di uno delle colonne portanti dell'azienda.",
+            "Intanto Ti emtto in contatto con la contessa Elena Ricci",
+            "Coe se una pettegola non bastasse, appea ha saputo delle indagini ha iniziato a vomitarci un flusso infinitodi parole, ma magari puo eserti utile."
+          ],
+          "mediaId": [],
+          "evidenceText": []
+        }
+      },
+      "fallbacks": [
+        "Che aspetti?",
+        "Vai a chiderglielo!"
       ]
     }
   ]

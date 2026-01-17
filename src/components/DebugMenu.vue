@@ -1,6 +1,6 @@
 <template>
   <div v-if="isDev" class="debug-menu">
-    <button @click="showMenu = !showMenu"><i class="fas fa-eye"/></button>
+    <button @click="showMenu = !showMenu"><i class="fas fa-eye" /></button>
     <div v-if="showMenu" class="debug-menu-inner">
       <button @click="reset">🔄</button>
       <button @click="showMockNotification">🔔</button>
@@ -23,11 +23,11 @@ const { resetAll, state, setLevel, resetChatHistories } = useSaveManager()
 const { show } = useNotification()
 const router = useRouter()
 const showMenu = ref(false)
-const isDev = import.meta.env.DEV 
+const isDev = import.meta.env.DEV
 
 const currentLevel = computed(() => state.currentGlobalTurn)
 
-function reset(){ if(confirm('Reimpostare il gioco e cancellare localStorage?')) resetAll() }
+function reset() { if (confirm('Reimpostare il gioco e cancellare localStorage?')) resetAll() }
 
 function incrementLevel() {
   setLevel(currentLevel.value + 1)
@@ -47,7 +47,7 @@ function showMockNotification() {
 
 function autoSolve() {
   const currentRoute = router.currentRoute.value
-  
+
   if (currentRoute.name === 'chat') {
     const contactId = currentRoute.params.id as string
     // Map of contact and their turn answers
@@ -60,13 +60,15 @@ function autoSolve() {
       'martha': {
         2: 't2: 1368'
       },
-      'loc': {
-        4: 't4: 17',
+      'lab': {
         5: 't5: dissanguamento',
         8: 't8: arthur'
       },
+      'loc': {
+        4: 't4: 17',
+      },
       'marcus': {
-        7: 't7: si'
+        10: 't10: Zinco Grezzo'
       },
       'mina': {
         7: 't7: si'
@@ -75,7 +77,7 @@ function autoSolve() {
         9: 't9: 12165'
       }
     }
-    
+
     // Dispatch event - ChatRoom will figure out which turn it is
     const contactAnswers = answers[contactId]
     if (contactAnswers) {
@@ -88,7 +90,7 @@ function autoSolve() {
 <style scoped>
 .debug-menu {
   position: fixed;
-  bottom: 50% ;
+  bottom: 50%;
   left: 40px;
   display: flex;
   gap: 0.5rem;

@@ -1,23 +1,42 @@
 {
   "id": "marcus",
-  "initialMessage": "Salve detective sono Marcus Ferbs, il socio di Marcus.",
+  "initialMessage": "Salve detective sono Marcus Ferbs, il socio di Elias.",
   "timeline": [
     {
-      "id": "event_marcus_1",
-      "turnId": 7,
+      "id": "event_marcus_2",
+      "turnId": 10,
+      "type": "narrative",
+      "triggerAfter": null,
+      "messages": [
+        "Ho appena ricevuto una notifica da Edonis Pharma, relativa ad alcune partite di prodotti acquistati da noi, se poso esserel utile in qualche modo, sono a sua completa disposizione.",
+        "Ho solo bsiogno che mi ricordi la natura di tale documento."
+      ],
+      "mediaId": []
+    },
+    {
+      "id": "event_marcus_2",
+      "turnId": 10,
       "type": "puzzle",
-      "preQuestion": "Parlato con Morgana?",
+      "preQuestion": "A quale prodotto acquistato fa riferimento la ricevuta?",
       "maxAttempts": 3,
       "penaltySeconds": 60,
       "notification": {
-        "notificationContact": "lab",
-        "notificationMessage": "Hai ricevuto un messaggio dal laboratorio forense"
+        "notificationContact": "robert",
+        "notificationMessage": "Hai ricevuto un messaggio da Robert"
       },
       "solution": {
-        "keywords": ["si"],
+        "keywords": [
+          "Zinco",
+          "Grezzo"
+        ],
         "response": {
-          "text": ["Buonasera, ho ricevuto la vostra lettera dove mi segnalate anomalie nella fattura ricevuta a carico mio per l'ordine presso la farmacia Edonis Pharma. Elias non bada a spese ma io devo fare in modo che i conti tornino e il costo dello smaltimento degli scarti dello zinco era decisamente troppo oneroso"],
-          "messageId": "msg_turn7_success",
+          "text": [
+            "Ah Ma certo, ora ricordo, Lo zinco grezzo.",
+            "Regolare amministrazione per elias purtroppo, niente di insolito, temo.",
+            "Nessuna anomalia, Elias mi cheide spesso di acquistare per lui prodotti di mantenimento e bellezza per lui.",
+            "Purtroppo, il mio socio non bada a spese quando si tratta di prodotti del genere ma io devo fare in modo che i conti tornino e il costo dello smaltimento degli scarti dello zinco era decisamente troppo oneroso."
+          ],
+          "messageId": "msg_turn10_success",
           "mediaId": [],
           "evidenceText": []
         }
