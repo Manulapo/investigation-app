@@ -18,115 +18,63 @@
         <div class="empty-emoji"><i class="fas fa-search"></i></div>
         <p>Ancora nessun messaggio</p>
         <p class="hint">Digita la tua risposta per iniziare</p>
-        <p class="format">Esempio: <code>T1: Aquila Blu</code></p>
+        <p class="format">Esempio: <code>T1: Blue eagle</code></p>
       </div>
       <MessageBubble v-for="msg in messages" :key="msg.id" :content="msg.content" :sender="msg.sender"
         :timestamp="msg.timestamp" :media="msg.media" @openFullscreen="openFullscreen" />
     </div>
 
     <!-- Input -->
-    <div class="input-section">
-      <div class="input-area">
-        <input v-model="inputValue" :disabled="isCooldown" class="input-field"
-          placeholder="Inserisci messaggio nel formato corretto..." @keyup.enter="sendMessage" />
-        <button :disabled="!inputValue || isCooldown" class="send-btn" @click="sendMessage"><i
-            class="fas fa-paper-plane"></i></button>
-      </div>
-      <p v-if="isCooldown" class="cooldown-msg">⏱️ Cooldown: {{ cooldownCountdown }}s</p>
-    </div>
+    <ChatInput :is-cooldown="isCooldown" :cooldown-countdown="cooldownCountdown" @send="handleSendMessage" />
 
     <!-- Fullscreen Media Modal -->
-    <div v-if="fullscreenMedia" class="fullscreen-modal" @click="closeFullscreen">
-      <div class="fullscreen-content" @click.stop>
-        <img v-if="fullscreenMedia.type === 'image'" ref="imageElement" :src="fullscreenMedia.src"
-          :alt="fullscreenMedia.alt || 'Media'" class="fullscreen-image" :style="imageTransform" @mousedown="startDrag"
-          @touchstart="startDrag" />
-        <button class="close-btn" @click="closeFullscreen">×</button>
-
-        <!-- Zoom Controls Footer -->
-        <div class="zoom-controls">
-          <button @click="zoomOut" :disabled="zoomLevel <= 1">
-            <i class="fas fa-minus"></i>
-          </button>
-          <span class="zoom-level">{{ Math.round(zoomLevel * 100) }}%</span>
-          <button @click="zoomIn" :disabled="zoomLevel >= 4">
-            <i class="fas fa-plus"></i>
-          </button>
-          <button @click="resetZoom">
-            <i class="fas fa-undo"></i>
-          </button>
-        </div>
-      </div>
-    </div>
+    <FullscreenMediaModal :media="fullscreenMedia" :image-element="imageElement" :image-transform="imageTransform"
+      :zoom-level="zoomLevel" @close="closeFullscreen" @zoom-in="zoomIn" @zoom-out="zoomOut" @reset-zoom="resetZoom"
+      @start-drag="startDrag" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import registry from '../data/registry.json'
-import { contactDataMap } from '../data/contactDataMap'
-import MessageBubble from '../components/ui/MessageBubble.vue'
 import AppHeader from '../components/layout/AppHeader.vue'
-import { useSaveManager } from '../composables/useSaveManager'
-import { useGameEngine } from '../composables/useGameEngine'
-import { useNotification } from '../composables/useNotification'
-import { useDocuments } from '../composables/useDocuments'
 import Avatar from '../components/ui/Avatar.vue'
+import ChatInput from '../components/ui/ChatInput.vue'
+import FullscreenMediaModal from '../components/ui/FullscreenMediaModal.vue'
+import MessageBubble from '../components/ui/MessageBubble.vue'
+import { useContactLoader } from '../composables/useContactLoader'
+import { useDocuments } from '../composables/useDocuments'
+import { useGameEngine } from '../composables/useGameEngine'
+import { useImageViewer } from '../composables/useImageViewer'
+import { useMessageQueue } from '../composables/useMessageQueue'
+import { useNotification } from '../composables/useNotification'
+import { useSaveManager } from '../composables/useSaveManager'
+import registry from '../data/registry.json'
+import type { MessageData } from '../types'
 
 
 const props = defineProps<{ id: string }>()
 
 const router = useRouter()
-const contactId = computed(() => props.id || 'c1')
 const { state, getMessages, addMessage, isLocked, getLockedUntil, setPreQuestionShown, isPreQuestionShown, markMessagesAsRead, getUsedHintsForPuzzle, useHint, isNarrativeShown, setNarrativeShown } = useSaveManager()
 const { parseInput, getNarrativeMessagesForTurnStart, getPuzzleForTurn } = useGameEngine()
 const { show } = useNotification()
 const { getDocumentById, unlockDocuments } = useDocuments()
+const { fullscreenMedia, imageElement, imageTransform, openFullscreen, closeFullscreen, zoomIn, zoomOut, resetZoom, startDrag, zoomLevel } = useImageViewer()
 
-// Fullscreen and zoom state
-const imageElement = ref<HTMLImageElement | null>(null)
-const zoomLevel = ref(1)
-const position = ref({ x: 0, y: 0 })
-const isDragging = ref(false)
-const dragStart = ref({ x: 0, y: 0 })
 
-const imageTransform = computed(() => {
-  return {
-    transform: `translate(${position.value.x}px, ${position.value.y}px) scale(${zoomLevel.value})`,
-    cursor: zoomLevel.value > 1 ? 'grab' : 'default',
-    transition: isDragging.value ? 'none' : 'transform 0.2s ease'
-  }
-})
+const contactData = ref<any>(null)
+const isTyping = ref(false)
+const messagesContainer = ref<HTMLElement | null>(null)
+const cooldownCountdown = ref(0)
+const reactiveTimer = ref(0)
+const isMessageSending = ref(false)
 
-// Function to determine the current turn for a contact
-function getCurrentTurnForContact(contactId: string): number {
-  const messages = getMessages(contactId)
-  let highestCompletedTurn = 0
-
-  // Find all success messages and extract turn numbers
-  messages.forEach((message: any) => {
-    if (message.id?.startsWith('msg_turn') && message.id?.endsWith('_success')) {
-      // Extract turn number from message ID like "msg_turn1_success"
-      const match = message.id.match(/msg_turn(\d+)_success/)
-      if (match) {
-        const turnNumber = parseInt(match[1])
-        highestCompletedTurn = Math.max(highestCompletedTurn, turnNumber)
-      }
-    }
-  })
-
-  const nextTurn = highestCompletedTurn + 1
-  // Return the max of global turn and next turn to ensure progression
-  return Math.max(state.currentGlobalTurn, nextTurn)
-}
-
+const contactId = computed(() => props.id)
 const contact = computed(() => registry.find((c: any) => c.id === contactId.value))
 const messages = computed(() => getMessages(contactId.value))
 const currentTurn = computed(() => getCurrentTurnForContact(contactId.value))
-const fullscreenMedia = ref<any>(null)
 
-// Hint system
 const currentPuzzle = computed(() => {
   if (!contactData.value) return null
   return getPuzzleForTurn(contactId.value, currentTurn.value)
@@ -141,36 +89,42 @@ const isHintAvailable = computed(() => {
   return usedHints < currentPuzzle.value.hints.length
 })
 
-function requestHint() {
-  if (!isHintAvailable.value || !currentPuzzle.value) return
+const isCooldown = computed(() => {
+  reactiveTimer.value
+  const key = `${contactId.value}_${currentTurn.value}`
+  const status = state.puzzleStatus[key]
+  if (!status || !status.lockedUntil) return false
+  return Date.now() < status.lockedUntil
+})
 
-  const puzzleKey = `${contactId.value}_${currentTurn.value}`
-  const usedHints = getUsedHintsForPuzzle(puzzleKey)
-  const hintText = currentPuzzle.value.hints[usedHints]
+function getCurrentTurnForContact(contactId: string): number {
+  const messages = getMessages(contactId)
+  let highestCompletedTurn = 0
 
-  if (hintText) {
-    // Add hint as a message from contact
-    addDelayedMessage(contactId.value, {
-      id: `msg_hint_${puzzleKey}_${usedHints}`,
-      content: hintText,
-      sender: 'contact'
-    }, 0)
+  messages.forEach((message: any) => {
+    if (message.id?.startsWith('msg_turn') && message.id?.endsWith('_success')) {
+      const match = message.id.match(/msg_turn(\d+)_success/)
+      if (match) {
+        const turnNumber = parseInt(match[1])
+        highestCompletedTurn = Math.max(highestCompletedTurn, turnNumber)
+      }
+    }
+  })
 
-    // Mark hint as used
-    useHint(puzzleKey)
-
-    // Trigger typing animation
-    isTyping.value = true
-    setTimeout(() => {
-      isTyping.value = false
-      scrollToBottom()
-    }, 1000)
-  }
+  const nextTurn = highestCompletedTurn + 1
+  return Math.max(state.currentGlobalTurn, nextTurn)
 }
 
-// Helper function to add messages with delay
-let messageDelayCounter = 0
-const addDelayedMessage = (contactId: string, messageData: any, delaySeconds: number = 2) => {
+const findMedia = (mediaId: string) => {
+  return getDocumentById(mediaId)
+}
+
+const findMediaArray = (mediaIds: string | string[]) => {
+  const ids = Array.isArray(mediaIds) ? mediaIds : [mediaIds]
+  return ids.map(id => findMedia(id)).filter(Boolean)
+}
+
+const addDelayedMessage = (contactId: string, messageData: MessageData, delaySeconds: number = 2) => {
   const addMsg = () => {
     addMessage(contactId, {
       ...messageData,
@@ -184,217 +138,146 @@ const addDelayedMessage = (contactId: string, messageData: any, delaySeconds: nu
   }
 }
 
-// Helper function to check if triggered narratives should be shown
-const checkTriggeredNarratives = () => {
-  if (!contactData.value) return { messages: [], mediaIds: [], events: [] }
-
-  const timeline = contactData.value.timeline || []
-  const allMessages = messages.value
-
-  // Find all triggered narrative events
-  const triggeredNarratives: any[] = []
-
-  timeline.forEach((event: any) => {
-    if (event.type === 'narrative' && event.triggerAfter) {
-      // Check if the trigger message exists in any contact's history
-      const triggerExists = Object.keys(state.chatHistories).some(cId => {
-        const contactMessages = state.chatHistories[cId] || []
-        return contactMessages.some((msg: any) => msg.id === event.triggerAfter)
-      })
-
-      if (triggerExists) {
-        triggeredNarratives.push(event)
-      }
-    }
-  })
-
-  return {
-    messages: triggeredNarratives.flatMap((event: any) => event.messages || []),
-    mediaIds: triggeredNarratives.flatMap((event: any) => event.mediaId || []),
-    events: triggeredNarratives
-  }
-}
-
-// Load contact data and add initial message if chat is empty
-const contactData = ref<any>(null)
-const loadContactData = () => {
-  try {
-    const contactFile = contact.value?.file
-    if (contactFile) {
-      // Get contact data from direct JSON imports
-      contactData.value = contactDataMap[contactFile]
-
-      // Add initial message if chat is empty
-      if (messages.value.length === 0) {
-        messageDelayCounter = 0
-        if (contactData.value.initialMessage) {
-          addDelayedMessage(contactId.value, {
-            id: `msg_initial_${contactId.value}`,
-            content: contactData.value.initialMessage,
-            sender: 'contact'
-          }, 0) // No delay for first message
-          messageDelayCounter++
-        }
-      }
-
-      // Determine current turn and show narrative messages for turn start
-      const currentTurn = getCurrentTurnForContact(contactId.value)
-      const narrativeData = getNarrativeMessagesForTurnStart(contactId.value, currentTurn)
-
-      // Check for triggered narratives (from other contacts' success messages)
-      const triggeredData = checkTriggeredNarratives()
-
-      // Show typing indicator if there are narrative messages to display
-      if ((narrativeData.messages.length > 0 && narrativeData.messages.some((_: any, index: number) => !isNarrativeShown(`narrative_initial_${currentTurn}_${index}`))) ||
-        (triggeredData.messages.length > 0 && triggeredData.events && triggeredData.events.some((event: any) => !isNarrativeShown(`narrative_triggered_${event.id}`)))) {
-        isTyping.value = true
-      }
-
-      let narrativeDelay = 0
-      narrativeData.messages.forEach((message: string, index: number) => {
-        const narrativeId = `narrative_initial_${currentTurn}_${index}`
-        if (!isNarrativeShown(narrativeId)) {
-          const delay = messages.value.length === 0 ? messageDelayCounter * 2 : narrativeDelay
-          addDelayedMessage(contactId.value, {
-            id: `msg_narrative_initial_${currentTurn}_${index}`,
-            content: message,
-            sender: 'contact'
-          }, delay)
-          setNarrativeShown(narrativeId)
-          if (messages.value.length === 0) {
-            messageDelayCounter++
-          } else {
-            narrativeDelay += 2
-          }
-        }
-      })
-
-      // Add triggered narrative messages
-      triggeredData.messages.forEach((message: string, index: number) => {
-        const event = triggeredData.events && triggeredData.events[0] // Use first event for simplicity
-        if (!event) return
-        const narrativeId = `narrative_triggered_${event.id}_${index}`
-        if (!isNarrativeShown(narrativeId)) {
-          const delay = messages.value.length === 0 ? messageDelayCounter * 2 : narrativeDelay
-          addDelayedMessage(contactId.value, {
-            id: `msg_narrative_triggered_${event.id}_${index}`,
-            content: message,
-            sender: 'contact'
-          }, delay)
-          setNarrativeShown(narrativeId)
-          if (messages.value.length === 0) {
-            messageDelayCounter++
-          } else {
-            narrativeDelay += 2
-          }
-        }
-      })
-
-      // Add narrative media if any
-      if (narrativeData.mediaIds.length > 0) {
-        unlockDocuments(narrativeData.mediaIds)
-        const mediaArray = findMediaArray(narrativeData.mediaIds)
-        mediaArray.forEach((media: any, mediaIndex: number) => {
-          const narrativeMediaId = `narrative_media_initial_${currentTurn}_${media.id || mediaIndex}`
-          if (!isNarrativeShown(narrativeMediaId)) {
-            const delay = messages.value.length === 0 ? messageDelayCounter * 2 : narrativeDelay
-            addDelayedMessage(contactId.value, {
-              id: `msg_narrative_media_initial_${currentTurn}_${media.id || mediaIndex}`,
-              content: '',
-              sender: 'contact',
-              media: [media]
-            }, delay)
-            setNarrativeShown(narrativeMediaId)
-            if (messages.value.length === 0) {
-              messageDelayCounter++
-            } else {
-              narrativeDelay += 2
-            }
-          }
-        })
-      }
-
-      // Add triggered narrative media if any
-      if (triggeredData.mediaIds.length > 0 && triggeredData.events && triggeredData.events.length > 0) {
-        unlockDocuments(triggeredData.mediaIds)
-        const triggeredMediaArray = findMediaArray(triggeredData.mediaIds)
-        triggeredMediaArray.forEach((media: any, mediaIndex: number) => {
-          const event = triggeredData.events![0] // Assume first event for media
-          const narrativeMediaId = `narrative_triggered_media_${event.id}_${media.id || mediaIndex}`
-          if (!isNarrativeShown(narrativeMediaId)) {
-            const delay = messages.value.length === 0 ? messageDelayCounter * 2 : narrativeDelay
-            addDelayedMessage(contactId.value, {
-              id: `msg_narrative_triggered_media_${event.id}_${media.id || mediaIndex}`,
-              content: '',
-              sender: 'contact',
-              media: [media]
-            }, delay)
-            setNarrativeShown(narrativeMediaId)
-            if (messages.value.length === 0) {
-              messageDelayCounter++
-            } else {
-              narrativeDelay += 2
-            }
-          }
-        })
-      }
-
-      // Turn off typing indicator after all narrative messages are sent
-      const totalNarrativeDelay = messages.value.length === 0
-        ? (messageDelayCounter * 2 * 1000)
-        : (narrativeDelay * 1000)
-      if (totalNarrativeDelay > 0) {
-        setTimeout(() => {
-          isTyping.value = false
-        }, totalNarrativeDelay)
-      }
-
-      // Show puzzle preQuestion (schedule after any narrative/triggered messages)
-      const puzzleEvent = getPuzzleForTurn(contactId.value, currentTurn)
-
-      if (puzzleEvent?.preQuestion && !isPreQuestionShown(`${contactId.value}_${currentTurn}`)) {
-        // Ensure preQuestion appears after any narrative messages by using the larger delay
-        const preQuestionDelay = Math.max(messageDelayCounter * 2, narrativeDelay)
-        addDelayedMessage(contactId.value, {
-          id: `msg_prequestion_${contactId.value}_${currentTurn}`,
-          content: puzzleEvent.preQuestion,
-          sender: 'contact'
-        }, preQuestionDelay)
-        if (messages.value.length === 0) messageDelayCounter++
-        // Mark preQuestion as shown so it doesn't show again
-        setPreQuestionShown(`${contactId.value}_${currentTurn}`, true)
-      }
-    }
-  } catch (error) {
-    console.error('Error loading contact data:', error)
-  }
-}
-
-const findMedia = (mediaId: string) => {
-  return getDocumentById(mediaId)
-}
-
-const findMediaArray = (mediaIds: string | string[]) => {
-  const ids = Array.isArray(mediaIds) ? mediaIds : [mediaIds]
-  return ids.map(id => findMedia(id)).filter(Boolean)
-}
-
-const inputValue = ref('')
-const isTyping = ref(false)
-const messagesContainer = ref<HTMLElement | null>(null)
-const cooldownCountdown = ref(0)
-const reactiveTimer = ref(0)
-
-const isCooldown = computed(() => {
-  // Include reactiveTimer to make this computed property reactive
-  reactiveTimer.value
-  const key = `${contactId.value}_${currentTurn.value}`
-  const status = state.puzzleStatus[key]
-  if (!status || !status.lockedUntil) return false
-  return Date.now() < status.lockedUntil
+// Initialize message queue composable
+const messageQueue = useMessageQueue({
+  contactId,
+  addMessage,
+  addDelayedMessage,
+  unlockDocuments,
+  findMediaArray,
+  show,
+  getPuzzleForTurn,
+  isPreQuestionShown,
+  setPreQuestionShown,
+  currentTurn
 })
 
-const isMessageSending = ref(false)
+// Initialize contact loader composable
+const contactLoader = useContactLoader({
+  contactId,
+  contact,
+  messages,
+  state,
+  addMessage,
+  addDelayedMessage,
+  unlockDocuments,
+  findMediaArray,
+  getNarrativeMessagesForTurnStart,
+  getPuzzleForTurn,
+  isNarrativeShown,
+  setNarrativeShown,
+  isPreQuestionShown,
+  setPreQuestionShown,
+  getCurrentTurnForContact,
+  isTyping
+})
+
+const checkTriggeredNarratives = () => {
+  return contactLoader.checkTriggeredNarratives(contactData.value)
+}
+
+function requestHint() {
+  if (!isHintAvailable.value || !currentPuzzle.value) return
+
+  const puzzleKey = `${contactId.value}_${currentTurn.value}`
+  const usedHints = getUsedHintsForPuzzle(puzzleKey)
+  const hintText = currentPuzzle.value.hints[usedHints]
+
+  if (hintText) {
+    addDelayedMessage(contactId.value, {
+      id: `msg_hint_${puzzleKey}_${usedHints}`,
+      content: hintText,
+      sender: 'contact'
+    }, 0)
+
+    useHint(puzzleKey)
+
+    isTyping.value = true
+    setTimeout(() => {
+      isTyping.value = false
+      scrollToBottom()
+    }, 1000)
+  }
+}
+
+const loadContactData = () => {
+  const loadedData = contactLoader.loadContactData()
+  if (loadedData) {
+    contactData.value = loadedData
+  }
+}
+
+function updateCooldownTimer() {
+  const key = `${contactId.value}_${currentTurn.value}`
+  const until = getLockedUntil(key)
+  cooldownCountdown.value = until ? Math.max(0, Math.ceil((until - Date.now()) / 1000)) : 0
+}
+
+const scrollToBottom = async () => {
+  await nextTick()
+  if (messagesContainer.value) {
+    messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight
+  }
+}
+
+function goBack() {
+  router.push('/')
+}
+
+const handleAutoSolve = (event: any) => {
+  const answers = event.detail.answers
+  const answer = answers[currentTurn.value]
+  if (answer) {
+    handleSendMessage(answer)
+  } else {
+    console.log('No answer found for turn:', currentTurn.value)
+  }
+}
+
+const handleSendMessage = async (userMsg: string) => {
+  if (!userMsg.trim() || isCooldown.value) return
+
+  messageQueue.addUserMessage(userMsg)
+  isMessageSending.value = true
+  isTyping.value = true
+
+  await new Promise(resolve => setTimeout(resolve, 1500))
+
+  const result = parseInput(contactId.value, userMsg)
+
+  messageQueue.addMainResponse(result)
+
+  messageQueue.queueTextMessages(result.textMessages)
+  messageQueue.queueSuccessMedia(result.successMedia)
+  messageQueue.queueMediaMessages(result.mediaId)
+  messageQueue.queueEvidenceText(result.evidenceText)
+  messageQueue.queueEvidenceMessages(result.evidenceTextMessages)
+  messageQueue.queueNarrativeMessages(result)
+  messageQueue.queueNarrativeMedia(result.narrativeMediaIds)
+
+  const totalMessageDelay = messageQueue.calculateTotalDelay(result)
+
+  setTimeout(() => {
+    isTyping.value = false
+  }, totalMessageDelay)
+
+  if (result.status === 'success') {
+    messageQueue.handleSuccessActions(result, totalMessageDelay)
+    isMessageSending.value = false
+  } else {
+    messageQueue.handleFailureActions(result)
+    isMessageSending.value = false
+  }
+
+  scrollToBottom()
+}
+
+
+watch(() => messages.value.length, scrollToBottom)
+
+watch(contactId, () => {
+  loadContactData()
+}, { immediate: true })
 
 watch(isCooldown, (val) => {
   if (val) {
@@ -515,108 +398,11 @@ watch(currentTurn, (newTurn) => {
   }
 })
 
-function updateCooldownTimer() {
-  const key = `${contactId.value}_${currentTurn.value}`
-  const until = getLockedUntil(key)
-  cooldownCountdown.value = until ? Math.max(0, Math.ceil((until - Date.now()) / 1000)) : 0
-}
-
-const scrollToBottom = async () => {
-  await nextTick()
-  if (messagesContainer.value) {
-    messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight
-  }
-}
-
-function openFullscreen(media: any) {
-  fullscreenMedia.value = media
-  resetZoom()
-}
-
-function closeFullscreen() {
-  fullscreenMedia.value = null
-  resetZoom()
-}
-
-function zoomIn() {
-  if (zoomLevel.value < 4) {
-    zoomLevel.value = Math.min(4, zoomLevel.value + 0.5)
-  }
-}
-
-function zoomOut() {
-  if (zoomLevel.value > 1) {
-    zoomLevel.value = Math.max(1, zoomLevel.value - 0.5)
-    if (zoomLevel.value === 1) {
-      position.value = { x: 0, y: 0 }
-    }
-  }
-}
-
-function resetZoom() {
-  zoomLevel.value = 1
-  position.value = { x: 0, y: 0 }
-}
-
-function startDrag(e: MouseEvent | TouchEvent) {
-  if (zoomLevel.value <= 1) return
-
-  isDragging.value = true
-
-  const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX
-  const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY
-
-  dragStart.value = {
-    x: clientX - position.value.x,
-    y: clientY - position.value.y
-  }
-
-  e.preventDefault()
-}
-
-function onDrag(e: MouseEvent | TouchEvent) {
-  if (!isDragging.value) return
-
-  const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX
-  const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY
-
-  position.value = {
-    x: clientX - dragStart.value.x,
-    y: clientY - dragStart.value.y
-  }
-}
-
-function stopDrag() {
-  isDragging.value = false
-}
-
-function goBack() {
-  router.push('/')
-}
-
-watch(() => messages.value.length, scrollToBottom)
-
-watch(contactId, () => {
-  loadContactData()
-}, { immediate: true })
-
-// Listen for debug auto-solve event
-const handleAutoSolve = (event: any) => {
-  const answers = event.detail.answers
-  const answer = answers[currentTurn.value]
-  if (answer) {
-    inputValue.value = answer
-    setTimeout(() => sendMessage(), 100)
-  } else {
-    console.log('No answer found for turn:', currentTurn.value)
-  }
-}
 
 onMounted(() => {
   scrollToBottom()
-  // Mark messages as read when entering the chat
   markMessagesAsRead(contactId.value)
-  // Initialize cooldown timer if already in cooldown when component mounts
+
   if (isCooldown.value) {
     updateCooldownTimer()
     const interval = setInterval(() => {
@@ -630,175 +416,14 @@ onMounted(() => {
     }, 100)
   }
 
-  // Add event listener for auto-solve
   window.addEventListener('debug-auto-solve', handleAutoSolve)
-
-  // Add drag event listeners for fullscreen zoom
-  document.addEventListener('mousemove', onDrag)
-  document.addEventListener('mouseup', stopDrag)
-  document.addEventListener('touchmove', onDrag)
-  document.addEventListener('touchend', stopDrag)
 })
 
 onUnmounted(() => {
-  // Cleanup listener on unmount
   window.removeEventListener('debug-auto-solve', handleAutoSolve)
-
-  // Remove drag event listeners
-  document.removeEventListener('mousemove', onDrag)
-  document.removeEventListener('mouseup', stopDrag)
-  document.removeEventListener('touchmove', onDrag)
-  document.removeEventListener('touchend', stopDrag)
 })
 
-const sendMessage = async () => {
-  if (!inputValue.value.trim() || isCooldown.value) return
 
-  const userMsg = inputValue.value.trim()
-  addMessage(contactId.value, {
-    id: `msg_user_${Date.now()}`,
-    content: userMsg,
-    sender: 'user',
-    timestamp: Date.now()
-  })
-
-  inputValue.value = ''
-  isMessageSending.value = true
-  isTyping.value = true
-
-  // Simulate typing delay
-  await new Promise(resolve => setTimeout(resolve, 1500))
-
-  const result = parseInput(contactId.value, userMsg)
-
-  // Add main response
-  addMessage(contactId.value, {
-    id: result.messageId || `msg_auto_${Date.now()}`,
-    content: result.text,
-    sender: 'contact',
-    timestamp: Date.now()
-  })
-
-  // Queue follow-up messages
-  messageDelayCounter = 1
-
-  // Add additional text messages if any
-  if (result.textMessages && result.textMessages.length > 0) {
-    result.textMessages.forEach((msg: string) => {
-      addDelayedMessage(contactId.value, {
-        id: `msg_text_${Date.now()}_${Math.random()}`,
-        content: msg,
-        sender: 'contact'
-      }, messageDelayCounter++ * 2)
-    })
-  }
-
-  if (result.evidenceText) {
-    addDelayedMessage(contactId.value, {
-      id: `msg_evidence_${Date.now()}`,
-      content: result.evidenceText,
-      sender: 'contact'
-    }, messageDelayCounter++ * 2)
-  }
-
-  // Add additional evidence messages if any
-  if (result.evidenceTextMessages && result.evidenceTextMessages.length > 0) {
-    result.evidenceTextMessages.forEach((msg: string) => {
-      addDelayedMessage(contactId.value, {
-        id: `msg_evidence_${Date.now()}_${Math.random()}`,
-        content: msg,
-        sender: 'contact'
-      }, messageDelayCounter++ * 2)
-    })
-  }
-
-  if (result.successMedia) {
-    addDelayedMessage(contactId.value, {
-      id: `msg_success_media_${Date.now()}`,
-      content: '',
-      sender: 'contact',
-      media: result.successMedia
-    }, messageDelayCounter++ * 2)
-  }
-
-  if (result.mediaId) {
-    // Unlock documents
-    const ids = Array.isArray(result.mediaId) ? result.mediaId : [result.mediaId]
-    unlockDocuments(ids)
-
-    const mediaArray = findMediaArray(result.mediaId)
-    mediaArray.forEach((media: any) => {
-      addDelayedMessage(contactId.value, {
-        id: `msg_media_${Date.now()}_${Math.random()}`,
-        content: '',
-        sender: 'contact',
-        media: [media]
-      }, messageDelayCounter++ * 2)
-    })
-  }
-
-  // Add narrative messages after success (if any)
-  if (result.status === 'success' && result.narrativeMessages && result.narrativeMessages.length > 0) {
-    result.narrativeMessages.forEach((message: string, index: number) => {
-      addDelayedMessage(contactId.value, {
-        id: `msg_narrative_${Date.now()}_${index}`,
-        content: message,
-        sender: 'contact'
-      }, messageDelayCounter++ * 2)
-    })
-  }
-
-  // Add narrative media if any
-  if (result.narrativeMediaIds && result.narrativeMediaIds.length > 0) {
-    unlockDocuments(result.narrativeMediaIds)
-    const narrativeMediaArray = findMediaArray(result.narrativeMediaIds)
-    narrativeMediaArray.forEach((media: any) => {
-      addDelayedMessage(contactId.value, {
-        id: `msg_narrative_media_${Date.now()}_${Math.random()}`,
-        content: '',
-        sender: 'contact',
-        media: [media]
-      }, messageDelayCounter++ * 2)
-    })
-  }
-
-  const totalMessageDelay = (messageDelayCounter - 1) * 2 * 1000 // -1 because the last message has no typing delay
-
-  // Turn off typing after all messages are sent
-  setTimeout(() => {
-    isTyping.value = false
-  }, totalMessageDelay)
-
-  // Handle post-success actions
-  if (result.status === 'success') {
-    if (result.notificationContact && result.notificationMessage) {
-      setTimeout(() => {
-        show(result.notificationMessage, result.notificationContact)
-      }, totalMessageDelay + 500)
-    }
-
-    setTimeout(() => {
-      const puzzleEvent = getPuzzleForTurn(contactId.value, currentTurn.value)
-      if (puzzleEvent?.preQuestion && !isPreQuestionShown(`${contactId.value}_${currentTurn.value}`)) {
-        addMessage(contactId.value, {
-          id: `msg_prequestion_${contactId.value}_${currentTurn.value}`,
-          content: puzzleEvent.preQuestion,
-          sender: 'contact',
-          timestamp: Date.now()
-        })
-        setPreQuestionShown(`${contactId.value}_${currentTurn.value}`, true)
-      }
-      isMessageSending.value = false
-    }, totalMessageDelay + 1500)
-  } else {
-    if (result.status === 'locked') {
-      show('🔒 Sistema Bloccato - Cooldown Attivo')
-    }
-    isMessageSending.value = false
-  }
-
-  scrollToBottom()
-}
 </script>
 
 <style scoped lang="scss">
@@ -914,175 +539,5 @@ code {
   40% {
     opacity: 1;
   }
-}
-
-.input-section {
-  flex-shrink: 0;
-  background: #fff;
-  border-top: 1px solid #e0e0e0;
-  position: relative;
-  z-index: 100;
-}
-
-.input-area {
-  display: flex;
-  gap: 0.5rem;
-  padding: 0.75rem;
-  align-items: flex-end;
-}
-
-.input-field {
-  flex: 1;
-  padding: 0.65rem 1rem;
-  border: 1px solid #ddd;
-  border-radius: 20px;
-  font-size: 0.95rem;
-  outline: none;
-  background: #f5f5f5;
-  transition: border-color 0.2s;
-  resize: none;
-  max-height: 100px;
-
-  &:focus {
-    border-color: #075e54;
-    background: #fff;
-  }
-
-  &:disabled {
-    background: #f0f0f0;
-    cursor: not-allowed;
-  }
-}
-
-.send-btn {
-  width: 36px;
-  height: 36px;
-  padding: 0;
-  background: #075e54;
-  color: white;
-  border: none;
-  border-radius: 50%;
-  font-size: 1rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.2s;
-  flex-shrink: 0;
-
-  &:hover:not(:disabled) {
-    background: #064e47;
-  }
-
-  &:active:not(:disabled) {
-    transform: scale(0.95);
-  }
-
-  &:disabled {
-    background: #ccc;
-    cursor: not-allowed;
-  }
-}
-
-.cooldown-msg {
-  text-align: center;
-  color: #e53935;
-  font-size: 0.8rem;
-  margin: 0;
-  padding: 0.5rem 0.75rem;
-  background: #ffebee;
-}
-
-.fullscreen-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.9);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 2000;
-}
-
-.fullscreen-content {
-  position: relative;
-  width: 90vw;
-  height: 90vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.fullscreen-image {
-  max-width: 90vw;
-  max-height: 90vh;
-  width: auto;
-  height: auto;
-  object-fit: contain;
-  display: block;
-  user-select: none;
-  -webkit-user-drag: none;
-}
-
-.fullscreen-image:active {
-  cursor: grabbing !important;
-}
-
-.zoom-controls {
-  position: absolute;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  background: rgba(0, 0, 0, 0.8);
-  padding: 0.75rem 1.5rem;
-  border-radius: 50px;
-  z-index: 2001;
-}
-
-.zoom-controls button {
-  background: rgba(255, 255, 255, 0.2);
-  border: none;
-  color: white;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.2s;
-}
-
-.zoom-controls button:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.3);
-}
-
-.zoom-controls button:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
-.zoom-controls .zoom-level {
-  color: white;
-  font-size: 0.9rem;
-  min-width: 50px;
-  text-align: center;
-}
-
-.close-btn {
-  position: absolute;
-  top: -40px;
-  right: 0;
-  background: none;
-  border: none;
-  color: white;
-  font-size: 2rem;
-  cursor: pointer;
-  padding: 0.5rem;
 }
 </style>

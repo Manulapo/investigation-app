@@ -18,15 +18,18 @@
         "response": {
           "text": [
             "Corretto, procediamo.",
-            "Cari colleghi, sono felice che siate stati chiamati a risolvere questo assurdo caso che ha coinvolto il nostro Ispettore Rusty. Il caso era ormai chiuso con la deposizione della signorina Julianna, ma poco dopo sono accaduti eventi assurdi: la morte del maggiordomo, due giorni dopo quella di Thorne, e la scomparsa dell’Ispettore.",
-            "C’è qualcosa di molto strano: Rusty lo aveva scoperto ed era molto vicino alla verità, ecco perché è scomparso. Anche se sono stato spostato su un altro caso, sarò comunque qui per aiutarvi a scoprire la verità e a trovare Rusty. Giustizia sarà fatta."
+            "Cari colleghi, sono felice che siate stati chiamati a risolvere questo assurdo caso che ha coinvolto il nostro Ispettore Rusty.",
+            "Il caso era ormai chiuso con la deposizione della signorina Julianna, ma poco dopo sono accaduti eventi assurdi: la morte del maggiordomo, due giorni dopo quella di Thorne, e la scomparsa dell’Ispettore.",
+            "Ma prima di tutto, vi lascio alcune delle prove e delle piste che Rusty stava seguendo e che aveva condiviso con me prima di sparire:"
           ],
           "messageId": "msg_turn1_success",
           "mediaId": [
             "i3",
             "d2"
           ],
-          "evidenceText": "Ma prima di tutto, vi lascio alcune delle prove e delle piste che Rusty stava seguendo e che aveva condiviso con me prima di sparire:"
+          "evidenceText": [
+            "C’è qualcosa di molto strano: Rusty lo aveva scoperto ed era molto vicino alla verità, ecco perché è scomparso. Anche se sono stato spostato su un altro caso, sarò comunque qui per aiutarvi a scoprire la verità e a trovare Rusty. Giustizia sarà fatta."
+          ]
         }
       },
       "hints": [

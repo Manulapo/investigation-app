@@ -1,5 +1,6 @@
 import { reactive, watch } from 'vue'
 import type { Message, ContactHistory, PuzzleStatus, GameState } from '../types'
+import { useDocuments } from './useDocuments'
 
 const STORAGE_KEY = 'project_detective_save_v1'
 
@@ -185,6 +186,11 @@ export function useSaveManager() {
     const fresh = JSON.parse(JSON.stringify(defaultState))
     Object.assign(state, fresh)
     localStorage.removeItem(STORAGE_KEY)
+    
+    // Reset documents to initial state
+    const { resetDocuments } = useDocuments()
+    resetDocuments()
+    
     location.reload()
   }
 

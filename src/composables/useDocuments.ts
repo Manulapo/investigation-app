@@ -87,6 +87,13 @@ export function useDocuments() {
     return unlockedDocumentIds.value.includes(id)
   }
 
+  function resetDocuments() {
+    // Reset to only initial documents
+    const initialDocs = allDocuments.filter((doc: any) => doc.initial === true)
+    unlockedDocumentIds.value = initialDocs.map((doc: any) => doc.id)
+    saveToStorage()
+  }
+
   return {
     allDocumentsList,
     unlockedDocuments,
@@ -94,6 +101,7 @@ export function useDocuments() {
     unlockDocuments,
     getDocumentById,
     getDocumentsByContactId,
-    isDocumentUnlocked
+    isDocumentUnlocked,
+    resetDocuments
   }
 }

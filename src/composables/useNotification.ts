@@ -6,15 +6,13 @@ let nextId = 1
 
 export function useNotification() {
   function show(text: string, contactId?: string, ttl = 4000) {
+    const id = nextId++
+    const createdAt = Date.now()
+    toasts.value.push({ id, text, contactId, createdAt, ttl })
+
     setTimeout(() => {
-      const id = nextId++
-      const createdAt = Date.now()
-      toasts.value.push({ id, text, contactId, createdAt, ttl })
-      
-      setTimeout(() => {
-        toasts.value = toasts.value.filter(t => t.id !== id)
-      }, ttl)
-    }, 1000)
+      toasts.value = toasts.value.filter(t => t.id !== id)
+    }, ttl)
   }
 
   function getToasts() {
