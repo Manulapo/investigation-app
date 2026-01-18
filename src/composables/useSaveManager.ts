@@ -42,7 +42,7 @@ function load() {
       }
       return loaded
     }
-  } catch (e) {}
+  } catch (e) { }
   return { ...defaultState }
 }
 
@@ -186,11 +186,11 @@ export function useSaveManager() {
     const fresh = JSON.parse(JSON.stringify(defaultState))
     Object.assign(state, fresh)
     localStorage.removeItem(STORAGE_KEY)
-    
+
     // Reset documents to initial state
     const { resetDocuments } = useDocuments()
     resetDocuments()
-    
+
     location.reload()
   }
 

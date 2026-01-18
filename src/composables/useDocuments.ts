@@ -30,7 +30,7 @@ const initializeDocuments = () => {
   if (unlockedDocumentIds.value.length === 0) {
     // First try to load from localStorage
     const stored = loadFromStorage()
-    
+
     if (stored.length > 0) {
       unlockedDocumentIds.value = stored
     } else {
@@ -54,7 +54,7 @@ export function useDocuments() {
   })
 
   const unlockedDocuments = computed(() => {
-    return allDocuments.filter((doc: any) => 
+    return allDocuments.filter((doc: any) =>
       unlockedDocumentIds.value.includes(doc.id)
     )
   })
