@@ -1,0 +1,94 @@
+{
+  "id": "rusty",
+  "initialMessage": "Ottimo lavoro detectives, Non so come avete fatto, ma vi devo la vita.",
+  "timeline": [
+    {
+      "id": "event_rusty_1",
+      "turnId": 25,
+      "type": "narrative",
+      "triggerAfter": null,
+      "messages": [
+        "Stavo iniziando a pensare che questo cumulo di muffa e polvere sarebbe diventata la mia tomba.",
+        "Grazie a voi sono salvo, detective. Non so come ringraziarvi.",
+        "Ma ascoltatemi bene... frenate l'entusiasmo. La storia non finisce qui. C'è ancora un tassello che manca, un dettaglio che mi tormentava proprio prima che Marcus mi colpisse alle spalle.",
+        "Poco prima di sparire, ho avuto una conversazione stranissima con il Dottor Grey. Era agitato. Mi ha confessato di aver ordinato personalmente di cancellare una portata dal menù della cena, all'ultimo minuto. Una precauzione urgente, ha detto. Il dottore aveva fatto delle nuove analisi a Elias. Voleva assolutamente discuterne con lui quella stasera, ma tra gli ospiti e la confusione non c'è riuscito... gli ha solo consegnato la busta con i risultati in mano, sperando che la leggesse."
+      ],
+      "mediaId": []
+    },
+    {
+      "id": "event_rusty_2",
+      "turnId": 25,
+      "type": "puzzle",
+      "preQuestion": "quale cibo è stato rimosso dal menù all'ultimo minuto?",
+      "maxAttempts": 3,
+      "penaltySeconds": 60,
+      "notification": {
+        "notificationContact": "lab",
+        "notificationMessage": "Hai ricevuto un messaggio dal laboratorio forense"
+      },
+      "solution": {
+        "keywords": [
+          "risotto",
+          "milanese"
+        ],
+        "response": {
+          "text": [
+            "Non ne sono ancora sicuro, ma forse saimo sulla strada giusta.",
+            "Detective manca un ultimo pezzo al puzzle... ma penso di poterti aiutare con quello.",
+            "Prima di venire pportato via da Marcus ho chiesto perosonlmente ed in via del tutto confidenziale al laboratotio di fare delle analisi per me su un certo prodotto trovato nel luogo del delitto",
+            "Nome in codice 'PERSIA'."
+          ],
+          "messageId": "msg_turn25_success",
+          "mediaId": [
+            "i18"
+          ],
+          "evidenceText": []
+        }
+      },
+      "hints": [
+        "controlla i documenti del caso"
+      ],
+      "fallbacks": [
+        "Sei sicuro di questa risposta?",
+        "Non mi risulta.. troppo strano.",
+        "Non capisco a cosa ti riferisci."
+      ]
+    },
+    {
+      "id": "event_rusty_3",
+      "turnId": 28,
+      "type": "puzzle",
+      "preQuestion": "Adesso dovreste avere abbastanza prove per spiegare esattamente come è andata la serata, voglio per filo e per segno quello che è successo. Voglio sapere chi ha ucciso Elias Thorne!",
+      "maxAttempts": 3,
+      "penaltySeconds": 60,
+      "notification": {},
+      "solution": {
+        "keywords": [
+          "clara",
+          "zafferano"
+        ],
+        "response": {
+          "text": [
+            "Signori. Il caso è chiuso, ma non c'è vittoria.",
+            "Marcus Ferbs, 'La volpe', andrà in prigione non per aver ucciso un Re, ma per aver avvelenato per sbaglio un servitore invisibile che voleva solo festeggiare l'obiettivo di una vita.",
+            "Julianna Dalgado è libera, ma porterà per sempre il marchio di aver pugnalato un uomo già freddo, un ultimo gesto di passione inutile come la sua arte agli occhi di Elias.",
+            "E Clara... Clara siede da sola nel grande salone vuoto. Ha ottenuto ciò che voleva: ha dato a suo padre l'eterna giovinezza. Il siero persiano ha fermato il tempo per Elias Thorne, uccidendolo. Vincent se n'è già andato; senza eredità, l'amore è evaporato più in fretta del profumo di zafferano. Nella villa di Cecina resta solo il silenzio.",
+            "La vanità ha preteso il suo prezzo, e ha pagato con la vita di tutti.",
+            "Grazie detective, senza di voi non ce l'avrei mai fatta."
+          ],
+          "messageId": "msg_turn28_success",
+          "mediaId": [],
+          "evidenceText": []
+        }
+      },
+      "hints": [
+        "Raccogliete tutte le prove che avete trovato finora.",
+        "Rivedete le testimonianze e gli eventi chiave."
+      ],
+      "fallbacks": [
+        "Non sono sicuro di questa conclusione.",
+        "Riprova, non mi convince."
+      ]
+    }
+  ]
+}

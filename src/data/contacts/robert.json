@@ -363,6 +363,126 @@
         "Riprova",
         "Non si apre!"
       ]
+    },
+    {
+      "id": "event_robert_15",
+      "turnId": 22,
+      "type": "puzzle",
+      "preQuestion": "Abbiamo capito a chi appartiene la 'V' nel biglietto della bottiglia regalata a Elias? Che significa?",
+      "maxAttempts": 3,
+      "penaltySeconds": 10,
+      "notification": {
+        "notificationContact": "lab",
+        "notificationMessage": "Hai ricevuto un messaggio dal laboratorio forense"
+      },
+      "solution": {
+        "keywords": [
+          "Marcus",
+          "Volpe"
+        ],
+        "response": {
+          "text": [
+            "Non c'è dubbio ormai, Marcus la 'Volpe' è il colpevole!",
+            "Procediamo con l'arresto!",
+            "Ci serve solo la risposta dell'autopsia per confermare tutto!",
+            "Elias è stato avvelenato!"
+          ],
+          "mediaId": [],
+          "evidenceText": []
+        }
+      },
+      "hints": [
+        "Mi serve sa il nome del sospettato sia la parola completa che inizia con V",
+        "La 'V' non è una iniziale ma un soprannome"
+      ],
+      "fallbacks": [
+        "Riprova",
+        "Non ci siamo ancora",
+        "Pensa bene"
+      ]
+    },
+    {
+      "id": "event_robert_16",
+      "turnId": 25,
+      "type": "puzzle",
+      "preQuestion": "Marcus ha detto che l'ispettore Rusty è ancora vivo, dove si trova?",
+      "maxAttempts": 3,
+      "penaltySeconds": 10,
+      "notification": {
+        "notificationContact": "rusty",
+        "notificationMessage": "Hai ricevuto un messaggio dal detective Rusty"
+      },
+      "solution": {
+        "keywords": [
+          "San",
+          "Carlo"
+        ],
+        "response": {
+          "text": [
+            "Ci troviamo in una cappella proprio fuori dalla villa Thorne, lo scantinato è accessibile da una botola nascosta sotto l'altare.",
+            "Sembra di sentire delle voci laggiù, andiamo a vedere.",
+            "E lui! Rusty! Rusty è vivo!"
+          ],
+          "mediaId": [],
+          "evidenceText": []
+        }
+      },
+      "hints": [
+        "La chiesa in questione è una 'cappella'.",
+        "La cappella è molto vicina alla villa Thorne."
+      ],
+      "fallbacks": [
+        "Non capisco",
+        "Smetti di perdere tempo, dimmi il nome."
+      ]
+    },
+    {
+      "id": "event_robert_14",
+      "turnId": 27,
+      "type": "narrative",
+      "triggerAfter": "msg_turn26_success",
+      "messages": [
+        "Non è stato l tallio ad uccidere Elias Thorne?",
+        "E perchè Marcus allora avrebebe dovuto mentire riguardo al movente?",
+        "C'è qualcosa che non torna in tutta questa storia..."
+      ],
+      "mediaId": []
+    },
+    {
+      "id": "event_robert_15",
+      "turnId": 27,
+      "type": "puzzle",
+      "preQuestion": "Se non è stato Marcus, chi ha ucciso veramente Elias Thorne?",
+      "maxAttempts": 3,
+      "penaltySeconds": 30,
+      "notification": {
+        "notificationContact": "rusty",
+        "notificationMessage": "Hai ricevuto un messaggio da rusty"
+      },
+      "solution": {
+        "keywords": [
+          "clara"
+        ],
+        "response": {
+          "text": [
+            "Clara? la figlia di Elias?",
+            "Mi stai dicendo che la figlia ha ucciso il padre?",
+            "Ma perchè mai avrebbe dovuto farlo?",
+            "Aspetta, che tutto questo sia un malinteso? che Clara non sapesse che il regalo contenesse qualcosa di letale per Elias?"
+          ],
+          "mediaId": [],
+          "evidenceText": []
+        }
+      },
+      "hints": [
+        "Pensa a chi avrebbe potuto regalare la boccetta di siero ad Elias",
+        "Chi si preoccupava delle esigue dimensioni del suo regalo?"
+      ],
+      "fallbacks": [
+        "Non torna",
+        "Perchè avrebbe dovuto farlo?, non ci siamo ancora",
+        "Lo escludo"
+      ]
     }
   ]
 }

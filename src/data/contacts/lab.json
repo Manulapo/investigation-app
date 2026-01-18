@@ -124,6 +124,94 @@
         "Non ci siamo",
         "Riprova"
       ]
+    },
+    {
+      "id": "event_lab_6",
+      "turnId": 23,
+      "type": "narrative",
+      "triggerAfter": "msg_turn22_success",
+      "messages": [
+        "Abbiamo eseguito uletriori analisi sul corpo del sig. Thorne.",
+        "Purtropponon abbiamo trovato nessuna evidenza di tallio nel suo organismo.",
+        "Sembra che la causa primaria della morte sia stata attribuibile ad uno shock anafilattico."
+      ],
+      "mediaId": []
+    },
+    {
+      "id": "event_lab_7",
+      "turnId": 23,
+      "type": "puzzle",
+      "preQuestion": "Quale è la vera causa della morte di Elias Thorne?",
+      "maxAttempts": 3,
+      "penaltySeconds": 60,
+      "notification": {
+        "notificationContact": "robert",
+        "notificationMessage": "Hai ricevuto un messaggio da Robert"
+      },
+      "solution": {
+        "keywords": [
+          "allergia"
+        ],
+        "response": {
+          "text": [
+            "Capisco, uno shock anafilattico potrebbe essere stato scatenato da una reazione allergica grave.",
+            "Le analisi che ci avete fornito in precedenza indicano che Elias Thorne aveva delle allergie note, potrebbe essere la chiave per comprendere la causa della sua morte."
+          ]
+        }
+      },
+      "hints": [
+        "Controllate le analisi precedenti.",
+        "Elias Thorne aveva delle allergie note."
+      ],
+      "fallbacks": [
+        "Non é corretto.",
+        "Riprova"
+      ]
+    },
+    {
+      "id": "event_lab_8",
+      "turnId": 26,
+      "type": "narrative",
+      "triggerAfter": "msg_turn25_success",
+      "messages": [
+        "Ottimo lavoro detective!",
+        "Sapere che Rusty è stato ritrivato sano e salvo è una grande notizia.",
+        "Ora può continuare a collaborare con voi per risolvere questo caso."
+      ],
+      "mediaId": []
+    },
+    {
+      "id": "event_lab_9",
+      "turnId": 26,
+      "type": "puzzle",
+      "preQuestion": "C'è qualcosa che possiamo afre per aiutarvi ulteriormente?",
+      "maxAttempts": 3,
+      "penaltySeconds": 60,
+      "notification": {
+        "notificationContact": "robert",
+        "notificationMessage": "Hai ricevuto un messaggio da Robert"
+      },
+      "solution": {
+        "keywords": [
+          "persia"
+        ],
+        "response": {
+          "text": [
+            "Ma certo, Rusty ci ha parlato di un certo prodotto al quale aveva fatto fare delle analisi.",
+            "Ecco cosa abbiamo trovato, detective."
+          ]
+        }
+      },
+      "mediaId": [
+        "i19"
+      ],
+      "hints": [
+        "è un nome in codice."
+      ],
+      "fallbacks": [
+        "Purtroppo non sappiamo aiutarti con questo.",
+        "A che ti riferisci?"
+      ]
     }
   ]
 }

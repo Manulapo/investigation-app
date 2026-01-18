@@ -3,7 +3,7 @@
   "initialMessage": "Salve detective sono Marcus Ferbs, il socio di Elias.",
   "timeline": [
     {
-      "id": "event_marcus_2",
+      "id": "event_marcus_1",
       "turnId": 10,
       "type": "narrative",
       "triggerAfter": null,
@@ -42,12 +42,59 @@
         }
       },
       "hints": [
-        "Che aspettate? Chiedetele!"
+        "Il prodotto è un metallo grezzo."
       ],
       "fallbacks": [
-        "Non capisco.",
-        "Sbagliato",
-        "Riprova"
+        "Non riconosco questo prodotto.",
+        "Non ho mai sentito parlare di questo."
+      ]
+    },
+    {
+      "id": "event_marcus_3",
+      "turnId": 24,
+      "type": "narrative",
+      "triggerAfter": null,
+      "messages": [
+        "Confesso le mie colpe detective, sono stato io ad avvelenare Elias.",
+        "Non riuscivo più a sopportare le sue spese folli, e la sua incapacità di gestire l'azienda.",
+        "Aveva scoperto che stavo sottraendo fondi all'azienda per coprire le sue spese personali e minacciava di denunciarlo.",
+        "All'inizio ho provato a sbarzzarmi dell'altro detective, era molto vicicno a scoprire la verità. Ma ora non posso più nascondermi.",
+        "Il detective è ancora vivo, si trova nello scantinato di una cappella proprio fuori la villa Thorne."
+      ],
+      "mediaId": []
+    },
+    {
+      "id": "event_marcus_4",
+      "turnId": 24,
+      "type": "puzzle",
+      "preQuestion": "Prova: come si chiama la cappella dove si trova Rusty?",
+      "maxAttempts": 3,
+      "penaltySeconds": 60,
+      "notification": {
+        "notificationContact": "robert",
+        "notificationMessage": "Hai ricevuto un messaggio da Robert"
+      },
+      "solution": {
+        "keywords": [
+          "San",
+          "Carlo"
+        ],
+        "response": {
+          "text": [],
+          "messageId": "msg_turn24_success",
+          "mediaId": [
+            "i17"
+          ],
+          "evidenceText": []
+        }
+      },
+      "hints": [
+        "La chiesa in questione è una 'cappella'.",
+        "La cappella è molto vicina alla villa Thorne."
+      ],
+      "fallbacks": [
+        "Sbagliato, riprova.",
+        "Non è corretto."
       ]
     }
   ]

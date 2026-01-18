@@ -9,6 +9,13 @@ import minaData from './contacts/mina.json'
 import edonisPharmaData from './contacts/edonispharma.json'
 import claraData from './contacts/clara.json'
 import marcusData from './contacts/marcus.json'
+import elenaData from './contacts/elena.json'
+import rustyData from './contacts/rusty.json'
+import damienData from './contacts/damien.json'
+import ginoData from './contacts/gino.json'
+import luisData from './contacts/luis.json'
+import slickData from './contacts/slick.json'
+import bankData from './contacts/bank.json'
 
 export const contactDataMap: Record<string, any> = {
   robert: robertData,
@@ -20,7 +27,13 @@ export const contactDataMap: Record<string, any> = {
   thomas: thomasData,
   mina: minaData,
   edonisPharma: edonisPharmaData,
-  edonispharma: edonisPharmaData,
   clara: claraData,
   marcus: marcusData,
+  elena: elenaData,
+  rusty: rustyData,
+  damien: damienData,
+  gino: ginoData,
+  luis: luisData,
+  slick: slickData,
+  bank: bankData,
 }

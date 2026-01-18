@@ -105,7 +105,7 @@
     "visibleAtTurn": 13
   },
   {
-    "id": "damine",
+    "id": "damien",
     "file": "damien",
     "name": "Damien Halloway",
     "avatar": "",
@@ -136,5 +136,13 @@
     "avatar": "",
     "description": "Il parcheggiatore ufficiale della famiglia Thorne.",
     "visibleAtTurn": 22
+  },
+  {
+    "id": "rusty",
+    "file": "rusty",
+    "name": "Detective Rusty",
+    "avatar": "",
+    "description": "Detective privato, ex poliziotto.",
+    "visibleAtTurn": 26
   }
 ]

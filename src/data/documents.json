@@ -157,5 +157,26 @@
     "alt": "Analisi allergeni - Elias Thorne",
     "contactId": "robert",
     "initial": false
+  },
+  {
+    "id": "i17",
+    "type": "image",
+    "src": "/investigation-app/assets/pdf/cappella.jpg",
+    "contactId": "robert",
+    "initial": false
+  },
+  {
+    "id": "i18",
+    "type": "image",
+    "src": "/investigation-app/assets/images/siero_persiano.jpeg",
+    "contactId": "robert",
+    "initial": false
+  },
+  {
+    "id": "i19",
+    "type": "image",
+    "src": "/investigation-app/assets/images/etichetta.png",
+    "contactId": "lab",
+    "initial": false
   }
 ]

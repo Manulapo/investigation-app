@@ -9,8 +9,18 @@
       "triggerAfter": null,
       "messages": [
         "Ho appena letto il referto dell'autopsia e... non riesco a crederci. È assurdo. Mio padre era un maniaco della salute! Era fissato con la cura del corpo, terrorizzato dall'invecchiamento. Seguiva una dieta ferrea e usava creme e integratori specifici per la pelle e i capelli, tutto prescritto dal suo medico di fiducia, il Dottor Grey.",
-
         "Passava ore al telefono con quelli della Farmacia Edonis Pharma per farsi preparare i suoi composti 'miracolosi'. Se c'è qualcosa di strano nelle sostanze che ha assunto, loro devono saperlo. Vi prego, controllate i medicinali."
+      ],
+      "mediaId": []
+    },
+    {
+      "id": "event_clara_2",
+      "turnId": 25,
+      "type": "narrative",
+      "triggerAfter": null,
+      "messages": [
+        "Detective, Non ci posso credere! Ho appena saputo di Marcus e della bottiglia avvelenata... Non avrei mai immaginato che potesse fare una cosa del genere. Mio padre era sempre stato molto duro con lui, ma non pensavo che arrivasse a tanto.",
+        "Sono sconvolta dall'accduto, Marcus era coe un secondo padre per me dopo la morte di mamma."
       ],
       "mediaId": []
     }
