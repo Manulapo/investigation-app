@@ -1,12 +1,12 @@
 {
   "id": "bank",
-  "initialMessage": "Benvenuto in Helvetia merchant bank, come possiamo aiutarla oggi?",
+  "initialMessage": "Benvenuto in Helvetia Merchant Bank, come possiamo aiutarla oggi?",
   "timeline": [
     {
       "id": "event_bank_1",
       "turnId": 20,
       "type": "puzzle",
-      "preQuestion": "Per informazioni su moviment del conto, prego inserire il codice di ordine ed il giorno della transazione",
+      "preQuestion": "Per informazioni sui movimenti del conto, prego inserire il codice ordine e la data della transazione",
       "maxAttempts": 3,
       "penaltySeconds": 10,
       "notification": {
@@ -32,8 +32,8 @@
         }
       },
       "hints": [
-        "Ricorda, il codice di ordine è alfanumerico.",
-        "La data della transazione e il codice sdovrebbero essere in un documento che hai già visto."
+        "Ricorda: il codice ordine è alfanumerico.",
+        "La data della transazione e il codice dovrebbero essere in un documento che hai già visto."
       ],
       "fallbacks": [
         "Codice o data errati.",

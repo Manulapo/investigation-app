@@ -97,7 +97,7 @@ const isCooldown = computed(() => {
   return Date.now() < status.lockedUntil
 })
 
-function getCurrentTurnForContact(contactId: string): number {
+const getCurrentTurnForContact = (contactId: string): number => {
   const messages = getMessages(contactId)
   let highestCompletedTurn = 0
 
@@ -176,7 +176,7 @@ const checkTriggeredNarratives = () => {
   return contactLoader.checkTriggeredNarratives(contactData.value)
 }
 
-function requestHint() {
+const requestHint = () => {
   if (!isHintAvailable.value || !currentPuzzle.value) return
 
   const puzzleKey = `${contactId.value}_${currentTurn.value}`
@@ -207,7 +207,7 @@ const loadContactData = () => {
   }
 }
 
-function updateCooldownTimer() {
+const updateCooldownTimer = () => {
   const key = `${contactId.value}_${currentTurn.value}`
   const until = getLockedUntil(key)
   cooldownCountdown.value = until ? Math.max(0, Math.ceil((until - Date.now()) / 1000)) : 0
@@ -220,7 +220,7 @@ const scrollToBottom = async () => {
   }
 }
 
-function goBack() {
+const goBack = () => {
   router.push('/')
 }
 

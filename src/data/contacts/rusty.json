@@ -1,6 +1,6 @@
 {
   "id": "rusty",
-  "initialMessage": "Ottimo lavoro detectives, Non so come avete fatto, ma vi devo la vita.",
+  "initialMessage": "Ottimo lavoro, detective. Non so come abbiate fatto; vi devo la vita.",
   "timeline": [
     {
       "id": "event_rusty_1",
@@ -8,10 +8,10 @@
       "type": "narrative",
       "triggerAfter": "msg_turn27_success",
       "messages": [
-        "Stavo iniziando a pensare che questo cumulo di muffa e polvere sarebbe diventata la mia tomba.",
+        "Stavo iniziando a pensare che quel cumulo di muffa e polvere sarebbe diventato la mia tomba.",
         "Grazie a voi sono salvo, detective. Non so come ringraziarvi.",
-        "Ma ascoltatemi bene... frenate l'entusiasmo. La storia non finisce qui. C'è ancora un tassello che manca, un dettaglio che mi tormentava proprio prima che Marcus mi colpisse alle spalle.",
-        "Poco prima di sparire, ho avuto una conversazione stranissima con il Dottor Grey. Era agitato. Mi ha confessato di aver ordinato personalmente di cancellare una portata dal menù della cena, all'ultimo minuto. Una precauzione urgente, ha detto. Il dottore aveva fatto delle nuove analisi a Elias. Voleva assolutamente discuterne con lui quella stasera, ma tra gli ospiti e la confusione non c'è riuscito... gli ha solo consegnato la busta con i risultati in mano, sperando che la leggesse."
+        "Ma ascoltatemi: la storia non finisce qui. C'è ancora un tassello mancante, un dettaglio che mi tormentava prima che Marcus mi colpisse alle spalle.",
+        "Poco prima di sparire ho avuto una conversazione strana con il dottor Grey. Era agitato. Mi disse di aver ordinato la cancellazione di una portata dal menù della cena, all'ultimo minuto — una precauzione urgente, disse. Il dottore aveva fatto nuove analisi su Elias e voleva parlarne con lui quella sera, ma tra gli ospiti e la confusione non riuscì: gli consegnò la busta con i risultati nella speranza che la leggesse."
       ],
       "mediaId": []
     },
@@ -33,10 +33,10 @@
         ],
         "response": {
           "text": [
-            "Non ne sono ancora sicuro, ma forse siamo sulla strada giusta.",
-            "Detective manca un ultimo pezzo al puzzle... ma penso di poterti aiutare con quello.",
-            "Prima di venire portato via da Marcus ho chiesto perosonlmente ed in via del tutto confidenziale al laboratotio di fare delle analisi per me su un certo prodotto trovato nel luogo del delitto",
-            "Nome in codice 'PERSIA'."
+            "Non ne sono ancora completamente sicuro, ma forse siamo sulla strada giusta.",
+            "Detective: manca un ultimo pezzo al puzzle, ma penso di potervi aiutare.",
+            "Prima di essere portato via da Marcus ho chiesto personalmente e in via confidenziale al laboratorio di effettuare analisi su un certo prodotto trovato sulla scena del delitto.",
+            "Nome in codice: 'PERSIA'."
           ],
           "messageId": "msg_turn28_success",
           "mediaId": [

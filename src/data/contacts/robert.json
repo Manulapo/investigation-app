@@ -218,9 +218,9 @@
         ],
         "response": {
           "text": [
-            "Ah, che interessante twist. Alla fine il popmposo ed infallibile uomo d'affari, aveva i suoi scheletri nell'armadio",
-            "Un momento però, Livorno a mezzanotte... non avrebbe mai fatto in tempo da Firenze se avesse apsettato l'orario presunt della morte di Elias!",
-            "Mh tutto questo sembra scagionarlo.. anche se qualcosa continua a non tornare. Devo assolutamente tornare alla Villa e verificare meglio nella stanza di Elias"
+            "Ah, interessante twist: anche l'apparente uomo d'affari aveva scheletri nell'armadio.",
+            "Un momento però: Livorno a mezzanotte non torna — non sarebbe partito da Firenze in tempo se avesse aspettato l'orario presunto della morte di Elias!",
+            "Mah, tutto questo sembra scagionarlo... ma qualcosa non torna. Devo tornare alla villa e controllare la stanza di Elias."
           ],
           "mediaId": [],
           "evidenceText": []
@@ -309,7 +309,7 @@
         "response": {
           "text": [
             "Pare che i conti siano sbagliati, il bonifico di Marcus sarebbe dovuto essere molto più alto.",
-            "Sembra che Marcus si sia intascato una bella somma a insaputa d Elais. Mi chiedo se sia la prima volta.",
+            "Sembra che Marcus si sia intascato una bella somma a insaputa di Elias. Mi chiedo se sia la prima volta.",
             "Mentre mi dirigevo alla Villa ho incrociato il parcheggiatore sembra avere delle informazioni interessanti, ti metto in contattto con lui."
           ],
           "messageId": "msg_turn21_success",

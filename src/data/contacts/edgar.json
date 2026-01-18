@@ -9,12 +9,14 @@
       "triggerAfter": null,
       "messages": [
         "Elias mi ha sempre trattato come un fallito. Ma questo non significa che volessi vederlo morto.",
-        "Tutti pensano che i parenti siano i primi sospetti. È comodo. Ma quella casa era piena di gente che aveva molto più da perdere di me...Ad esempio quel Conte Alistiar Vance.",
-        "Un nobile... pfui. Tutti sanno che il suo casato è ormai in decadenza completa, eppure lui continua a farsi vedere in giro a fare la parte del gran signore.", 
-        "Lui ed Elias erano rivali diretti da una vita; hanno passato anni a scannarsi pubblicamente per l'acquisizione di proprietà e opere d'arte.",
-        "La stilettatat piú grande gliel'ha data Elias quando ha rilevato l'intera tenuta Vance ad un prezzo RI DI CO LO"
+        "Tutti pensano che i parenti siano i primi sospetti. È comodo. Ma quella casa era piena di gente che aveva molto più da perdere di me... ad esempio il conte Alistair Vance.",
+        "Un nobile, certo. Tutti sanno che il suo casato è in decadenza, eppure lui continua a mostrarsi come un gran signore.",
+        "Lui ed Elias erano rivali da anni; si sono scontrati spesso per l'acquisizione di proprietà e opere d'arte.",
+        "Il colpo più duro gliel'ha inflitto Elias quando ha rilevato l'intera tenuta Vance a un prezzo irrisorio."
       ],
-      "mediaId": ["i5"]
+      "mediaId": [
+        "i5"
+      ]
     }
   ]
 }

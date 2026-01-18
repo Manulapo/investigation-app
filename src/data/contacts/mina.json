@@ -8,8 +8,7 @@
       "type": "narrative",
       "triggerAfter": null,
       "messages": [
-        "Il Dottor Grey? Sì, se n'è andato presto. Molto prima della torta. Era strano. Di solito è gentile, mi lascia la mancia. Ieri sera era... sudato. Ha preso il soprabito e il cappello quasi strappandomeli di mano. Aveva la sua borsa medica stretta al petto come se racchiudesse qualcosa di vitale. E non ha aspettato l'autista. È uscito a piedi nella notte. Chi cammina con quelle scarpe costose sul ghiaietto?", 
-
+        "Il Dottor Grey? Sì, se n'è andato presto. Molto prima della torta. Era strano. Di solito è gentile e mi lascia la mancia. Ieri sera era... sudato. Ha preso il soprabito e il cappello quasi strappandomeli di mano. Aveva la sua borsa medica stretta al petto, come se contenesse qualcosa di importante. Non ha aspettato l'autista e se n'è andato a piedi nella notte. Chi cammina così sul ghiaietto?",
         "Se non altro per fortuna alla festa c’era la Signorina Morgana, quante risate ci siamo fatte commentando le scelte discutibili dei vestiti da gala delle signorine presenti. A proposito anche lei ha farfugliato qualcosa sullo stato del Dottor Grey."
       ],
       "mediaId": []
@@ -26,10 +25,15 @@
         "notificationMessage": "Hai ricevuto un messaggio dal laboratorio forense"
       },
       "solution": {
-        "keywords": ["si"],
+        "keywords": [
+          "si"
+        ],
         "response": {
-          "text": ["Intrigante, chissá quali segreti proibiti si nascondono in quella busta....", "ahahahah sto scherzando ovviamente, saranno state sicuramente noiosissime analisi di routine",
-          "Comunque, povero Arthur, é morto solo come un cane, il dottore é sparito quella notte stessa e nessuno l'ha piú visto da allora. Mi dmando se avesse avuto qualcosa a che fare con la sua morte..."],
+          "text": [
+            "Intrigante: chissà quali segreti si nascondono in quella busta...",
+            "Sto scherzando ovviamente, saranno state analisi di routine.",
+            "Comunque, povero Arthur: è morto solo come un cane. Il dottore è sparito quella notte e nessuno l'ha più visto. Mi domando se avesse avuto qualcosa a che fare con la sua morte..."
+          ],
           "messageId": "msg_turn7_success",
           "mediaId": [],
           "evidenceText": []

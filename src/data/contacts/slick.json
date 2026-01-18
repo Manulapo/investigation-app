@@ -1,17 +1,17 @@
 {
   "id": "slick",
-  "initialMessage": "Salve, sono slick! Ho suonato la sera dell'evento.",
+  "initialMessage": "Salve, sono Slick! Ho suonato la sera dell'evento.",
   "timeline": [
     {
       "id": "event_slick_1",
       "turnId": 15,
       "type": "puzzle",
-      "preQuestion": "*Nota: Quale messaggio si cela dietro la sinfonia da me creata per Elias?*",
+      "preQuestion": "*Nota: quale messaggio si cela nella sinfonia che ho creato per Elias?*",
       "maxAttempts": 3,
       "penaltySeconds": 10,
       "notification": {
         "notificationContact": "loc",
-        "notificationMessage": "Hai ricevuto un messaggio da le Investigazioni Locali"
+        "notificationMessage": "Hai ricevuto un messaggio da Investigazioni Locali"
       },
       "solution": {
         "keywords": [
@@ -19,13 +19,13 @@
         ],
         "response": {
           "text": [
-            "Noi suoniamo, non guardiamo. È la regola. Ma stasera sembrava impossibile concentrarsi sulla nostra musica. Prima quella ricca snob che si lamenta dei nostri pezzi e si imbarca in una filippica confusionaria e pomposa su quale sia la vera musica da accompagnamento, e poi… quella ragazza, la Dalgado... difficile non guardarla.",
+            "Noi suoniamo, non guardiamo. È la regola. Ma stasera era difficile concentrarsi. Prima quella ricca snob che si lamentava dei nostri pezzi e si lanciava in una filippica confusa e pomposa su quale fosse la vera musica da accompagnamento, e poi... quella ragazza, Dalgado: difficile non guardarla.",
             "Era un nervo scoperto. Ha chiesto al pianista di suonare un pezzo triste, poi ha cambiato idea e voleva un Charleston veloce. Rideva, poi due minuti dopo l'ho vista vicino alle tende che strappava un fazzoletto con i denti. Quando è salita al piano di sopra verso le stanze di lui, aveva lo sguardo di chi va al patibolo. O di chi ci manda qualcun altro.",
             "Per non parlare poi di quel Vincent, tipo strano anche lui. Appena ha visto che stavo per entrare nella sala fumatori ha gettato qualcosa frettolosamente nel cestino e se n’è andato subito senza rivolgermi parola. Era molto nervoso."
           ],
           "messageId": "msg_turn2_success",
           "mediaId": [],
-          "evidenceText": "Era presente anche Morgana alla festa, la scrittrice di romanzi gialli e amica stretta di Throne, sono sicura che ne avrà di cose interessanti scritte su quella sera sul suo taqquino! Fossi in voi ci parlerei..."
+          "evidenceText": "Era presente anche Morgana alla festa, la scrittrice di romanzi gialli e amica stretta di Thorne; sono sicura che ne avrà di cose interessanti scritte sul suo taccuino. Fossi in voi, ci parlerei..."
         }
       },
       "hints": [

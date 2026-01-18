@@ -32,12 +32,12 @@
         "response": {
           "messageId": "msg_turn5_success",
           "text": [
-            "Come scritto nell'autopsia, il dissanguamento non é stata causata da un taglio, la vittima sembrava essere giá morta quando ha subito la ferita. Questo ci porta a pensare che la causa primaria della morte sia stata un'altra."
+            "Come scritto nell'autopsia, il dissanguamento non è stato causato da un taglio: la vittima sembrava già morta quando ha subito la ferita. Questo ci porta a pensare che la causa primaria della morte sia un'altra."
           ]
         }
       },
       "hints": [
-        "La causa di morte presunta dvrebbe essere menzionata nel referto.",
+        "La causa di morte presunta dovrebbe essere menzionata nel referto.",
         "Dovrebbe essere da qualche parte nelle deposizioni."
       ],
       "fallbacks": [
@@ -89,9 +89,9 @@
       "type": "narrative",
       "triggerAfter": "msg_turn17_success",
       "messages": [
-        "Abbiamo eseguito ulteriori analisi sul maggiordomo, Arthur Socks",
-        "Confermiamo le cause non naturali del decesso,abbiamo riscontrato anche alcune anomalie sistemiche pregresse non riconducibili  d una semplice influenza.",
-        "Il referto completo dell'autopsia rivela un possibile avvelenamento."
+        "Abbiamo eseguito ulteriori analisi sul maggiordomo Arthur Socks.",
+        "Confermiamo cause non naturali del decesso: abbiamo riscontrato anomalie sistemiche pregresse non riconducibili a una semplice influenza.",
+        "Il referto completo dell'autopsia suggerisce un possibile avvelenamento."
       ],
       "mediaId": []
     },
@@ -120,8 +120,8 @@
         }
       },
       "hints": [
-        "Abbiamo gia parlato di questo sostanza in precedenza.",
-        "è richiesto sia il nome che la massa atomica."
+        "Abbiamo già parlato di questa sostanza in precedenza.",
+        "È richiesto sia il nome che la massa atomica."
       ],
       "fallbacks": [
         "Non ci siamo",
@@ -134,9 +134,9 @@
       "type": "narrative",
       "triggerAfter": "msg_turn24_success",
       "messages": [
-        "Abbiamo eseguito uletriori analisi sul corpo del sig. Thorne.",
-        "Purtroppo non abbiamo trovato nessuna evidenza di tallio nel suo organismo.",
-        "Sembra che la causa primaria della morte sia stata attribuibile ad uno shock anafilattico."
+        "Abbiamo eseguito ulteriori analisi sul corpo del sig. Thorne.",
+        "Purtroppo non abbiamo trovato evidenza di tallio nel suo organismo.",
+        "Sembra che la causa primaria della morte sia stata uno shock anafilattico."
       ],
       "mediaId": []
     },
@@ -178,9 +178,9 @@
       "type": "narrative",
       "triggerAfter": "msg_turn28_success",
       "messages": [
-        "Ottimo lavoro detective!",
-        "Sapere che Rusty è stato ritrivato sano e salvo è una grande notizia.",
-        "Ora può continuare a collaborare con voi per risolvere questo caso."
+        "Ottimo lavoro, detective!",
+        "Sapere che Rusty è stato ritrovato sano e salvo è una grande notizia.",
+        "Ora può continuare a collaborare con voi per risolvere il caso."
       ],
       "mediaId": []
     },

@@ -1,6 +1,6 @@
 {
   "id": "gino",
-  "initialMessage": "Hey detective, perchè quel muso lungo? venga al bancone che le offro qualcosa",
+  "initialMessage": "Hey detective, perché quel muso lungo? Vieni al bancone, ti offro qualcosa.",
   "timeline": [
     {
       "id": "event_gino_1",
@@ -8,11 +8,11 @@
       "type": "narrative",
       "triggerAfter": null,
       "messages": [
-        "Bella festa, eh? Se vi piace vedere gente ricca che si pugnala alle spalle mentre sorride. Chi ho notato? Beh, quel tipo, il fidanzato della figlia... Calvino, giusto?.",
+        "Bella festa, eh? Se vi piace vedere gente ricca che si pugnalano alle spalle mentre sorride. Chi ho notato? Beh, quel tipo, il fidanzato della figlia... Calvino, giusto?",
         "L'ho tenuto d'occhio tutta la sera perché mi ha ordinato un whisky doppio e non l'ha nemmeno pagato. C'è stata una scena brutta verso le 21:00, proprio qui davanti al bancone. La musica copriva le parole, ma ho visto il linguaggio del corpo. Lui le ha afferrato il polso, sibilando qualcosa di cattivo nell'orecchio.",
         " Clara si è ritratta spaventata e si è portata subito le mani al collo, coprendo quella collana sfarzosa che portava, come per proteggerla. ",
-        "Ho visto Vincent parlare animatamente nel ricevitore, ma tenendo il dito premuto sulla forcella per tutto il tempo. Gesticola guardando ossessivamente il suo orologio da taschino come a voler contare il tempo di una giusta recita.",
-        "Ah quasi dimenticavo, hanno pure lasciato questo registro della partita di Poker sul mio tavolo quella sera"
+        "Ho visto Vincent parlare animatamente al ricevitore, tenendo il dito premuto sulla forcella per tutto il tempo. Gesticolava e controllava ossessivamente il suo orologio da taschino, come a contare il tempo di una recita.",
+        "Ah, quasi dimenticavo: hanno lasciato il registro della partita di poker sul mio tavolo quella sera."
       ],
       "mediaId": [
         "i10"
@@ -36,7 +36,7 @@
         "response": {
           "text": [
             "E poi c'era l'altro, il socio di Thorne, Ferbs. Non ha bevuto nulla. Strano per lui. Continuava a guardare l'orologio e a fissare il tavolo dei regali. Sembrava uno che aspetta l'esplosione di un fuoco d'artificio che non parte mai.",
-            "Ah, e la figlia, Clara. Poverina. È venuta al bar a chiedere un bicchiere d'acqua per prendere un'aspirina. Tremava come una foglia. Farfugliava qualcosa su un regalo, sperando che piacesse al festeggiato. Era cosí preoccupata riguardo il suo regalo al padre… che razza di genitore non ama il regalo che ti fa un figlio.",
+            "Ah, e la figlia, Clara. Poverina. È venuta al bar a chiedere un bicchiere d'acqua per prendere un'aspirina. Tremava come una foglia. Farfugliava qualcosa su un regalo, sperando che piacesse al festeggiato. Era così preoccupata per il suo regalo al padre... che genitore non apprezzerebbe un dono fatto dal figlio?",
             "Per fortuna intorno alle 23.45 ci siamo fatti due risate qui al bar con quel poveretto del giovane pittore, Damien."
           ],
           "messageId": "msg_turn13_success",

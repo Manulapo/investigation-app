@@ -4,7 +4,7 @@
     "file": "robert",
     "name": "Robert Redford",
     "avatar": "/investigation-app/assets/avatar/robert.png",
-    "description": "TODO",
+    "description": "Custode delle carte. Serio e riservato.",
     "visibleAtTurn": 1
   },
   {
@@ -12,7 +12,7 @@
     "file": "beatrice",
     "name": "Beatrice Thorne",
     "avatar": "",
-    "description": "Il dolore è solo una questione di prospettiva.",
+    "description": "Sorriso elegante, intenzioni taglienti.",
     "visibleAtTurn": 2
   },
   {
@@ -20,7 +20,7 @@
     "file": "edgar",
     "name": "Edgar Thorne",
     "avatar": "",
-    "description": "I legami di sangue non contano nulla. La lealtà è tutto.",
+    "description": "La lealtà prima di tutto.",
     "visibleAtTurn": 2
   },
   {
@@ -28,7 +28,7 @@
     "file": "martha",
     "name": "Martha Higgins",
     "avatar": "",
-    "description": "Ordine, disciplina e decoro.",
+    "description": "Ordine, disciplina, decoro.",
     "visibleAtTurn": 2
   },
   {
@@ -36,7 +36,7 @@
     "file": "loc",
     "name": "Investigazione Locale",
     "avatar": "",
-    "description": "Casi archiviati: priorità naturale.",
+    "description": "La verità nelle analisi.",
     "visibleAtTurn": 4
   },
   {
@@ -44,7 +44,7 @@
     "file": "lab",
     "name": "Laboratorio Forense",
     "avatar": "",
-    "description": "La scienza non mente mai.",
+    "description": "La scienza non mente.",
     "visibleAtTurn": 5
   },
   {
@@ -60,7 +60,7 @@
     "file": "mina",
     "name": "Mina Santullo",
     "avatar": "",
-    "description": "Custodisco cappotti e segreti",
+    "description": "Custodisco cappotti e segreti.",
     "visibleAtTurn": 7
   },
   {
@@ -76,7 +76,7 @@
     "file": "edonispharma",
     "name": "Edonis Pharma",
     "avatar": "",
-    "description": "Il meglio che il denaro possa comprare",
+    "description": "Il meglio che il denaro può comprare.",
     "phoneNumber": "4151672929",
     "visibleAtTurn": 9
   },
@@ -85,7 +85,7 @@
     "file": "marcus",
     "name": "Marcus ferbs",
     "avatar": "",
-    "description": "Abile ed indaffarato contable della Thorne Art & Investments",
+    "description": "Contabile abile, mente pratica.",
     "visibleAtTurn": 10
   },
   {
@@ -93,7 +93,7 @@
     "file": "elena",
     "name": "Elena Ricci",
     "avatar": "",
-    "description": "La nobiltà è un fardello che pochi possono permettersi.",
+    "description": "La nobiltà è un fardello.",
     "visibleAtTurn": 12
   },
   {
@@ -101,7 +101,7 @@
     "file": "gino",
     "name": "Gino Rossi",
     "avatar": "",
-    "description": "Non c'è niente che un bun bicchiere di scothc non possa risolvere.",
+    "description": "Un buon bicchiere risolve tutto.",
     "visibleAtTurn": 13
   },
   {
@@ -109,7 +109,7 @@
     "file": "damien",
     "name": "Damien Halloway",
     "avatar": "",
-    "description": "L'aret è per pochi, il privilegio di farla è per meno ancora.",
+    "description": "Precisione fredda, mente analitica.",
     "visibleAtTurn": 14
   },
   {
@@ -117,7 +117,7 @@
     "file": "slick",
     "name": "Sam Peterson",
     "avatar": "",
-    "description": "Fautore della buona musica dal 1896.",
+    "description": "Musica, facciata impeccabile.",
     "visibleAtTurn": 15
   },
   {
@@ -134,7 +134,7 @@
     "file": "luis",
     "name": "Luis Fernandez",
     "avatar": "",
-    "description": "Il parcheggiatore ufficiale della famiglia Thorne.",
+    "description": "Parcheggiatore leale, occhi attenti.",
     "visibleAtTurn": 22
   },
   {
@@ -142,7 +142,7 @@
     "file": "rusty",
     "name": "Detective Rusty",
     "avatar": "",
-    "description": "Detective privato, ex poliziotto.",
+    "description": "Detective pragmatico, sarcasmo pronto.",
     "visibleAtTurn": 26
   }
 ]

@@ -1,6 +1,6 @@
 {
   "id": "marcus",
-  "initialMessage": "Salve detective sono Marcus Ferbs, il socio di Elias.",
+  "initialMessage": "Salve detective, sono Marcus Ferbs, il socio di Elias.",
   "timeline": [
     {
       "id": "event_marcus_1",
@@ -8,8 +8,8 @@
       "type": "narrative",
       "triggerAfter": null,
       "messages": [
-        "Ho appena ricevuto una notifica da Edonis Pharma, relativa ad alcune partite di prodotti acquistati da noi, se poso esserel utile in qualche modo, sono a sua completa disposizione.",
-        "Ho solo bsiogno che mi ricordi la natura di tale documento."
+        "Ho appena ricevuto una notifica da Edonis Pharma relativa ad alcune partite di prodotti acquistati da noi. Se posso esservi utile in qualche modo, sono a vostra completa disposizione.",
+        "Ho solo bisogno che mi ricordiate la natura di quel documento."
       ],
       "mediaId": []
     },
@@ -31,10 +31,10 @@
         ],
         "response": {
           "text": [
-            "Ah Ma certo, ora ricordo, Lo zinco grezzo.",
-            "Regolare amministrazione per elias purtroppo, niente di insolito, temo.",
-            "Nessuna anomalia, Elias mi cheide spesso di acquistare per lui prodotti di mantenimento e bellezza per lui.",
-            "Purtroppo, il mio socio non bada a spese quando si tratta di prodotti del genere ma io devo fare in modo che i conti tornino e il costo dello smaltimento degli scarti dello zinco era decisamente troppo oneroso."
+            "Ah, certo: lo zinco grezzo.",
+            "Regolare amministrazione per Elias; niente di insolito, temo.",
+            "Nessuna anomalia. Elias mi chiede spesso di acquistare per lui prodotti di manutenzione e bellezza.",
+            "Purtroppo il mio socio non bada a spese per prodotti del genere; io devo fare in modo che i conti tornino, e lo smaltimento degli scarti dello zinco era troppo oneroso."
           ],
           "messageId": "msg_turn10_success",
           "mediaId": [],
@@ -55,11 +55,11 @@
       "type": "narrative",
       "triggerAfter": null,
       "messages": [
-        "Confesso le mie colpe detective, sono stato io ad avvelenare Elias.",
-        "Non riuscivo più a sopportare le sue spese folli, e la sua incapacità di gestire l'azienda.",
-        "Aveva scoperto che stavo sottraendo fondi all'azienda per coprire le sue spese personali e minacciava di denunciarlo.",
-        "All'inizio ho provato a sbarzzarmi dell'altro detective, era molto vicicno a scoprire la verità. Ma ora non posso più nascondermi.",
-        "Il detective è ancora vivo, si trova nello scantinato di una cappella proprio fuori la villa Thorne."
+        "Confesso le mie colpe, detective: sono stato io ad avvelenare Elias.",
+        "Non riuscivo più a sopportare le sue spese folli e la sua incapacità di gestire l'azienda.",
+        "Aveva scoperto che stavo sottraendo fondi all'azienda per coprire le mie spese personali e minacciava di denunciarci.",
+        "All'inizio ho provato a sbarazzarmi dell'altro investigatore: era molto vicino a scoprire la verità. Ora non posso più nascondermi.",
+        "Il detective è ancora vivo; si trova nello scantinato di una cappella proprio fuori la villa Thorne."
       ],
       "mediaId": []
     },

@@ -14,15 +14,20 @@
         "notificationMessage": "Hai ricevuto un messaggio da Robert"
       },
       "solution": {
-        "keywords": ["1368"],
+        "keywords": [
+          "1368"
+        ],
         "response": {
-          "text": ["Se mi chiedete se ho visto qualcosa, Ispettore, vi dirò che ho sentito fin troppo. Erano circa le 21:30. Stavo controllando la biancheria nel corridoio del primo piano, vicino alla Suite del Padrone. La porta era socchiusa.",
-          "Ho sentito la voce della Signorina Dalgado... quella donna non ha il decoro di una signora. Piangeva, o forse urlava, difficile dirlo con quel tipo di isteria. Poi ho sentito il Signor Thorne. La sua voce era... fredda. Come il ghiaccio secco.", 
-          "Ha detto: 'Sei patetica. Guardati. Nessuno comprerebbe i tuoi quadri nemmeno per coprire una macchia di umidità. Esci.' C'è stato un rumore di vetri infranti — un vaso, credo Ming, spero fosse una replica e poi lei è uscita correndo.", "Mi ha quasi travolto. Aveva il trucco colato e gli occhi di chi vuole dar fuoco al mondo.",
-          "Il Signor Thorne? Si è affacciato, si è sistemato i polsini e ha sorriso. Ha visto che ero lì e ha detto solo: 'Higgins, faccia pulire. E mi porti dell'acqua ghiacciata per il viso. Ho bisogno di purificarmi.' Sembrava... soddisfatto."],
+          "text": [
+            "Se mi chiedete se ho visto qualcosa, Ispettore, vi dirò che ho sentito fin troppo. Erano circa le 21:30. Stavo controllando la biancheria nel corridoio del primo piano, vicino alla Suite del Padrone. La porta era socchiusa.",
+            "Ho sentito la voce della Signorina Dalgado... quella donna non ha il decoro di una signora. Piangeva, o forse urlava, difficile dirlo con quel tipo di isteria. Poi ho sentito il Signor Thorne. La sua voce era... fredda. Come il ghiaccio secco.",
+            "Ha detto: 'Sei patetica. Guardati. Nessuno comprerebbe i tuoi quadri nemmeno per coprire una macchia di umidità. Esci.' C'è stato un rumore di vetri infranti — un vaso, credo Ming, spero fosse una replica e poi lei è uscita correndo.",
+            "Mi ha quasi travolto. Aveva il trucco colato e gli occhi di chi vuole dar fuoco al mondo.",
+            "Il Signor Thorne? Si è affacciato, si è sistemato i polsini e ha sorriso. Ha visto che ero lì e ha detto solo: 'Higgins, faccia pulire. E mi porti dell'acqua ghiacciata per il viso. Ho bisogno di purificarmi.' Sembrava... soddisfatto."
+          ],
           "messageId": "msg_turn2_success",
           "mediaId": [],
-          "evidenceText": "Era presente anche Morgana alla festa, la scrittrice di romanzi gialli e amica stretta di Throne, sono sicura che ne avrà di cose interessanti scritte su quella sera sul suo taqquino! Fossi in voi ci parlerei..."
+          "evidenceText": "Era presente anche Morgana alla festa, la scrittrice di romanzi gialli e amica stretta di Thorne; sono sicura che ne avrà di cose interessanti scritte sul suo taccuino. Fossi in voi, ci parlerei..."
         }
       },
       "hints": [

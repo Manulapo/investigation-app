@@ -14,7 +14,7 @@
         "Invece la cosa più triste era la figlia, Clara. Povera cara. Pende dalle labbra del padre, eppure non ha il minimo senso dello stile. Avete notato cosa portava al collo a inizio serata? Le 'Lacrime della Regina'. Sì, proprio quella mostruosità di diamanti che apparteneva a sua madre. Un collier pacchiano, enorme, impossibile da non vedere. Brillava come un lampadario! È ironico, non trovate? Clara girava con un patrimonio al collo  quelle pietre valgono più di questa intera villa  eppure ha regalato al padre un pacchettino minuscolo, insulso, grande quanto una scatola di fiammiferi. Se quello è il modo in cui cerca di comprare l'affetto di Elias, non c'è da stupirsi che lui la ignorasse. ",
         "Comunque, deve essersi resa conto della sua volgarità, perché quando l'ho incrociata più tardi, il suo collo era nudo.",
         "Meglio così. Certe cose dovrebbero restare in cassaforte.",
-        "Ho passato la magior parte della serata al bar comunque, il barman è un vero gentiluomo, magari potrebbe avere qualosa per lei."
+        "Ho passato la maggior parte della serata al bar comunque; il barman è un vero gentiluomo, magari può avere qualcosa per voi."
       ],
       "mediaId": []
     },
@@ -22,7 +22,7 @@
       "id": "event_elena_2",
       "turnId": 12,
       "type": "puzzle",
-      "preQuestion": "Quale era il nome del cognac pregiato ritrovato nella stanza del maggirodomo?",
+      "preQuestion": "Qual era il nome del cognac pregiato ritrovato nella stanza del maggiordomo?",
       "maxAttempts": 3,
       "penaltySeconds": 60,
       "notification": {
@@ -44,7 +44,7 @@
         }
       },
       "hints": [
-        "serve soo il nome, non il marchio"
+        "serve solo il nome, non il marchio"
       ],
       "fallbacks": [
         "Sbagliato",

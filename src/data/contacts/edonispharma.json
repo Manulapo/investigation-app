@@ -6,7 +6,7 @@
       "id": "event_edonispharma_1",
       "turnId": 9,
       "type": "puzzle",
-      "preQuestion": "Benvenuto in Edonis Pharma, la tua scelta del benessere, Prego per proseguire inserire codice cliente",
+      "preQuestion": "Benvenuto in Edonis Pharma, la tua scelta per il benessere. Per proseguire inserisci il codice cliente.",
       "maxAttempts": 3,
       "penaltySeconds": 10,
       "notification": {
@@ -19,7 +19,7 @@
         ],
         "response": {
           "text": [
-            "ecco a lei lo storico ordine, il suo codice cliente é 12165. Mi raccomando tenga tutto in ordine, non vorremmo che qualche altro cliente curioso metta le mani sui suoi segreti."
+            "Ecco lo storico dell'ordine: codice cliente 12165. Tenete tutto in ordine; non vorremmo che qualcuno curioso frughi tra i documenti."
           ],
           "messageId": "msg_turn9_success",
           "mediaId": [
@@ -28,8 +28,8 @@
         }
       },
       "hints": [
-        "Ricorda, il codice è un numero di quattro cifre.",
-        "si tratta di un anno storico importante, il vaso Ming potrebbe aiutarti."
+        "Ricorda: il codice è un numero di quattro cifre.",
+        "Si tratta di un anno storico importante; il vaso Ming potrebbe aiutarti."
       ],
       "fallbacks": [
         "Non capisco.",
