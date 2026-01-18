@@ -25,17 +25,10 @@
   <!-- Fullscreen Media Modal -->
   <div v-if="fullscreenMedia" class="fullscreen-modal" @click="closeFullscreen">
     <div class="fullscreen-content" @click.stop>
-      <img 
-        ref="imageElement"
-        :src="fullscreenMedia.src" 
-        :alt="fullscreenMedia.alt || 'Media'" 
-        class="fullscreen-image"
-        :style="imageTransform"
-        @mousedown="startDrag"
-        @touchstart="startDrag"
-      />
+      <img ref="imageElement" :src="fullscreenMedia.src" :alt="fullscreenMedia.alt || 'Media'" class="fullscreen-image"
+        :style="imageTransform" @mousedown="startDrag" @touchstart="startDrag" />
       <button class="close-btn" @click="closeFullscreen">×</button>
-      
+
       <!-- Zoom Controls Footer -->
       <div class="zoom-controls">
         <button @click="zoomOut" :disabled="zoomLevel <= 1">
@@ -115,26 +108,26 @@ function resetZoom() {
 
 function startDrag(e: MouseEvent | TouchEvent) {
   if (zoomLevel.value <= 1) return
-  
+
   isDragging.value = true
-  
+
   const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX
   const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY
-  
+
   dragStart.value = {
     x: clientX - position.value.x,
     y: clientY - position.value.y
   }
-  
+
   e.preventDefault()
 }
 
 function onDrag(e: MouseEvent | TouchEvent) {
   if (!isDragging.value) return
-  
+
   const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX
   const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY
-  
+
   position.value = {
     x: clientX - dragStart.value.x,
     y: clientY - dragStart.value.y
@@ -166,12 +159,15 @@ onUnmounted(() => {
   grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
   margin-top: 1rem;
+  max-height: 50vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  align-items: start;
 }
 
 .card {
   width: 100%;
   aspect-ratio: 1;
-  max-width: 150px;
   border-radius: 8px;
   overflow: hidden;
   cursor: pointer;
@@ -181,12 +177,14 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
+  min-width: 0;
 }
 
 .card-image img {
-  object-fit: contain;
+  object-fit: cover;
   height: 100%;
   width: 200px;
+  display: block;
 }
 
 .card-icon {
@@ -197,12 +195,14 @@ onUnmounted(() => {
   height: 100%;
   background: #f5f5f5;
 
-  .fa-file-pdf{
-    color: #d9534f; /* Red color for PDF icon */
+  .fa-file-pdf {
+    color: #d9534f;
+    /* Red color for PDF icon */
   }
 
   .fa-music {
-    color: #aa5bde; /* Blue color for audio icon */
+    color: #aa5bde;
+    /* Blue color for audio icon */
   }
 }
 

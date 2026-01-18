@@ -30,6 +30,7 @@
           "dissanguamento"
         ],
         "response": {
+          "messageId": "msg_turn5_success",
           "text": [
             "Come scritto nell'autopsia, il dissanguamento non é stata causata da un taglio, la vittima sembrava essere giá morta quando ha subito la ferita. Questo ci porta a pensare che la causa primaria della morte sia stata un'altra."
           ]
@@ -61,6 +62,7 @@
           "arthur"
         ],
         "response": {
+          "messageId": "msg_turn8_success",
           "text": [
             "ISPEZIONE ESTERNA E ANOMALIE FISICHE DI ARTHUR SOCKS:",
             "L'esame del cadavere ha evidenziato diverse anomalie sistemiche pregresse, non riconducibili all'influenza:",
@@ -110,6 +112,7 @@
           "204"
         ],
         "response": {
+          "messageId": "msg_turn18_success",
           "text": [
             "Interessante potrebbe spiegare i sintomi rilevati precedentemente nell'autopsia.",
             "Faremo ulteriori analisi per confermare la presenza di tallio anche del corpo del sig. Thorne."
@@ -127,35 +130,36 @@
     },
     {
       "id": "event_lab_6",
-      "turnId": 23,
+      "turnId": 25,
       "type": "narrative",
-      "triggerAfter": "msg_turn22_success",
+      "triggerAfter": "msg_turn24_success",
       "messages": [
         "Abbiamo eseguito uletriori analisi sul corpo del sig. Thorne.",
-        "Purtropponon abbiamo trovato nessuna evidenza di tallio nel suo organismo.",
+        "Purtroppo non abbiamo trovato nessuna evidenza di tallio nel suo organismo.",
         "Sembra che la causa primaria della morte sia stata attribuibile ad uno shock anafilattico."
       ],
       "mediaId": []
     },
     {
       "id": "event_lab_7",
-      "turnId": 23,
+      "turnId": 25,
       "type": "puzzle",
       "preQuestion": "Quale è la vera causa della morte di Elias Thorne?",
       "maxAttempts": 3,
       "penaltySeconds": 60,
       "notification": {
-        "notificationContact": "robert",
-        "notificationMessage": "Hai ricevuto un messaggio da Robert"
+        "notificationContact": "marcus",
+        "notificationMessage": "Hai ricevuto un messaggio da Marcus"
       },
       "solution": {
         "keywords": [
           "allergia"
         ],
         "response": {
+          "messageId": "msg_turn25_success",
           "text": [
             "Capisco, uno shock anafilattico potrebbe essere stato scatenato da una reazione allergica grave.",
-            "Le analisi che ci avete fornito in precedenza indicano che Elias Thorne aveva delle allergie note, potrebbe essere la chiave per comprendere la causa della sua morte."
+            "Le analisi che ci avete fornito indicano che Elias Thorne aveva delle allergie note, potrebbe essere la chiave per comprendere la causa della sua morte."
           ]
         }
       },
@@ -170,9 +174,9 @@
     },
     {
       "id": "event_lab_8",
-      "turnId": 26,
+      "turnId": 29,
       "type": "narrative",
-      "triggerAfter": "msg_turn25_success",
+      "triggerAfter": "msg_turn28_success",
       "messages": [
         "Ottimo lavoro detective!",
         "Sapere che Rusty è stato ritrivato sano e salvo è una grande notizia.",
@@ -182,9 +186,9 @@
     },
     {
       "id": "event_lab_9",
-      "turnId": 26,
+      "turnId": 29,
       "type": "puzzle",
-      "preQuestion": "C'è qualcosa che possiamo afre per aiutarvi ulteriormente?",
+      "preQuestion": "C'è qualcosa che possiamo fare per aiutarvi ulteriormente?",
       "maxAttempts": 3,
       "penaltySeconds": 60,
       "notification": {
@@ -199,12 +203,13 @@
           "text": [
             "Ma certo, Rusty ci ha parlato di un certo prodotto al quale aveva fatto fare delle analisi.",
             "Ecco cosa abbiamo trovato, detective."
+          ],
+          "messageId": "msg_turn29_success",
+          "mediaId": [
+            "i19"
           ]
         }
       },
-      "mediaId": [
-        "i19"
-      ],
       "hints": [
         "è un nome in codice."
       ],

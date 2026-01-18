@@ -17,7 +17,7 @@
       "id": "event_damien_2",
       "turnId": 14,
       "type": "puzzle",
-      "preQuestion": "A che ore all'incirca si svolge lì'esibisone di Damien",
+      "preQuestion": "A che ore all'incirca si svolge l'esibizione di Damien",
       "maxAttempts": 3,
       "penaltySeconds": 60,
       "notification": {

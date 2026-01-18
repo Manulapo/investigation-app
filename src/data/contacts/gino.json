@@ -34,14 +34,14 @@
           "18500"
         ],
         "response": {
-          "text": [],
-          "messageId": "msg_turn13_success",
-          "mediaId": [],
-          "evidenceText": [
+          "text": [
             "E poi c'era l'altro, il socio di Thorne, Ferbs. Non ha bevuto nulla. Strano per lui. Continuava a guardare l'orologio e a fissare il tavolo dei regali. Sembrava uno che aspetta l'esplosione di un fuoco d'artificio che non parte mai.",
             "Ah, e la figlia, Clara. Poverina. È venuta al bar a chiedere un bicchiere d'acqua per prendere un'aspirina. Tremava come una foglia. Farfugliava qualcosa su un regalo, sperando che piacesse al festeggiato. Era cosí preoccupata riguardo il suo regalo al padre… che razza di genitore non ama il regalo che ti fa un figlio.",
             "Per fortuna intorno alle 23.45 ci siamo fatti due risate qui al bar con quel poveretto del giovane pittore, Damien."
-          ]
+          ],
+          "messageId": "msg_turn13_success",
+          "mediaId": [],
+          "evidenceText": []
         }
       },
       "hints": [

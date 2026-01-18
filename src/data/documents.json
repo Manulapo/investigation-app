@@ -103,21 +103,21 @@
   {
     "id": "i12",
     "type": "image",
-    "src": "/investigation-app/assets/images/coordinate.png",
+    "src": "/investigation-app/assets/images/coordinate.jpg",
     "contactId": "loc",
     "initial": false
   },
   {
     "id": "i13",
     "type": "image",
-    "src": "/investigation-app/assets/images/scrittoio_elias.png",
+    "src": "/investigation-app/assets/images/scrittoio_elias.jpeg",
     "contactId": "lab",
     "initial": false
   },
   {
     "id": "i14",
     "type": "image",
-    "src": "/investigation-app/assets/images/bank_register.png",
+    "src": "/investigation-app/assets/images/bank_register.jpg",
     "contactId": "robert",
     "initial": false
   },
@@ -131,7 +131,7 @@
   {
     "id": "i15",
     "type": "image",
-    "src": "/investigation-app/assets/images/giardino.png",
+    "src": "/investigation-app/assets/images/giardino.jpg",
     "contactId": "luis",
     "initial": false
   },
@@ -161,7 +161,7 @@
   {
     "id": "i17",
     "type": "image",
-    "src": "/investigation-app/assets/pdf/cappella.jpg",
+    "src": "/investigation-app/assets/images/cappella.jpg",
     "contactId": "robert",
     "initial": false
   },

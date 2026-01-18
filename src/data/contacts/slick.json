@@ -1,6 +1,6 @@
 {
   "id": "slick",
-  "initialMessage": "Salve, sono slickho suonato la sera dell'evento.",
+  "initialMessage": "Salve, sono slick! Ho suonato la sera dell'evento.",
   "timeline": [
     {
       "id": "event_slick_1",
@@ -10,8 +10,8 @@
       "maxAttempts": 3,
       "penaltySeconds": 10,
       "notification": {
-        "notificationContact": "robert",
-        "notificationMessage": "Hai ricevuto un messaggio da Robert"
+        "notificationContact": "loc",
+        "notificationMessage": "Hai ricevuto un messaggio da le Investigazioni Locali"
       },
       "solution": {
         "keywords": [

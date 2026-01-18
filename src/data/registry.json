@@ -45,7 +45,7 @@
     "name": "Laboratorio Forense",
     "avatar": "",
     "description": "La scienza non mente mai.",
-    "visibleAtTurn": 3
+    "visibleAtTurn": 5
   },
   {
     "id": "thomas",
@@ -126,7 +126,7 @@
     "name": "Helvetia Merchant Bank",
     "avatar": "",
     "description": "La tua banca, ovunque tu sia.",
-    "visibleAtTurn": 19,
+    "visibleAtTurn": 20,
     "phoneNumber": "4178992397"
   },
   {

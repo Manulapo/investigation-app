@@ -42,14 +42,12 @@
       "maxAttempts": 3,
       "penaltySeconds": 10,
       "notification": {
-        "notification": {
-          "notificationContact": "robert",
-          "notificationMessage": "Hai ricevuto un messaggio da Robert"
-        }
+        "notificationContact": "robert",
+        "notificationMessage": "Hai ricevuto un messaggio da Robert"
       },
       "solution": {
         "keywords": [
-          "01:00"
+          "01"
         ],
         "response": {
           "text": [
@@ -60,7 +58,9 @@
             "i11",
             "i12"
           ],
-          "evidenceText": "Ecco quanto trovato nella sala fumatori. Nel Cestino c'erano alcuni pezzi di carta strappati."
+          "evidenceText": [
+            "Ecco quanto trovato nella sala fumatori. Nel Cestino c'erano alcuni pezzi di carta strappati."
+          ]
         }
       },
       "hints": [

@@ -4,9 +4,9 @@
   "timeline": [
     {
       "id": "event_rusty_1",
-      "turnId": 25,
+      "turnId": 28,
       "type": "narrative",
-      "triggerAfter": null,
+      "triggerAfter": "msg_turn27_success",
       "messages": [
         "Stavo iniziando a pensare che questo cumulo di muffa e polvere sarebbe diventata la mia tomba.",
         "Grazie a voi sono salvo, detective. Non so come ringraziarvi.",
@@ -17,7 +17,7 @@
     },
     {
       "id": "event_rusty_2",
-      "turnId": 25,
+      "turnId": 28,
       "type": "puzzle",
       "preQuestion": "quale cibo è stato rimosso dal menù all'ultimo minuto?",
       "maxAttempts": 3,
@@ -33,12 +33,12 @@
         ],
         "response": {
           "text": [
-            "Non ne sono ancora sicuro, ma forse saimo sulla strada giusta.",
+            "Non ne sono ancora sicuro, ma forse siamo sulla strada giusta.",
             "Detective manca un ultimo pezzo al puzzle... ma penso di poterti aiutare con quello.",
-            "Prima di venire pportato via da Marcus ho chiesto perosonlmente ed in via del tutto confidenziale al laboratotio di fare delle analisi per me su un certo prodotto trovato nel luogo del delitto",
+            "Prima di venire portato via da Marcus ho chiesto perosonlmente ed in via del tutto confidenziale al laboratotio di fare delle analisi per me su un certo prodotto trovato nel luogo del delitto",
             "Nome in codice 'PERSIA'."
           ],
-          "messageId": "msg_turn25_success",
+          "messageId": "msg_turn28_success",
           "mediaId": [
             "i18"
           ],
@@ -56,7 +56,7 @@
     },
     {
       "id": "event_rusty_3",
-      "turnId": 28,
+      "turnId": 31,
       "type": "puzzle",
       "preQuestion": "Adesso dovreste avere abbastanza prove per spiegare esattamente come è andata la serata, voglio per filo e per segno quello che è successo. Voglio sapere chi ha ucciso Elias Thorne!",
       "maxAttempts": 3,

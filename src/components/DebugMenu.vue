@@ -52,30 +52,38 @@ function autoSolve() {
     const contactId = currentRoute.params.id as string
     // Map of contact and their turn answers
     const answers: Record<string, Record<number, string>> = {
-      'robert': {
+      robert: {
         1: 't1: jerry thompson',
         3: 't3: william thorne',
-        6: 't6: 50'
+        6: 't6: 50',
+        11: 't11: si',
+        17: 't17: Livorno Le Lacrime della Regina',
+        19: 't19: NEWW',
+        21: 't21: 150000',
+        23: 't23: 49806',
+        24: 't24: marcus volpe',
+        27: 't27: scantinato San Carlo',
+        30: 't30: clara'
       },
-      'martha': {
-        2: 't2: 1368'
-      },
-      'lab': {
+      martha: { 2: 't2: 1368' },
+      lab: {
         5: 't5: dissanguamento',
-        8: 't8: arthur'
+        8: 't8: arthur',
+        18: 't18: Tallio 204',
+        25: 't25: allergia',
+        29: 't29: persia'
       },
-      'loc': {
-        4: 't4: 17',
-      },
-      'marcus': {
-        10: 't10: Zinco Grezzo'
-      },
-      'mina': {
-        7: 't7: si'
-      },
-      'edonispharma': {
-        9: 't9: 12165'
-      }
+      loc: { 4: 't4: 17', 16: 't16: 01:00' },
+      marcus: { 10: 't10: Zinco Grezzo', 26: 't26: San Carlo' },
+      mina: { 7: 't7: si' },
+      edonispharma: { 9: 't9: 12165' },
+      bank: { 20: 't20: 20 44ZH000012' },
+      damien: { 14: 't14: 22' },
+      elena: { 12: 't12: Le Voyage' },
+      gino: { 13: 't13: 18500' },
+      luis: { 22: 't22: BNGUM' },
+      slick: { 15: 't15: facade' },
+      rusty: { 28: 't28: risotto milanese', 31: 't31: clara zafferano' }
     }
 
     // Dispatch event - ChatRoom will figure out which turn it is

@@ -26,8 +26,8 @@
       "maxAttempts": 3,
       "penaltySeconds": 60,
       "notification": {
-        "notificationContact": "lab",
-        "notificationMessage": "Hai ricevuto un messaggio dal laboratorio forense"
+        "notificationContact": "gino",
+        "notificationMessage": "Hai ricevuto un messaggio da Gino"
       },
       "solution": {
         "keywords": [
@@ -35,7 +35,9 @@
           "voyage"
         ],
         "response": {
-          "text": [],
+          "text": [
+            "Oh si, si vede che se ne intende di cognac, uno dei migliori sul mercato!"
+          ],
           "messageId": "msg_turn12_success",
           "mediaId": [],
           "evidenceText": []

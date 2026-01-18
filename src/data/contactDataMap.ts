@@ -26,7 +26,7 @@ export const contactDataMap: Record<string, any> = {
   lab: labData,
   thomas: thomasData,
   mina: minaData,
-  edonisPharma: edonisPharmaData,
+  edonispharma: edonisPharmaData,
   clara: claraData,
   marcus: marcusData,
   elena: elenaData,

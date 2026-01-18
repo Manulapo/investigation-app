@@ -71,6 +71,7 @@
             "Corretto, procediamo.",
             "Sicuramente c'è di più da scoprire anche sul maggiordomo.. sembra essere morto di influenza, ma chiederei conferma alla scientifica per sicurezza."
           ],
+          "messageId": "msg_turn3_success",
           "mediaId": [
             "i6"
           ],
@@ -117,6 +118,7 @@
             "Corretto, procediamo.",
             "Sicuramente c'è di più da scoprire anche sul maggiordomo.. sembra essere morto di influenza, ma chiederei conferma alla scientifica per sicurezza."
           ],
+          "messageId": "msg_turn6_success",
           "mediaId": [],
           "evidenceText": []
         }
@@ -175,7 +177,7 @@
       "id": "event_robert_8",
       "turnId": 16,
       "type": "narrative",
-      "triggerAfter": "msg_turn10_success",
+      "triggerAfter": "msg_turn15_success",
       "messages": [
         "Lo sapevo! anche il partner della figlia non me la racconta giusta, devi assolutamente chiedere alla scientifica di verificare meglio la sala fumatori ci potrebbe essere sfuggito qualcosa!"
       ],
@@ -207,7 +209,9 @@
       "solution": {
         "keywords": [
           "Livorno",
-          "Le Lacrime della Regina"
+          "Lacrime",
+          "della",
+          "Regina"
         ],
         "response": {
           "text": [
@@ -233,7 +237,7 @@
       "id": "event_robert_11",
       "turnId": 19,
       "type": "narrative",
-      "triggerAfter": "msg_turn19_success",
+      "triggerAfter": "msg_turn18_success",
       "messages": [
         "Sono Arrivato proprio ora in villa Bellosguardo, sto controllando la stanza di Elias, vediamo un po' se riesco a trovare qualcosa di interessante.",
         "Troppe cianfrusaglie per i miei gusti, ma aspetta un attimo... questo cassetto sembra chiuso a chiave!",
@@ -258,15 +262,18 @@
         ],
         "response": {
           "text": [
-            "Non sembra esserci molto qui dentro, alcuni documenti finanziari ed una lettera.",
-            "Mi chiedo se forse la Banca sia coinvolta in qualche modo in tutto questo...",
-            "Forse Dovremmo contattare la sede centrale per avere qualche informazione in più."
+            "Incredibile, si è aperto!",
+            "Non sembra esserci molto qui dentro, alcuni documenti finanziari ed una lettera."
           ],
+          "messageId": "msg_turn19_success",
           "mediaId": [
             "i14",
             "d4"
           ],
-          "evidenceText": []
+          "evidenceText": [
+            "Mi chiedo se forse la Banca sia coinvolta in qualche modo in tutto questo...",
+            "Forse Dovremmo contattare la sede centrale per avere qualche informazione in più."
+          ]
         }
       },
       "hints": [
@@ -289,8 +296,8 @@
       "maxAttempts": 3,
       "penaltySeconds": 10,
       "notification": {
-        "notificationContact": "lab",
-        "notificationMessage": "Hai ricevuto un messaggio dal laboratorio forense"
+        "notificationContact": "luis",
+        "notificationMessage": "Hai ricevuto un messaggio dal parcheggiatore"
       },
       "solution": {
         "keywords": [
@@ -300,8 +307,9 @@
           "text": [
             "Pare che i conti siano sbagliati, il bonifico di Marcus sarebbe dovuto essere molto più alto.",
             "Sembra che Marcus si sia intascato una bella somma a insaputa d Elais. Mi chiedo se sia la prima volta.",
-            "Mentre mi dirigevo alla Villa ho inctrociato il parcheggiatore sembra avere delle informazioni interessanti, ti metto in contattto con lui."
+            "Mentre mi dirigevo alla Villa ho incrociato il parcheggiatore sembra avere delle informazioni interessanti, ti metto in contattto con lui."
           ],
+          "messageId": "msg_turn21_success",
           "mediaId": [],
           "evidenceText": []
         }
@@ -333,10 +341,10 @@
       ]
     },
     {
-      "id": "event_robert_14",
-      "turnId": 22,
+      "id": "event_robert_15",
+      "turnId": 23,
       "type": "puzzle",
-      "preQuestion": "Ehy, non è che per caso hai un'idea di quale sia la combinazione della cassaforte?",
+      "preQuestion": "Non è che per caso hai un'idea di quale sia la combinazione della cassaforte?",
       "maxAttempts": 3,
       "penaltySeconds": 10,
       "notification": {},
@@ -346,10 +354,15 @@
         ],
         "response": {
           "text": [
-            "Si è aperta!, dentro c'è un documento molto interessante, sembra un referto medico.",
+            "Si è aperta!",
+            "dentro c'è un documento molto interessante, sembra un referto medico.",
             "Aspetta Ma questo è il testamento di Elias Thorne! Sembra che abbia cambiato il suo testamento poco prima di morire."
           ],
-          "mediaId": [],
+          "messageId": "msg_turn23_success",
+          "mediaId": [
+            "d5",
+            "d6"
+          ],
           "evidenceText": []
         }
       },
@@ -365,8 +378,8 @@
       ]
     },
     {
-      "id": "event_robert_15",
-      "turnId": 22,
+      "id": "event_robert_16",
+      "turnId": 24,
       "type": "puzzle",
       "preQuestion": "Abbiamo capito a chi appartiene la 'V' nel biglietto della bottiglia regalata a Elias? Che significa?",
       "maxAttempts": 3,
@@ -387,6 +400,7 @@
             "Ci serve solo la risposta dell'autopsia per confermare tutto!",
             "Elias è stato avvelenato!"
           ],
+          "messageId": "msg_turn24_success",
           "mediaId": [],
           "evidenceText": []
         }
@@ -402,8 +416,8 @@
       ]
     },
     {
-      "id": "event_robert_16",
-      "turnId": 25,
+      "id": "event_robert_17",
+      "turnId": 27,
       "type": "puzzle",
       "preQuestion": "Marcus ha detto che l'ispettore Rusty è ancora vivo, dove si trova?",
       "maxAttempts": 3,
@@ -414,15 +428,17 @@
       },
       "solution": {
         "keywords": [
+          "scantinato",
           "San",
           "Carlo"
         ],
         "response": {
           "text": [
-            "Ci troviamo in una cappella proprio fuori dalla villa Thorne, lo scantinato è accessibile da una botola nascosta sotto l'altare.",
+            "Ci troviamo proprio ora fori da quella cappella! lo scantinato è accessibile da una botola nascosta sotto l'altare.",
             "Sembra di sentire delle voci laggiù, andiamo a vedere.",
             "E lui! Rusty! Rusty è vivo!"
           ],
+          "messageId": "msg_turn27_success",
           "mediaId": [],
           "evidenceText": []
         }
@@ -437,20 +453,20 @@
       ]
     },
     {
-      "id": "event_robert_14",
-      "turnId": 27,
+      "id": "event_robert_18",
+      "turnId": 30,
       "type": "narrative",
-      "triggerAfter": "msg_turn26_success",
+      "triggerAfter": "msg_turn29_success",
       "messages": [
-        "Non è stato l tallio ad uccidere Elias Thorne?",
+        "Non è stato il tallio ad uccidere Elias Thorne?",
         "E perchè Marcus allora avrebebe dovuto mentire riguardo al movente?",
         "C'è qualcosa che non torna in tutta questa storia..."
       ],
       "mediaId": []
     },
     {
-      "id": "event_robert_15",
-      "turnId": 27,
+      "id": "event_robert_19",
+      "turnId": 30,
       "type": "puzzle",
       "preQuestion": "Se non è stato Marcus, chi ha ucciso veramente Elias Thorne?",
       "maxAttempts": 3,
@@ -468,8 +484,9 @@
             "Clara? la figlia di Elias?",
             "Mi stai dicendo che la figlia ha ucciso il padre?",
             "Ma perchè mai avrebbe dovuto farlo?",
-            "Aspetta, che tutto questo sia un malinteso? che Clara non sapesse che il regalo contenesse qualcosa di letale per Elias?"
+            "Aspetta, che tutto questo sia un malinteso? che Clara non sapesse che il regalo conteneva qualcosa di letale per Elias?"
           ],
+          "messageId": "msg_turn30_success",
           "mediaId": [],
           "evidenceText": []
         }

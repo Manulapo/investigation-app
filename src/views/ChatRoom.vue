@@ -1,14 +1,8 @@
 <template>
   <div class="chat-room">
     <!-- Chat Header -->
-    <AppHeader 
-      show-left-button
-      left-icon="fas fa-chevron-left"
-      show-hint-button
-      :hint-enabled="isHintAvailable"
-      @left-click="goBack"
-      @hint-click="requestHint"
-    >
+    <AppHeader show-left-button left-icon="fas fa-chevron-left" show-hint-button :hint-enabled="isHintAvailable"
+      @left-click="goBack" @hint-click="requestHint">
       <router-link :to="`/profile/${contactId}`" class="contact-info">
         <Avatar :src="contact?.avatar!" :alt="contact?.name" class="avatar" />
         <div class="contact-details">
@@ -26,28 +20,17 @@
         <p class="hint">Digita la tua risposta per iniziare</p>
         <p class="format">Esempio: <code>T1: Aquila Blu</code></p>
       </div>
-      <MessageBubble
-        v-for="msg in messages"
-        :key="msg.id"
-        :content="msg.content"
-        :sender="msg.sender"
-        :timestamp="msg.timestamp"
-        :media="msg.media"
-        @openFullscreen="openFullscreen"
-      />
+      <MessageBubble v-for="msg in messages" :key="msg.id" :content="msg.content" :sender="msg.sender"
+        :timestamp="msg.timestamp" :media="msg.media" @openFullscreen="openFullscreen" />
     </div>
 
     <!-- Input -->
     <div class="input-section">
       <div class="input-area">
-        <input
-          v-model="inputValue"
-          :disabled="isCooldown"
-          class="input-field"
-          placeholder="Inserisci messaggio nel formato corretto..."
-          @keyup.enter="sendMessage"
-        />
-        <button :disabled="!inputValue || isCooldown" class="send-btn" @click="sendMessage"><i class="fas fa-paper-plane"></i></button>
+        <input v-model="inputValue" :disabled="isCooldown" class="input-field"
+          placeholder="Inserisci messaggio nel formato corretto..." @keyup.enter="sendMessage" />
+        <button :disabled="!inputValue || isCooldown" class="send-btn" @click="sendMessage"><i
+            class="fas fa-paper-plane"></i></button>
       </div>
       <p v-if="isCooldown" class="cooldown-msg">⏱️ Cooldown: {{ cooldownCountdown }}s</p>
     </div>
@@ -55,18 +38,11 @@
     <!-- Fullscreen Media Modal -->
     <div v-if="fullscreenMedia" class="fullscreen-modal" @click="closeFullscreen">
       <div class="fullscreen-content" @click.stop>
-        <img 
-          v-if="fullscreenMedia.type === 'image'"
-          ref="imageElement"
-          :src="fullscreenMedia.src" 
-          :alt="fullscreenMedia.alt || 'Media'" 
-          class="fullscreen-image"
-          :style="imageTransform"
-          @mousedown="startDrag"
-          @touchstart="startDrag"
-        />
+        <img v-if="fullscreenMedia.type === 'image'" ref="imageElement" :src="fullscreenMedia.src"
+          :alt="fullscreenMedia.alt || 'Media'" class="fullscreen-image" :style="imageTransform" @mousedown="startDrag"
+          @touchstart="startDrag" />
         <button class="close-btn" @click="closeFullscreen">×</button>
-        
+
         <!-- Zoom Controls Footer -->
         <div class="zoom-controls">
           <button @click="zoomOut" :disabled="zoomLevel <= 1">
@@ -127,7 +103,7 @@ const imageTransform = computed(() => {
 function getCurrentTurnForContact(contactId: string): number {
   const messages = getMessages(contactId)
   let highestCompletedTurn = 0
-  
+
   // Find all success messages and extract turn numbers
   messages.forEach((message: any) => {
     if (message.id?.startsWith('msg_turn') && message.id?.endsWith('_success')) {
@@ -139,7 +115,7 @@ function getCurrentTurnForContact(contactId: string): number {
       }
     }
   })
-  
+
   const nextTurn = highestCompletedTurn + 1
   // Return the max of global turn and next turn to ensure progression
   return Math.max(state.currentGlobalTurn, nextTurn)
@@ -167,11 +143,11 @@ const isHintAvailable = computed(() => {
 
 function requestHint() {
   if (!isHintAvailable.value || !currentPuzzle.value) return
-  
+
   const puzzleKey = `${contactId.value}_${currentTurn.value}`
   const usedHints = getUsedHintsForPuzzle(puzzleKey)
   const hintText = currentPuzzle.value.hints[usedHints]
-  
+
   if (hintText) {
     // Add hint as a message from contact
     addDelayedMessage(contactId.value, {
@@ -179,10 +155,10 @@ function requestHint() {
       content: hintText,
       sender: 'contact'
     }, 0)
-    
+
     // Mark hint as used
     useHint(puzzleKey)
-    
+
     // Trigger typing animation
     isTyping.value = true
     setTimeout(() => {
@@ -211,13 +187,13 @@ const addDelayedMessage = (contactId: string, messageData: any, delaySeconds: nu
 // Helper function to check if triggered narratives should be shown
 const checkTriggeredNarratives = () => {
   if (!contactData.value) return { messages: [], mediaIds: [], events: [] }
-  
+
   const timeline = contactData.value.timeline || []
   const allMessages = messages.value
-  
+
   // Find all triggered narrative events
   const triggeredNarratives: any[] = []
-  
+
   timeline.forEach((event: any) => {
     if (event.type === 'narrative' && event.triggerAfter) {
       // Check if the trigger message exists in any contact's history
@@ -225,13 +201,13 @@ const checkTriggeredNarratives = () => {
         const contactMessages = state.chatHistories[cId] || []
         return contactMessages.some((msg: any) => msg.id === event.triggerAfter)
       })
-      
+
       if (triggerExists) {
         triggeredNarratives.push(event)
       }
     }
   })
-  
+
   return {
     messages: triggeredNarratives.flatMap((event: any) => event.messages || []),
     mediaIds: triggeredNarratives.flatMap((event: any) => event.mediaId || []),
@@ -247,7 +223,7 @@ const loadContactData = () => {
     if (contactFile) {
       // Get contact data from direct JSON imports
       contactData.value = contactDataMap[contactFile]
-      
+
       // Add initial message if chat is empty
       if (messages.value.length === 0) {
         messageDelayCounter = 0
@@ -260,20 +236,20 @@ const loadContactData = () => {
           messageDelayCounter++
         }
       }
-      
+
       // Determine current turn and show narrative messages for turn start
       const currentTurn = getCurrentTurnForContact(contactId.value)
       const narrativeData = getNarrativeMessagesForTurnStart(contactId.value, currentTurn)
-      
+
       // Check for triggered narratives (from other contacts' success messages)
       const triggeredData = checkTriggeredNarratives()
-      
+
       // Show typing indicator if there are narrative messages to display
       if ((narrativeData.messages.length > 0 && narrativeData.messages.some((_: any, index: number) => !isNarrativeShown(`narrative_initial_${currentTurn}_${index}`))) ||
-          (triggeredData.messages.length > 0 && triggeredData.events && triggeredData.events.some((event: any) => !isNarrativeShown(`narrative_triggered_${event.id}`)))) {
+        (triggeredData.messages.length > 0 && triggeredData.events && triggeredData.events.some((event: any) => !isNarrativeShown(`narrative_triggered_${event.id}`)))) {
         isTyping.value = true
       }
-      
+
       let narrativeDelay = 0
       narrativeData.messages.forEach((message: string, index: number) => {
         const narrativeId = `narrative_initial_${currentTurn}_${index}`
@@ -292,7 +268,7 @@ const loadContactData = () => {
           }
         }
       })
-      
+
       // Add triggered narrative messages
       triggeredData.messages.forEach((message: string, index: number) => {
         const event = triggeredData.events && triggeredData.events[0] // Use first event for simplicity
@@ -313,7 +289,7 @@ const loadContactData = () => {
           }
         }
       })
-      
+
       // Add narrative media if any
       if (narrativeData.mediaIds.length > 0) {
         unlockDocuments(narrativeData.mediaIds)
@@ -337,7 +313,7 @@ const loadContactData = () => {
           }
         })
       }
-      
+
       // Add triggered narrative media if any
       if (triggeredData.mediaIds.length > 0 && triggeredData.events && triggeredData.events.length > 0) {
         unlockDocuments(triggeredData.mediaIds)
@@ -362,22 +338,23 @@ const loadContactData = () => {
           }
         })
       }
-      
+
       // Turn off typing indicator after all narrative messages are sent
-      const totalNarrativeDelay = messages.value.length === 0 
-        ? (messageDelayCounter * 2 * 1000) 
+      const totalNarrativeDelay = messages.value.length === 0
+        ? (messageDelayCounter * 2 * 1000)
         : (narrativeDelay * 1000)
       if (totalNarrativeDelay > 0) {
         setTimeout(() => {
           isTyping.value = false
         }, totalNarrativeDelay)
       }
-      
-      // Show puzzle preQuestion
+
+      // Show puzzle preQuestion (schedule after any narrative/triggered messages)
       const puzzleEvent = getPuzzleForTurn(contactId.value, currentTurn)
-      
+
       if (puzzleEvent?.preQuestion && !isPreQuestionShown(`${contactId.value}_${currentTurn}`)) {
-        const preQuestionDelay = messages.value.length === 0 ? messageDelayCounter * 2 : narrativeDelay
+        // Ensure preQuestion appears after any narrative messages by using the larger delay
+        const preQuestionDelay = Math.max(messageDelayCounter * 2, narrativeDelay)
         addDelayedMessage(contactId.value, {
           id: `msg_prequestion_${contactId.value}_${currentTurn}`,
           content: puzzleEvent.preQuestion,
@@ -437,8 +414,10 @@ watch(isCooldown, (val) => {
 watch(currentTurn, (newTurn) => {
   if (newTurn > 1 && !isMessageSending.value) {
     const narrativeData = getNarrativeMessagesForTurnStart(contactId.value, newTurn)
+    // Also check for triggered narratives coming from other contacts
+    const triggeredData = checkTriggeredNarratives()
     let delay = 0
-    
+
     narrativeData.messages.forEach((message: string, index: number) => {
       const narrativeId = `narrative_turnstart_${newTurn}_${index}`
       if (!isNarrativeShown(narrativeId)) {
@@ -454,7 +433,7 @@ watch(currentTurn, (newTurn) => {
         delay += 2000
       }
     })
-    
+
     // Add narrative media if any
     if (narrativeData.mediaIds.length > 0) {
       unlockDocuments(narrativeData.mediaIds)
@@ -476,8 +455,51 @@ watch(currentTurn, (newTurn) => {
         }
       })
     }
-    
-    // Show puzzle preQuestion
+
+    // Add triggered narrative messages (from other contacts) before preQuestion
+    if (triggeredData.messages.length > 0 && triggeredData.events && triggeredData.events.length > 0) {
+      unlockDocuments(triggeredData.mediaIds)
+      triggeredData.messages.forEach((message: string, index: number) => {
+        const event = triggeredData.events![0]
+        const narrativeId = `narrative_triggered_${event.id}_${index}`
+        if (!isNarrativeShown(narrativeId)) {
+          setTimeout(() => {
+            addMessage(contactId.value, {
+              id: `msg_narrative_triggered_${event.id}_${index}`,
+              content: message,
+              sender: 'contact',
+              timestamp: Date.now()
+            })
+            setNarrativeShown(narrativeId)
+          }, delay)
+          delay += 2000
+        }
+      })
+
+      // Add triggered media
+      if (triggeredData.mediaIds.length > 0) {
+        const triggeredMediaArray = findMediaArray(triggeredData.mediaIds)
+        triggeredMediaArray.forEach((media: any, idx: number) => {
+          const event = triggeredData.events![0]
+          const narrativeMediaId = `narrative_triggered_media_${event.id}_${media.id || idx}`
+          if (!isNarrativeShown(narrativeMediaId)) {
+            setTimeout(() => {
+              addMessage(contactId.value, {
+                id: `msg_narrative_triggered_media_${event.id}_${media.id || idx}`,
+                content: '',
+                sender: 'contact',
+                media: [media],
+                timestamp: Date.now()
+              })
+              setNarrativeShown(narrativeMediaId)
+            }, delay)
+            delay += 2000
+          }
+        })
+      }
+    }
+
+    // Show puzzle preQuestion after both turn-start narratives and any triggered narratives
     const puzzleEvent = getPuzzleForTurn(contactId.value, newTurn)
     if (puzzleEvent?.preQuestion && !isPreQuestionShown(`${contactId.value}_${newTurn}`)) {
       setTimeout(() => {
@@ -538,26 +560,26 @@ function resetZoom() {
 
 function startDrag(e: MouseEvent | TouchEvent) {
   if (zoomLevel.value <= 1) return
-  
+
   isDragging.value = true
-  
+
   const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX
   const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY
-  
+
   dragStart.value = {
     x: clientX - position.value.x,
     y: clientY - position.value.y
   }
-  
+
   e.preventDefault()
 }
 
 function onDrag(e: MouseEvent | TouchEvent) {
   if (!isDragging.value) return
-  
+
   const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX
   const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY
-  
+
   position.value = {
     x: clientX - dragStart.value.x,
     y: clientY - dragStart.value.y
@@ -607,10 +629,10 @@ onMounted(() => {
       }
     }, 100)
   }
-  
+
   // Add event listener for auto-solve
   window.addEventListener('debug-auto-solve', handleAutoSolve)
-  
+
   // Add drag event listeners for fullscreen zoom
   document.addEventListener('mousemove', onDrag)
   document.addEventListener('mouseup', stopDrag)
@@ -621,7 +643,7 @@ onMounted(() => {
 onUnmounted(() => {
   // Cleanup listener on unmount
   window.removeEventListener('debug-auto-solve', handleAutoSolve)
-  
+
   // Remove drag event listeners
   document.removeEventListener('mousemove', onDrag)
   document.removeEventListener('mouseup', stopDrag)
@@ -643,12 +665,12 @@ const sendMessage = async () => {
   inputValue.value = ''
   isMessageSending.value = true
   isTyping.value = true
-  
+
   // Simulate typing delay
   await new Promise(resolve => setTimeout(resolve, 1500))
 
   const result = parseInput(contactId.value, userMsg)
-  
+
   // Add main response
   addMessage(contactId.value, {
     id: result.messageId || `msg_auto_${Date.now()}`,
@@ -659,7 +681,7 @@ const sendMessage = async () => {
 
   // Queue follow-up messages
   messageDelayCounter = 1
-  
+
   // Add additional text messages if any
   if (result.textMessages && result.textMessages.length > 0) {
     result.textMessages.forEach((msg: string) => {
@@ -670,7 +692,7 @@ const sendMessage = async () => {
       }, messageDelayCounter++ * 2)
     })
   }
-  
+
   if (result.evidenceText) {
     addDelayedMessage(contactId.value, {
       id: `msg_evidence_${Date.now()}`,
@@ -678,7 +700,7 @@ const sendMessage = async () => {
       sender: 'contact'
     }, messageDelayCounter++ * 2)
   }
-  
+
   // Add additional evidence messages if any
   if (result.evidenceTextMessages && result.evidenceTextMessages.length > 0) {
     result.evidenceTextMessages.forEach((msg: string) => {
@@ -703,7 +725,7 @@ const sendMessage = async () => {
     // Unlock documents
     const ids = Array.isArray(result.mediaId) ? result.mediaId : [result.mediaId]
     unlockDocuments(ids)
-    
+
     const mediaArray = findMediaArray(result.mediaId)
     mediaArray.forEach((media: any) => {
       addDelayedMessage(contactId.value, {
@@ -882,11 +904,13 @@ code {
 }
 
 @keyframes bounce {
+
   0%,
   80%,
   100% {
     opacity: 0.5;
   }
+
   40% {
     opacity: 1;
   }

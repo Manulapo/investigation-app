@@ -51,7 +51,7 @@
     },
     {
       "id": "event_marcus_3",
-      "turnId": 24,
+      "turnId": 26,
       "type": "narrative",
       "triggerAfter": null,
       "messages": [
@@ -65,7 +65,7 @@
     },
     {
       "id": "event_marcus_4",
-      "turnId": 24,
+      "turnId": 26,
       "type": "puzzle",
       "preQuestion": "Prova: come si chiama la cappella dove si trova Rusty?",
       "maxAttempts": 3,
@@ -80,7 +80,10 @@
           "Carlo"
         ],
         "response": {
-          "text": [],
+          "text": [
+            "Esatto, proprio la Cappella di San Carlo.",
+            "Il detective si trova nello scantinato dell cappella."
+          ],
           "messageId": "msg_turn24_success",
           "mediaId": [
             "i17"
