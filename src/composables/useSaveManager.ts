@@ -50,7 +50,20 @@ watch(state, (val) => {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(val))
 }, { deep: true })
 
+// Helper to create boolean flag getter/setter pairs
+function createBooleanFlag(record: Record<string, boolean>) {
+  return {
+    get: (key: string) => record[key] === true,
+    set: (key: string, value: boolean = true) => { record[key] = value }
+  }
+}
+
 export function useSaveManager() {
+  // Ensure hasNotification exists
+  if (!state.hasNotification) {
+    state.hasNotification = {}
+  }
+
   function addMessage(contactId: string, msg: Message) {
     if (!state.chatHistories[contactId]) state.chatHistories[contactId] = []
     // User messages are always read
@@ -90,24 +103,20 @@ export function useSaveManager() {
   }
 
   function isPreQuestionShown(key: string): boolean {
-    const status = getPuzzleStatus(key)
-    return status.preQuestionShown
+    return getPuzzleStatus(key).preQuestionShown
   }
 
   function setPreQuestionShown(key: string, shown: boolean = true) {
-    const status = getPuzzleStatus(key)
-    status.preQuestionShown = shown
+    getPuzzleStatus(key).preQuestionShown = shown
   }
 
   function isLocked(key: string): boolean {
-    const status = getPuzzleStatus(key)
-    if (!status.lockedUntil) return false
-    return Date.now() < status.lockedUntil
+    const lockedUntil = getPuzzleStatus(key).lockedUntil
+    return lockedUntil ? Date.now() < lockedUntil : false
   }
 
   function getLockedUntil(key: string): number | null {
-    const status = getPuzzleStatus(key)
-    return status.lockedUntil
+    return getPuzzleStatus(key).lockedUntil
   }
 
   function advanceTurn(next: number) {
@@ -132,17 +141,10 @@ export function useSaveManager() {
   }
 
   function getUnreadCount(contactId: string): number {
-    if (!state.hasNotification) {
-      state.hasNotification = {}
-    }
-    const count = state.hasNotification[contactId] ? 1 : 0
-    return count
+    return state.hasNotification[contactId] ? 1 : 0
   }
 
   function setNotificationForContact(contactId: string) {
-    if (!state.hasNotification) {
-      state.hasNotification = {}
-    }
     state.hasNotification[contactId] = true
   }
 
@@ -161,19 +163,18 @@ export function useSaveManager() {
   }
 
   function useHint(puzzleKey: string) {
-    if (!state.usedHintsPerPuzzle[puzzleKey]) {
-      state.usedHintsPerPuzzle[puzzleKey] = 0
-    }
-    state.usedHintsPerPuzzle[puzzleKey]++
+    state.usedHintsPerPuzzle[puzzleKey] = (state.usedHintsPerPuzzle[puzzleKey] || 0) + 1
     state.totalHintsUsed++
   }
 
+  const narrativeFlags = createBooleanFlag(state.shownNarratives)
+
   function isNarrativeShown(narrativeId: string): boolean {
-    return state.shownNarratives[narrativeId] === true
+    return narrativeFlags.get(narrativeId)
   }
 
   function setNarrativeShown(narrativeId: string, shown: boolean = true) {
-    state.shownNarratives[narrativeId] = shown
+    narrativeFlags.set(narrativeId, shown)
   }
 
   function resetChatHistories() {

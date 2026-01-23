@@ -13,6 +13,7 @@
   "dependencies": {
     "date-fns": "^2.30.0",
     "pinch-zoom-js": "^2.3.5",
+    "pinia": "^3.0.4",
     "vue": "^3.4.0",
     "vue-router": "^4.2.0"
   },

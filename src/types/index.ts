@@ -100,3 +100,5 @@ export interface ContactLoaderDependencies {
   getCurrentTurnForContact: (contactId: string) => number
   isTyping: Ref<boolean>
 }
+// Export narrative types
+export * from './narrative'

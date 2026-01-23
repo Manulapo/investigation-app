@@ -1,11 +1,30 @@
-import type { MessageQueueDependencies } from '../types'
+import type { ComputedRef } from 'vue'
+import type { MessageData } from '../types'
+import { useSaveManager } from './useSaveManager'
+import { useDocuments } from './useDocuments'
+import { useNotification } from './useNotification'
+import { useGameEngine } from './useGameEngine'
 
-export function useMessageQueue(deps: MessageQueueDependencies) {
+export function useMessageQueue(
+    contactId: ComputedRef<string>,
+    currentTurn: ComputedRef<number>,
+    addDelayedMessage: (contactId: string, messageData: MessageData, delaySeconds: number) => void
+) {
     let messageDelayCounter = 0
-    const MESSAGE_DELAY_SECONDS = 2 // Configurable delay between messages in seconds
+    const MESSAGE_DELAY_SECONDS = 2
+
+    const { addMessage, isPreQuestionShown, setPreQuestionShown } = useSaveManager()
+    const { unlockDocuments, getDocumentById } = useDocuments()
+    const { show } = useNotification()
+    const { getPuzzleForTurn } = useGameEngine()
+
+    const findMediaArray = (mediaIds: string | string[]) => {
+        const ids = Array.isArray(mediaIds) ? mediaIds : [mediaIds]
+        return ids.map(id => getDocumentById(id)).filter(Boolean)
+    }
 
     const addUserMessage = (content: string) => {
-        deps.addMessage(deps.contactId.value, {
+        addMessage(contactId.value, {
             id: `msg_user_${Date.now()}`,
             content,
             sender: 'user',
@@ -14,7 +33,7 @@ export function useMessageQueue(deps: MessageQueueDependencies) {
     }
 
     const addMainResponse = (result: any) => {
-        deps.addMessage(deps.contactId.value, {
+        addMessage(contactId.value, {
             id: result.messageId || `msg_auto_${Date.now()}`,
             content: result.text,
             sender: 'contact',
@@ -25,24 +44,54 @@ export function useMessageQueue(deps: MessageQueueDependencies) {
         messageDelayCounter = MESSAGE_DELAY_SECONDS
     }
 
-    const queueTextMessages = (messages: string[] | undefined) => {
-        if (!messages || messages.length === 0) return
+    // Message creator factory function with switch statement
+    const createMessage = (type: 'text' | 'media' | 'evidence' | 'narrative' | 'narrativeMedia', item: any, index = 0): MessageData => {
+        const baseMessage = {
+            id: generateMessageId(type, index),
+            sender: 'contact' as const
+        }
 
-        messages.forEach((msg: string) => {
-            deps.addDelayedMessage(deps.contactId.value, {
-                id: `msg_text_${Date.now()}_${Math.random()}`,
-                content: msg,
-                sender: 'contact'
-            }, messageDelayCounter)
+        // Text-based messages
+        if (type === 'text' || type === 'evidence' || type === 'narrative') {
+            return { ...baseMessage, content: item }
+        }
 
+        // Media-based messages
+        return { ...baseMessage, content: '', media: [item] }
+    }
+
+    const generateMessageId = (type: string, index: number): string => {
+        const timestamp = Date.now()
+        const random = Math.random()
+
+        switch (type) {
+            case 'narrative':
+                return `msg_${type}_${timestamp}_${index}`
+            default:
+                return `msg_${type}_${timestamp}_${random}`
+        }
+    }
+
+    // Generic helper to queue messages and reduce code duplication
+    const queueMessages = (items: any[], type: 'text' | 'media' | 'evidence' | 'narrative' | 'narrativeMedia') => {
+        items.forEach((item, index) => {
+            const message = createMessage(type, item, index)
+            addDelayedMessage(contactId.value, message, messageDelayCounter)
             messageDelayCounter += MESSAGE_DELAY_SECONDS
         })
     }
 
+    // Queue one or more text messages
+    const queueTextMessages = (messages: string[] | undefined) => {
+        if (!messages || messages.length === 0) return
+        queueMessages(messages, 'text')
+    }
+
+    // Queue a single success media message
     const queueSuccessMedia = (media: any) => {
         if (!media) return
 
-        deps.addDelayedMessage(deps.contactId.value, {
+        addDelayedMessage(contactId.value, {
             id: `msg_success_media_${Date.now()}`,
             content: '',
             sender: 'contact',
@@ -52,29 +101,23 @@ export function useMessageQueue(deps: MessageQueueDependencies) {
         messageDelayCounter += MESSAGE_DELAY_SECONDS
     }
 
+    // Queue one or more media messages
     const queueMediaMessages = (mediaId: string | string[] | undefined) => {
         if (!mediaId) return
 
         const ids = Array.isArray(mediaId) ? mediaId : [mediaId]
-        deps.unlockDocuments(ids)
+        unlockDocuments(ids)
 
-        const mediaArray = deps.findMediaArray(mediaId)
-        mediaArray.forEach((media: any) => {
-            deps.addDelayedMessage(deps.contactId.value, {
-                id: `msg_media_${Date.now()}_${Math.random()}`,
-                content: '',
-                sender: 'contact',
-                media: [media]
-            }, messageDelayCounter)
-
-            messageDelayCounter += MESSAGE_DELAY_SECONDS
-        })
+        const mediaArray = findMediaArray(mediaId)
+        queueMessages(mediaArray, 'media')
     }
 
+
+    // Queue a single evidence text message
     const queueEvidenceText = (evidenceText: string | undefined) => {
         if (!evidenceText) return
 
-        deps.addDelayedMessage(deps.contactId.value, {
+        addDelayedMessage(contactId.value, {
             id: `msg_evidence_${Date.now()}`,
             content: evidenceText,
             sender: 'contact'
@@ -83,49 +126,26 @@ export function useMessageQueue(deps: MessageQueueDependencies) {
         messageDelayCounter += MESSAGE_DELAY_SECONDS
     }
 
+    // Queue multiple evidence text messages
     const queueEvidenceMessages = (messages: string[] | undefined) => {
         if (!messages || messages.length === 0) return
-
-        messages.forEach((msg: string) => {
-            deps.addDelayedMessage(deps.contactId.value, {
-                id: `msg_evidence_${Date.now()}_${Math.random()}`,
-                content: msg,
-                sender: 'contact'
-            }, messageDelayCounter)
-
-            messageDelayCounter += MESSAGE_DELAY_SECONDS
-        })
+        queueMessages(messages, 'evidence')
     }
 
+    // Queue multiple narrative text messages
     const queueNarrativeMessages = (result: any) => {
         if (result.status !== 'success' || !result.narrativeMessages || result.narrativeMessages.length === 0) return
-
-        result.narrativeMessages.forEach((message: string, index: number) => {
-            deps.addDelayedMessage(deps.contactId.value, {
-                id: `msg_narrative_${Date.now()}_${index}`,
-                content: message,
-                sender: 'contact'
-            }, messageDelayCounter)
-
-            messageDelayCounter += MESSAGE_DELAY_SECONDS
-        })
+        queueMessages(result.narrativeMessages, 'narrative')
     }
 
+
+    // Queue multiple narrative media messages
     const queueNarrativeMedia = (mediaIds: string[] | undefined) => {
         if (!mediaIds || mediaIds.length === 0) return
 
-        deps.unlockDocuments(mediaIds)
-        const narrativeMediaArray = deps.findMediaArray(mediaIds)
-        narrativeMediaArray.forEach((media: any) => {
-            deps.addDelayedMessage(deps.contactId.value, {
-                id: `msg_narrative_media_${Date.now()}_${Math.random()}`,
-                content: '',
-                sender: 'contact',
-                media: [media]
-            }, messageDelayCounter)
-
-            messageDelayCounter += MESSAGE_DELAY_SECONDS
-        })
+        unlockDocuments(mediaIds)
+        const narrativeMediaArray = findMediaArray(mediaIds)
+        queueMessages(narrativeMediaArray, 'narrativeMedia')
     }
 
     const calculateTotalDelay = (result: any) => {
@@ -134,39 +154,29 @@ export function useMessageQueue(deps: MessageQueueDependencies) {
 
     const handleSuccessActions = (result: any, totalMessageDelay: number) => {
         setTimeout(() => {
-            const puzzleEvent = deps.getPuzzleForTurn(deps.contactId.value, deps.currentTurn.value)
-            if (puzzleEvent?.preQuestion && !deps.isPreQuestionShown(`${deps.contactId.value}_${deps.currentTurn.value}`)) {
-                deps.addMessage(deps.contactId.value, {
-                    id: `msg_prequestion_${deps.contactId.value}_${deps.currentTurn.value}`,
+            const puzzleEvent = getPuzzleForTurn(contactId.value, currentTurn.value)
+            if (puzzleEvent?.preQuestion && !isPreQuestionShown(`${contactId.value}_${currentTurn.value}`)) {
+                addMessage(contactId.value, {
+                    id: `msg_prequestion_${contactId.value}_${currentTurn.value}`,
                     content: puzzleEvent.preQuestion,
                     sender: 'contact',
                     timestamp: Date.now()
                 })
-                deps.setPreQuestionShown(`${deps.contactId.value}_${deps.currentTurn.value}`, true)
+                setPreQuestionShown(`${contactId.value}_${currentTurn.value}`, true)
             }
 
             // Show notification after all messages are sent and preQuestion is shown
             if (result.notificationContact && result.notificationMessage) {
-                deps.show(result.notificationMessage, result.notificationContact)
+                show(result.notificationMessage, result.notificationContact)
             }
         }, totalMessageDelay + (MESSAGE_DELAY_SECONDS * 1000))
     }
 
     const handleFailureActions = (result: any) => {
         if (result.status === 'locked') {
-            deps.show('🔒 Sistema Bloccato - Cooldown Attivo')
+            show('🔒 Sistema Bloccato - Cooldown Attivo')
         }
     }
-
-    const resetCounter = () => {
-        messageDelayCounter = 0
-    }
-
-    const setCounter = (value: number) => {
-        messageDelayCounter = value
-    }
-
-    const getCounter = () => messageDelayCounter
 
     return {
         addUserMessage,
@@ -180,10 +190,7 @@ export function useMessageQueue(deps: MessageQueueDependencies) {
         queueNarrativeMedia,
         calculateTotalDelay,
         handleSuccessActions,
-        handleFailureActions,
-        resetCounter,
-        setCounter,
-        getCounter
+        handleFailureActions
     }
 }
 

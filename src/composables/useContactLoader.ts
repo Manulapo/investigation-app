@@ -1,21 +1,37 @@
 import { contactDataMap } from '../data/contactDataMap'
-import type { ContactLoaderDependencies } from '../types'
+import type { Ref } from 'vue'
+import type { Contact } from '../types'
+import type { ContactData, NarrativeEvent, NarrativeResult } from '../types/narrative'
+import { useMessageScheduler } from './useMessageScheduler'
+import { useChatStore } from '../stores/chatStore'
+import { useGameStore } from '../stores/gameStore'
+import { useNarrativeStore } from '../stores/narrativeStore'
 
+interface ContactLoaderParams {
+    contactId: Ref<string>
+    contact: Ref<Contact | null>
+    messages: Ref<any[]>
+}
 
+export function useContactLoader({ contactId, contact, messages }: ContactLoaderParams) {
+    const chatStore = useChatStore()
+    const gameStore = useGameStore()
+    const narrativeStore = useNarrativeStore()
 
-export function useContactLoader(deps: ContactLoaderDependencies) {
-    let messageDelayCounter = 0
+    const scheduler = useMessageScheduler({
+        contactId: contactId.value
+    })
 
-    const checkTriggeredNarratives = (contactData: any) => {
+    const checkTriggeredNarratives = (contactData: ContactData | null): NarrativeResult => {
         if (!contactData) return { messages: [], mediaIds: [], events: [] }
 
         const timeline = contactData.timeline || []
-        const triggeredNarratives: any[] = []
+        const triggeredNarratives: NarrativeEvent[] = []
 
-        timeline.forEach((event: any) => {
+        timeline.forEach((event: NarrativeEvent) => {
             if (event.type === 'narrative' && event.triggerAfter) {
-                const triggerExists = Object.keys(deps.state.chatHistories).some(cId => {
-                    const contactMessages = deps.state.chatHistories[cId] || []
+                const triggerExists = Object.keys(chatStore.chatHistories).some(cId => {
+                    const contactMessages = chatStore.chatHistories[cId] || []
                     return contactMessages.some((msg: any) => msg.id === event.triggerAfter)
                 })
 
@@ -26,157 +42,122 @@ export function useContactLoader(deps: ContactLoaderDependencies) {
         })
 
         return {
-            messages: triggeredNarratives.flatMap((event: any) => event.messages || []),
-            mediaIds: triggeredNarratives.flatMap((event: any) => event.mediaId || []),
+            messages: triggeredNarratives.flatMap((event: NarrativeEvent) => event.messages || []),
+            mediaIds: triggeredNarratives.flatMap((event: NarrativeEvent) => event.mediaId || []),
             events: triggeredNarratives
         }
     }
 
-    const loadContactData = () => {
+    const loadInitialMessage = (contactData: ContactData, isNewChat: boolean) => {
+        if (!isNewChat || !contactData.initialMessage) return
+
+        scheduler.scheduleMessage(
+            {
+                id: `msg_initial_${contactId.value}`,
+                content: contactData.initialMessage,
+                sender: 'contact'
+            },
+            `initial_${contactId.value}`,
+            true
+        )
+    }
+
+    const loadTurnNarratives = (currentTurn: number, isNewChat: boolean): number => {
+        const narrativeData = narrativeStore.getNarrativeMessagesForTurnStart(contactId.value, currentTurn)
+        return scheduler.scheduleNarrativeBlock(
+            narrativeData.messages,
+            narrativeData.mediaIds,
+            'narrative_initial',
+            currentTurn,
+            isNewChat
+        )
+    }
+
+    const loadTriggeredNarratives = (contactData: ContactData, isNewChat: boolean): NarrativeResult => {
+        const triggeredData = checkTriggeredNarratives(contactData)
+        if (triggeredData.events.length === 0) return triggeredData
+
+        const event = triggeredData.events[0]
+        scheduler.scheduleNarrativeBlock(
+            triggeredData.messages,
+            triggeredData.mediaIds,
+            `narrative_triggered_${event.id}`,
+            0, // Not turn-based
+            isNewChat
+        )
+
+        return triggeredData
+    }
+
+    const loadPreQuestion = (currentTurn: number, isNewChat: boolean) => {
+        const puzzleEvent = narrativeStore.getPuzzleForTurn(contactId.value, currentTurn)
+        const puzzleKey = `${contactId.value}_${currentTurn}`
+
+        if (puzzleEvent?.preQuestion && !gameStore.isPreQuestionShown(puzzleKey)) {
+            const delay = scheduler.getCurrentDelay()
+            chatStore.addDelayedMessage(contactId.value, {
+                id: `msg_prequestion_${puzzleKey}`,
+                content: puzzleEvent.preQuestion,
+                sender: 'contact'
+            }, isNewChat ? delay * 2 : delay)
+            gameStore.setPreQuestionShown(puzzleKey, true)
+        }
+    }
+
+    const shouldShowTypingIndicator = (
+        narrativeData: { messages: string[] },
+        triggeredData: NarrativeResult,
+        currentTurn: number
+    ): boolean => {
+        const hasInitialNarratives = narrativeData.messages.length > 0 &&
+            narrativeData.messages.some((_: any, index: number) =>
+                !gameStore.isNarrativeShown(`narrative_initial_${currentTurn}_${index}`)
+            )
+
+        const hasTriggeredNarratives = triggeredData.messages.length > 0 &&
+            triggeredData.events.length > 0 &&
+            triggeredData.events.some((event: NarrativeEvent) =>
+                !gameStore.isNarrativeShown(`narrative_triggered_${event.id}_0`)
+            )
+
+        return hasInitialNarratives || hasTriggeredNarratives
+    }
+
+    const loadContactData = (): ContactData | null => {
         try {
-            const contactFile = deps.contact.value?.file
+            const contactFile = contact.value?.file
             if (!contactFile) return null
 
-            // Get contact data from direct JSON imports
-            const contactData = contactDataMap[contactFile]
+            const contactData: ContactData = contactDataMap[contactFile]
+            if (!contactData) return null
 
-            // Add initial message if chat is empty
-            if (deps.messages.value.length === 0) {
-                messageDelayCounter = 0
-                if (contactData.initialMessage) {
-                    deps.addDelayedMessage(deps.contactId.value, {
-                        id: `msg_initial_${deps.contactId.value}`,
-                        content: contactData.initialMessage,
-                        sender: 'contact'
-                    }, 0)
-                    messageDelayCounter++
-                }
-            }
+            const isNewChat = messages.value.length === 0
+            const currentTurn = narrativeStore.getCurrentTurnForContact(contactId.value)
 
-            // Determine current turn and show narrative messages for turn start
-            const currentTurn = deps.getCurrentTurnForContact(deps.contactId.value)
-            const narrativeData = deps.getNarrativeMessagesForTurnStart(deps.contactId.value, currentTurn)
+            // Reset scheduler for new load
+            scheduler.reset()
 
-            // Check for triggered narratives (from other contacts' success messages)
+            // Get narrative data to check if we should show typing indicator
+            const narrativeData = narrativeStore.getNarrativeMessagesForTurnStart(contactId.value, currentTurn)
             const triggeredData = checkTriggeredNarratives(contactData)
 
-            // Show typing indicator if there are narrative messages to display
-            if ((narrativeData.messages.length > 0 && narrativeData.messages.some((_: any, index: number) => !deps.isNarrativeShown(`narrative_initial_${currentTurn}_${index}`))) ||
-                (triggeredData.messages.length > 0 && triggeredData.events && triggeredData.events.some((event: any) => !deps.isNarrativeShown(`narrative_triggered_${event.id}`)))) {
-                deps.isTyping.value = true
+            // Show typing indicator if there are narratives to display
+            if (shouldShowTypingIndicator(narrativeData, triggeredData, currentTurn)) {
+                chatStore.setTyping(contactId.value, true)
             }
 
-            let narrativeDelay = 0
-            narrativeData.messages.forEach((message: string, index: number) => {
-                const narrativeId = `narrative_initial_${currentTurn}_${index}`
-                if (!deps.isNarrativeShown(narrativeId)) {
-                    const delay = deps.messages.value.length === 0 ? messageDelayCounter * 2 : narrativeDelay
-                    deps.addDelayedMessage(deps.contactId.value, {
-                        id: `msg_narrative_initial_${currentTurn}_${index}`,
-                        content: message,
-                        sender: 'contact'
-                    }, delay)
-                    deps.setNarrativeShown(narrativeId)
-                    if (deps.messages.value.length === 0) {
-                        messageDelayCounter++
-                    } else {
-                        narrativeDelay += 2
-                    }
-                }
-            })
+            // Load all messages in sequence
+            loadInitialMessage(contactData, isNewChat)
+            loadTurnNarratives(currentTurn, isNewChat)
+            loadTriggeredNarratives(contactData, isNewChat)
+            loadPreQuestion(currentTurn, isNewChat)
 
-            // Add triggered narrative messages
-            triggeredData.messages.forEach((message: string, index: number) => {
-                const event = triggeredData.events && triggeredData.events[0]
-                if (!event) return
-                const narrativeId = `narrative_triggered_${event.id}_${index}`
-                if (!deps.isNarrativeShown(narrativeId)) {
-                    const delay = deps.messages.value.length === 0 ? messageDelayCounter * 2 : narrativeDelay
-                    deps.addDelayedMessage(deps.contactId.value, {
-                        id: `msg_narrative_triggered_${event.id}_${index}`,
-                        content: message,
-                        sender: 'contact'
-                    }, delay)
-                    deps.setNarrativeShown(narrativeId)
-                    if (deps.messages.value.length === 0) {
-                        messageDelayCounter++
-                    } else {
-                        narrativeDelay += 2
-                    }
-                }
-            })
-
-            // Add narrative media if any
-            if (narrativeData.mediaIds.length > 0) {
-                deps.unlockDocuments(narrativeData.mediaIds)
-                const mediaArray = deps.findMediaArray(narrativeData.mediaIds)
-                mediaArray.forEach((media: any, mediaIndex: number) => {
-                    const narrativeMediaId = `narrative_media_initial_${currentTurn}_${media.id || mediaIndex}`
-                    if (!deps.isNarrativeShown(narrativeMediaId)) {
-                        const delay = deps.messages.value.length === 0 ? messageDelayCounter * 2 : narrativeDelay
-                        deps.addDelayedMessage(deps.contactId.value, {
-                            id: `msg_narrative_media_initial_${currentTurn}_${media.id || mediaIndex}`,
-                            content: '',
-                            sender: 'contact',
-                            media: [media]
-                        }, delay)
-                        deps.setNarrativeShown(narrativeMediaId)
-                        if (deps.messages.value.length === 0) {
-                            messageDelayCounter++
-                        } else {
-                            narrativeDelay += 2
-                        }
-                    }
-                })
-            }
-
-            // Add triggered narrative media if any
-            if (triggeredData.mediaIds.length > 0 && triggeredData.events && triggeredData.events.length > 0) {
-                deps.unlockDocuments(triggeredData.mediaIds)
-                const triggeredMediaArray = deps.findMediaArray(triggeredData.mediaIds)
-                triggeredMediaArray.forEach((media: any, mediaIndex: number) => {
-                    const event = triggeredData.events![0]
-                    const narrativeMediaId = `narrative_triggered_media_${event.id}_${media.id || mediaIndex}`
-                    if (!deps.isNarrativeShown(narrativeMediaId)) {
-                        const delay = deps.messages.value.length === 0 ? messageDelayCounter * 2 : narrativeDelay
-                        deps.addDelayedMessage(deps.contactId.value, {
-                            id: `msg_narrative_triggered_media_${event.id}_${media.id || mediaIndex}`,
-                            content: '',
-                            sender: 'contact',
-                            media: [media]
-                        }, delay)
-                        deps.setNarrativeShown(narrativeMediaId)
-                        if (deps.messages.value.length === 0) {
-                            messageDelayCounter++
-                        } else {
-                            narrativeDelay += 2
-                        }
-                    }
-                })
-            }
-
-            // Turn off typing indicator after all narrative messages are sent
-            const totalNarrativeDelay = deps.messages.value.length === 0
-                ? (messageDelayCounter * 2 * 1000)
-                : (narrativeDelay * 1000)
-            if (totalNarrativeDelay > 0) {
+            // Turn off typing indicator after all messages are sent
+            const totalDelay = scheduler.getTotalDelayMs(isNewChat)
+            if (totalDelay > 0) {
                 setTimeout(() => {
-                    deps.isTyping.value = false
-                }, totalNarrativeDelay)
-            }
-
-            // Show puzzle preQuestion (schedule after any narrative/triggered messages)
-            const puzzleEvent = deps.getPuzzleForTurn(deps.contactId.value, currentTurn)
-
-            if (puzzleEvent?.preQuestion && !deps.isPreQuestionShown(`${deps.contactId.value}_${currentTurn}`)) {
-                const preQuestionDelay = Math.max(messageDelayCounter * 2, narrativeDelay)
-                deps.addDelayedMessage(deps.contactId.value, {
-                    id: `msg_prequestion_${deps.contactId.value}_${currentTurn}`,
-                    content: puzzleEvent.preQuestion,
-                    sender: 'contact'
-                }, preQuestionDelay)
-                if (deps.messages.value.length === 0) messageDelayCounter++
-                deps.setPreQuestionShown(`${deps.contactId.value}_${currentTurn}`, true)
+                    chatStore.setTyping(contactId.value, false)
+                }, totalDelay)
             }
 
             return contactData

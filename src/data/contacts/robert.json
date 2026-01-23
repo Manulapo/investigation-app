@@ -61,8 +61,8 @@
       "maxAttempts": 3,
       "penaltySeconds": 10,
       "notification": {
-        "notificationContact": "lab",
-        "notificationMessage": "Hai ricevuto un messaggio dal laboratorio forense"
+        "notificationContact": "loc",
+        "notificationMessage": "Hai ricevuto un messaggio dalle Investigazioni locali"
       },
       "solution": {
         "keywords": [

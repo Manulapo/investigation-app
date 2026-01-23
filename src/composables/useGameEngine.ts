@@ -2,6 +2,7 @@ import { contactDataMap } from '../data/contactDataMap'
 import registry from '../data/registry.json'
 import penaltyResponsesData from '../data/penaltyResponses.json'
 import { useSaveManager } from './useSaveManager'
+import type { PuzzleEvent } from '../types/narrative'
 
 const REGEX = /^T(\d+):\s*(.+)$/i
 const penaltyResponses: string[] = penaltyResponsesData
@@ -32,12 +33,12 @@ export function useGameEngine() {
 
     // Find puzzle event in timeline
     const timeline = contact.timeline || []
-    const puzzleEvent = timeline.find((event: any) => 
+    const puzzleEvent = timeline.find((event: any) =>
       event.type === 'puzzle' && event.turnId === turnId
     )
-    
+
     if (!puzzleEvent) return { status: 'error', text: 'Nessun enigma per questo turno' }
-    
+
     const key = `${contactId}_${turnId}`
 
     // CHECK 0: Show preQuestion if it exists and hasn't been shown yet
@@ -62,30 +63,30 @@ export function useGameEngine() {
       const response = puzzleEvent.solution.response
       advanceTurn(response.nextTurn || (turnId + 1))
       resetFailed(key)
-      
+
       // Check if notification is properly configured
       const hasValidNotification = puzzleEvent.notification?.notificationContact && puzzleEvent.notification?.notificationMessage
-      
+
       // Find triggered narratives
       const narrativeData = findTriggeredNarratives(contact, response.messageId)
-      
+
       // Normalize text and evidenceText to arrays
       const textArray = Array.isArray(response.text) ? response.text : [response.text]
-      const evidenceTextArray = response.evidenceText 
+      const evidenceTextArray = response.evidenceText
         ? (Array.isArray(response.evidenceText) ? response.evidenceText : [response.evidenceText])
         : []
-      
-      return { 
-        status: 'success', 
+
+      return {
+        status: 'success',
         text: textArray[0], // First message as main response
         textMessages: textArray.slice(1), // Additional messages
-        mediaId: response.mediaId, 
+        mediaId: response.mediaId,
         evidenceText: evidenceTextArray[0], // First evidence as main
         evidenceTextMessages: evidenceTextArray.slice(1), // Additional evidence
-        messageId: response.messageId, 
-        successMedia: response.successMedia, 
-        showNotification: hasValidNotification, 
-        notificationContact: puzzleEvent.notification?.notificationContact, 
+        messageId: response.messageId,
+        successMedia: response.successMedia,
+        showNotification: hasValidNotification,
+        notificationContact: puzzleEvent.notification?.notificationContact,
         notificationMessage: puzzleEvent.notification?.notificationMessage,
         narrativeMessages: narrativeData.messages,
         narrativeMediaIds: narrativeData.mediaIds
@@ -95,7 +96,7 @@ export function useGameEngine() {
     // CHECK 3: General Failure (Randomized)
     const attempts = incrementFailed(key)
     const fallbackText = randomItem(puzzleEvent.fallbacks || ['Wrong.'])
-    
+
     if (attempts >= (puzzleEvent.maxAttempts || 3)) {
       const until = Date.now() + (puzzleEvent.penaltySeconds || 10) * 1000
       setLockUntil(key, until)
@@ -109,7 +110,7 @@ export function useGameEngine() {
   // Find narrative messages triggered by a specific event
   function findTriggeredNarratives(contact: any, triggerMessageId: string) {
     const timeline = contact.timeline || []
-    const narrativeEvents = timeline.filter((event: any) => 
+    const narrativeEvents = timeline.filter((event: any) =>
       event.type === 'narrative' && event.triggerAfter === triggerMessageId
     )
     return {
@@ -122,51 +123,35 @@ export function useGameEngine() {
   function getNarrativeMessagesForTurnStart(contactId: string, turnId: number) {
     const contact = findContactFile(contactId)
     if (!contact) return { messages: [], mediaIds: [] }
-    
+
     const timeline = contact.timeline || []
-    const narrativeEvents = timeline.filter((event: any) => 
-      event.type === 'narrative' && 
-      event.turnId === turnId && 
+    const narrativeEvents = timeline.filter((event: any) =>
+      event.type === 'narrative' &&
+      event.turnId === turnId &&
       event.triggerAfter === null
     )
-    
+
     return {
       messages: narrativeEvents.flatMap((event: any) => event.messages || []),
       mediaIds: narrativeEvents.flatMap((event: any) => event.mediaId || [])
     }
   }
 
-  // Get random narrative messages (for ambient flavor)
-  function getRandomNarrativeMessages(contactId: string, turnId: number): string[] {
-    const contact = findContactFile(contactId)
-    if (!contact) return []
-    
-    const timeline = contact.timeline || []
-    const narrativeEvents = timeline.filter((event: any) => 
-      event.type === 'narrative' &&
-      event.turnId === turnId && 
-      event.triggerRandom && 
-      Math.random() < (event.probability || 0.5)
-    )
-    
-    return narrativeEvents.flatMap((event: any) => event.messages || [])
-  }
-
   // Get puzzle event for a specific turn
-  function getPuzzleForTurn(contactId: string, turnId: number) {
+  function getPuzzleForTurn(contactId: string, turnId: number): PuzzleEvent | null {
     const contact = findContactFile(contactId)
     if (!contact) return null
-    
+
     const timeline = contact.timeline || []
-    return timeline.find((event: any) => 
+    const puzzleEvent = timeline.find((event: any) =>
       event.type === 'puzzle' && event.turnId === turnId
     )
+    return puzzleEvent as PuzzleEvent | null
   }
 
-  return { 
+  return {
     parseInput,
     getNarrativeMessagesForTurnStart,
-    getRandomNarrativeMessages,
     getPuzzleForTurn
   }
 }

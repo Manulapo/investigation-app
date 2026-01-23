@@ -47,8 +47,8 @@ import { useDocuments } from '../composables/useDocuments'
 import { useGameEngine } from '../composables/useGameEngine'
 import { useImageViewer } from '../composables/useImageViewer'
 import { useMessageQueue } from '../composables/useMessageQueue'
-import { useNotification } from '../composables/useNotification'
 import { useSaveManager } from '../composables/useSaveManager'
+import { useTurnTransition } from '../composables/useTurnTransition'
 import registry from '../data/registry.json'
 import type { MessageData } from '../types'
 
@@ -56,10 +56,9 @@ import type { MessageData } from '../types'
 const props = defineProps<{ id: string }>()
 
 const router = useRouter()
-const { state, getMessages, addMessage, isLocked, getLockedUntil, setPreQuestionShown, isPreQuestionShown, markMessagesAsRead, getUsedHintsForPuzzle, useHint, isNarrativeShown, setNarrativeShown } = useSaveManager()
-const { parseInput, getNarrativeMessagesForTurnStart, getPuzzleForTurn } = useGameEngine()
-const { show } = useNotification()
-const { getDocumentById, unlockDocuments } = useDocuments()
+const { state, getMessages, addMessage, getLockedUntil, markMessagesAsRead, getUsedHintsForPuzzle, useHint } = useSaveManager()
+const { parseInput, getPuzzleForTurn } = useGameEngine()
+const { getDocumentById } = useDocuments()
 const { fullscreenMedia, imageElement, imageTransform, openFullscreen, closeFullscreen, zoomIn, zoomOut, resetZoom, startDrag, zoomLevel } = useImageViewer()
 
 
@@ -71,7 +70,7 @@ const reactiveTimer = ref(0)
 const isMessageSending = ref(false)
 
 const contactId = computed(() => props.id)
-const contact = computed(() => registry.find((c: any) => c.id === contactId.value))
+const contact = computed(() => registry.find((c: any) => c.id === contactId.value) || null)
 const messages = computed(() => getMessages(contactId.value))
 const currentTurn = computed(() => getCurrentTurnForContact(contactId.value))
 
@@ -139,49 +138,31 @@ const addDelayedMessage = (contactId: string, messageData: MessageData, delaySec
 }
 
 // Initialize message queue composable
-const messageQueue = useMessageQueue({
-  contactId,
-  addMessage,
-  addDelayedMessage,
-  unlockDocuments,
-  findMediaArray,
-  show,
-  getPuzzleForTurn,
-  isPreQuestionShown,
-  setPreQuestionShown,
-  currentTurn
-})
+const messageQueue = useMessageQueue(contactId, currentTurn, addDelayedMessage)
 
 // Initialize contact loader composable
 const contactLoader = useContactLoader({
   contactId,
   contact,
-  messages,
-  state,
-  addMessage,
-  addDelayedMessage,
-  unlockDocuments,
-  findMediaArray,
-  getNarrativeMessagesForTurnStart,
-  getPuzzleForTurn,
-  isNarrativeShown,
-  setNarrativeShown,
-  isPreQuestionShown,
-  setPreQuestionShown,
-  getCurrentTurnForContact,
-  isTyping
+  messages
 })
 
 const checkTriggeredNarratives = () => {
   return contactLoader.checkTriggeredNarratives(contactData.value)
 }
 
+// Initialize turn transition handler
+const turnTransition = useTurnTransition({
+  contactId: contactId.value,
+  isMessageSending
+})
+
 const requestHint = () => {
   if (!isHintAvailable.value || !currentPuzzle.value) return
 
   const puzzleKey = `${contactId.value}_${currentTurn.value}`
   const usedHints = getUsedHintsForPuzzle(puzzleKey)
-  const hintText = currentPuzzle.value.hints[usedHints]
+  const hintText = currentPuzzle.value.hints?.[usedHints]
 
   if (hintText) {
     addDelayedMessage(contactId.value, {
@@ -295,107 +276,7 @@ watch(isCooldown, (val) => {
 })
 
 watch(currentTurn, (newTurn) => {
-  if (newTurn > 1 && !isMessageSending.value) {
-    const narrativeData = getNarrativeMessagesForTurnStart(contactId.value, newTurn)
-    // Also check for triggered narratives coming from other contacts
-    const triggeredData = checkTriggeredNarratives()
-    let delay = 0
-
-    narrativeData.messages.forEach((message: string, index: number) => {
-      const narrativeId = `narrative_turnstart_${newTurn}_${index}`
-      if (!isNarrativeShown(narrativeId)) {
-        setTimeout(() => {
-          addMessage(contactId.value, {
-            id: `msg_narrative_turnstart_${newTurn}_${index}`,
-            content: message,
-            sender: 'contact',
-            timestamp: Date.now()
-          })
-          setNarrativeShown(narrativeId)
-        }, delay)
-        delay += 2000
-      }
-    })
-
-    // Add narrative media if any
-    if (narrativeData.mediaIds.length > 0) {
-      unlockDocuments(narrativeData.mediaIds)
-      const mediaArray = findMediaArray(narrativeData.mediaIds)
-      mediaArray.forEach((media: any, idx: number) => {
-        const narrativeMediaId = `narrative_media_turnstart_${newTurn}_${idx}`
-        if (!isNarrativeShown(narrativeMediaId)) {
-          setTimeout(() => {
-            addMessage(contactId.value, {
-              id: `msg_narrative_media_turnstart_${newTurn}_${idx}`,
-              content: '',
-              sender: 'contact',
-              media: [media],
-              timestamp: Date.now()
-            })
-            setNarrativeShown(narrativeMediaId)
-          }, delay)
-          delay += 2000
-        }
-      })
-    }
-
-    // Add triggered narrative messages (from other contacts) before preQuestion
-    if (triggeredData.messages.length > 0 && triggeredData.events && triggeredData.events.length > 0) {
-      unlockDocuments(triggeredData.mediaIds)
-      triggeredData.messages.forEach((message: string, index: number) => {
-        const event = triggeredData.events![0]
-        const narrativeId = `narrative_triggered_${event.id}_${index}`
-        if (!isNarrativeShown(narrativeId)) {
-          setTimeout(() => {
-            addMessage(contactId.value, {
-              id: `msg_narrative_triggered_${event.id}_${index}`,
-              content: message,
-              sender: 'contact',
-              timestamp: Date.now()
-            })
-            setNarrativeShown(narrativeId)
-          }, delay)
-          delay += 2000
-        }
-      })
-
-      // Add triggered media
-      if (triggeredData.mediaIds.length > 0) {
-        const triggeredMediaArray = findMediaArray(triggeredData.mediaIds)
-        triggeredMediaArray.forEach((media: any, idx: number) => {
-          const event = triggeredData.events![0]
-          const narrativeMediaId = `narrative_triggered_media_${event.id}_${media.id || idx}`
-          if (!isNarrativeShown(narrativeMediaId)) {
-            setTimeout(() => {
-              addMessage(contactId.value, {
-                id: `msg_narrative_triggered_media_${event.id}_${media.id || idx}`,
-                content: '',
-                sender: 'contact',
-                media: [media],
-                timestamp: Date.now()
-              })
-              setNarrativeShown(narrativeMediaId)
-            }, delay)
-            delay += 2000
-          }
-        })
-      }
-    }
-
-    // Show puzzle preQuestion after both turn-start narratives and any triggered narratives
-    const puzzleEvent = getPuzzleForTurn(contactId.value, newTurn)
-    if (puzzleEvent?.preQuestion && !isPreQuestionShown(`${contactId.value}_${newTurn}`)) {
-      setTimeout(() => {
-        addMessage(contactId.value, {
-          id: `msg_prequestion_${contactId.value}_${newTurn}`,
-          content: puzzleEvent.preQuestion,
-          sender: 'contact',
-          timestamp: Date.now()
-        })
-        setPreQuestionShown(`${contactId.value}_${newTurn}`, true)
-      }, delay)
-    }
-  }
+  turnTransition.handleTurnChange(newTurn)
 })
 
 
