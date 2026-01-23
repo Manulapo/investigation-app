@@ -1,31 +1,15 @@
 <template>
   <div class="chat-list-wrapper">
-    <AppHeader 
-      title="Contatti"
-      show-left-button
-      left-icon="fas fa-bars"
-      show-level
-      :level="currentLevel"
-      @left-click="toggleMenu"
-    />
+    <AppHeader title="Contatti" show-left-button left-icon="fas fa-bars" show-level :level="currentLevel"
+      @left-click="toggleMenu" />
 
     <!-- Side Menu -->
-    <SideMenu
-      :menu-open="menuOpen"
-      @close-menu="closeMenu"
-      @reset-game="resetGame"
-      @lock-chat="lockChat"
-      @go-to-help="goToHelp"
-      @go-to-documents="goToDocuments"
-    />
+    <SideMenu :menu-open="menuOpen" @close-menu="closeMenu" @reset-game="resetGame" @lock-chat="lockChat"
+      @go-to-help="goToHelp" @go-to-documents="goToDocuments" />
 
     <div class="contacts-list">
-      <ContactItem
-        v-for="contact in visibleContacts"
-        :key="contact.id"
-        :contact="contact"
-        @select="goToChat(contact.id)"
-      />
+      <ContactItem v-for="contact in visibleContacts" :key="contact.id" :contact="contact"
+        @select="goToChat(contact.id)" />
     </div>
     <div v-if="visibleContacts.length === 0" class="empty-state">
       <div class="empty-icon"><i class="fas fa-comments"></i></div>
@@ -52,29 +36,33 @@ import { contactDataMap } from '../data/contactDataMap'
 import ContactItem from '../components/ui/ContactItem.vue'
 import SideMenu from '../components/ui/SideMenu.vue'
 import AppHeader from '../components/layout/AppHeader.vue'
-import { useSaveManager } from '../composables/useSaveManager'
+import { useChatStore } from '../stores/chatStore'
+import { useGameStore } from '../stores/gameStore'
+import { useDocumentsStore } from '../stores/documentsStore'
 
 const router = useRouter()
-const { state, resetAll, getMessages, addMessage, setPreQuestionShown } = useSaveManager()
+const chatStore = useChatStore()
+const gameStore = useGameStore()
+const documentsStore = useDocumentsStore()
 
 // Helper function to get the last message timestamp for a contact
 const getLastTimestamp = (contactId: string): number => {
-  const messages = getMessages(contactId)
+  const messages = chatStore.getMessages(contactId)
   if (messages.length === 0) return 0
   return messages[messages.length - 1].timestamp || 0
 }
 
 const visibleContacts = computed(() => {
   const filtered = registry.filter((r: any) => {
-    const meetsVisibleAtTurn = r.visibleAtTurn <= state.currentGlobalTurn
+    const meetsVisibleAtTurn = r.visibleAtTurn <= gameStore.currentGlobalTurn
     // If contact has phoneNumber, it requires a phone call to unlock
     if (r.phoneNumber) {
-      return meetsVisibleAtTurn && state.phoneUnlockedContacts.includes(r.id)
+      return meetsVisibleAtTurn && gameStore.phoneUnlockedContacts.includes(r.id)
     }
     // Otherwise, appears automatically at the right turn
     return meetsVisibleAtTurn
   })
-  
+
   // Sort by last message timestamp (most recent first)
   return filtered.sort((a: any, b: any) => {
     const timeA = getLastTimestamp(a.id)
@@ -82,41 +70,40 @@ const visibleContacts = computed(() => {
     return timeB - timeA // Descending order (newest first)
   })
 })
-const currentLevel = computed(() => state.currentGlobalTurn)
+const currentLevel = computed(() => gameStore.currentGlobalTurn)
 
 const menuOpen = ref(false)
 
 // Pre-populate initial messages for visible contacts that haven't been opened yet
 function ensureInitialMessages() {
   for (const contact of visibleContacts.value) {
-    const messages = getMessages(contact.id)
+    const messages = chatStore.getMessages(contact.id)
     if (messages.length === 0) {
       try {
         const contactData = contactDataMap[contact.file]
-        
+
         // Add initial message
         if (contactData?.initialMessage) {
-          addMessage(contact.id, {
+          chatStore.addMessage(contact.id, {
             id: `msg_initial_${contact.id}`,
             content: contactData.initialMessage,
             sender: 'contact',
             timestamp: Date.now()
           })
         }
-        
+
         const firstPuzzle = contactData?.timeline?.find((event: any) => event.type === 'puzzle' && event.turnId === 1)
         if (firstPuzzle?.preQuestion && firstPuzzle.turnId === 1) {
-          addMessage(contact.id, {
+          chatStore.addMessage(contact.id, {
             id: `msg_prequestion_${contact.id}_1`,
             content: firstPuzzle.preQuestion,
             sender: 'contact',
             timestamp: Date.now() + 1
           })
-          
-          const { setPreQuestionShown } = useSaveManager()
-          setPreQuestionShown(`${contact.id}_1`, true)
+
+          gameStore.setPreQuestionShown(`${contact.id}_1`, true)
         }
-        
+
       } catch (error) {
         console.error('Error loading contact data:', error)
       }
@@ -156,7 +143,11 @@ function closeMenu() {
 
 function resetGame() {
   if (confirm('Sei sicuro di voler resettare il gioco? Tutti i progressi verranno persi.')) {
-    resetAll()
+    // Reset all stores
+    chatStore.resetChatHistories()
+    gameStore.resetAll()
+    documentsStore.resetDocuments()
+
     localStorage.removeItem('has_been_unlocked')
     localStorage.setItem('chat_locked', 'true')
     closeMenu()
@@ -263,6 +254,4 @@ code {
   transition: all 0.3s ease;
   z-index: 999;
 }
-
 </style>
-

@@ -1,11 +1,7 @@
 <template>
   <div class="container">
     <!-- Profile Header -->
-    <AppHeader 
-      show-left-button
-      left-icon="fas fa-chevron-left"
-      @left-click="goToChat(contactId)"
-    >
+    <AppHeader show-left-button left-icon="fas fa-chevron-left" @left-click="goToChat(contactId)">
       <div class="contact-info">
         <Avatar :src="contact?.avatar!" :alt="contact?.name" class="avatar" />
         <div class="contact-details">
@@ -39,16 +35,19 @@ import { useRoute, useRouter } from 'vue-router'
 import registry from '../data/registry.json'
 import { contactDataMap } from '../data/contactDataMap'
 import AppHeader from '../components/layout/AppHeader.vue'
-import { useSaveManager } from '../composables/useSaveManager'
-import { useDocuments } from '../composables/useDocuments'
+import { useChatStore } from '../stores/chatStore'
+import { useGameStore } from '../stores/gameStore'
+import { useDocumentsStore } from '../stores/documentsStore'
 import MediaGrid from '../components/ui/MediaGrid.vue'
 import Avatar from '../components/ui/Avatar.vue'
 
 const route = useRoute()
 const router = useRouter()
 const contactId = route.params.id as string
-const { state } = useSaveManager()
-const { getDocumentsByContactId, isDocumentUnlocked } = useDocuments()
+
+const chatStore = useChatStore()
+const gameStore = useGameStore()
+const documentsStore = useDocumentsStore()
 
 const contact = computed(() => registry.find((c: any) => c.id === contactId))
 const contactData = ref<any>(null)
@@ -68,15 +67,15 @@ watch(contact, (newContact) => {
 }, { immediate: true })
 
 function messageExists(id: string) {
-  return Object.values(state.chatHistories).some((arr: any) => arr.some((m: any) => m.id === id))
+  return Object.values(chatStore.chatHistories).some((arr: any) => arr.some((m: any) => m.id === id))
 }
 
 const unlockedMedia = computed(() => {
   // Get all documents for this contact
-  const contactDocuments = getDocumentsByContactId(contactId)
-  
+  const contactDocuments = documentsStore.getDocumentsByContactId(contactId)
+
   // Filter only unlocked documents
-  return contactDocuments.filter((doc: any) => isDocumentUnlocked(doc.id))
+  return contactDocuments.filter((doc: any) => documentsStore.isDocumentUnlocked(doc.id))
 })
 </script>
 

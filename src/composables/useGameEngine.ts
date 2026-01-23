@@ -1,14 +1,15 @@
 import { contactDataMap } from '../data/contactDataMap'
-import registry from '../data/registry.json'
 import penaltyResponsesData from '../data/penaltyResponses.json'
-import { useSaveManager } from './useSaveManager'
-import type { PuzzleEvent } from '../types/narrative'
+import registry from '../data/registry.json'
+import { useGameStore } from '../stores/gameStore'
+import { useNarrativeStore } from '../stores/narrativeStore'
 
 const REGEX = /^T(\d+):\s*(.+)$/i
 const penaltyResponses: string[] = penaltyResponsesData
 
 export function useGameEngine() {
-  const { incrementFailed, resetFailed, setLockUntil, isLocked, getLockedUntil, advanceTurn, isPreQuestionShown, setPreQuestionShown } = useSaveManager()
+  const gameStore = useGameStore()
+  const narrativeStore = useNarrativeStore()
 
   function findContactFile(id: string) {
     // Use the centralized contactDataMap
@@ -42,13 +43,13 @@ export function useGameEngine() {
     const key = `${contactId}_${turnId}`
 
     // CHECK 0: Show preQuestion if it exists and hasn't been shown yet
-    if (puzzleEvent.preQuestion && !isPreQuestionShown(key)) {
-      setPreQuestionShown(key, true)
+    if (puzzleEvent.preQuestion && !gameStore.isPreQuestionShown(key)) {
+      gameStore.setPreQuestionShown(key, true)
       return { status: 'prequestion', text: puzzleEvent.preQuestion }
     }
 
     // CHECK 1: Is the System Locked?
-    if (isLocked(key)) {
+    if (gameStore.isLocked(key)) {
       const penaltyText = randomItem(penaltyResponses)
       return { status: 'locked', text: penaltyText }
     }
@@ -61,13 +62,13 @@ export function useGameEngine() {
     const solved = solKeys.every((k: string) => words.includes(k))
     if (solved) {
       const response = puzzleEvent.solution.response
-      advanceTurn(response.nextTurn || (turnId + 1))
-      resetFailed(key)
+      gameStore.advanceTurn(response.nextTurn || (turnId + 1))
+      gameStore.resetFailed(key)
 
       // Check if notification is properly configured
       const hasValidNotification = puzzleEvent.notification?.notificationContact && puzzleEvent.notification?.notificationMessage
 
-      // Find triggered narratives
+      // Use narrativeStore to find triggered narratives
       const narrativeData = findTriggeredNarratives(contact, response.messageId)
 
       // Normalize text and evidenceText to arrays
@@ -94,12 +95,12 @@ export function useGameEngine() {
     }
 
     // CHECK 3: General Failure (Randomized)
-    const attempts = incrementFailed(key)
+    const attempts = gameStore.incrementFailed(key)
     const fallbackText = randomItem(puzzleEvent.fallbacks || ['Wrong.'])
 
     if (attempts >= (puzzleEvent.maxAttempts || 3)) {
       const until = Date.now() + (puzzleEvent.penaltySeconds || 10) * 1000
-      setLockUntil(key, until)
+      gameStore.setLockUntil(key, until)
       const lockMsg = randomItem(penaltyResponses)
       return { status: 'locked', text: lockMsg }
     }
@@ -119,39 +120,10 @@ export function useGameEngine() {
     }
   }
 
-  // Get narrative messages for turn start
-  function getNarrativeMessagesForTurnStart(contactId: string, turnId: number) {
-    const contact = findContactFile(contactId)
-    if (!contact) return { messages: [], mediaIds: [] }
-
-    const timeline = contact.timeline || []
-    const narrativeEvents = timeline.filter((event: any) =>
-      event.type === 'narrative' &&
-      event.turnId === turnId &&
-      event.triggerAfter === null
-    )
-
-    return {
-      messages: narrativeEvents.flatMap((event: any) => event.messages || []),
-      mediaIds: narrativeEvents.flatMap((event: any) => event.mediaId || [])
-    }
-  }
-
-  // Get puzzle event for a specific turn
-  function getPuzzleForTurn(contactId: string, turnId: number): PuzzleEvent | null {
-    const contact = findContactFile(contactId)
-    if (!contact) return null
-
-    const timeline = contact.timeline || []
-    const puzzleEvent = timeline.find((event: any) =>
-      event.type === 'puzzle' && event.turnId === turnId
-    )
-    return puzzleEvent as PuzzleEvent | null
-  }
-
   return {
     parseInput,
-    getNarrativeMessagesForTurnStart,
-    getPuzzleForTurn
+    // Re-export store methods for convenience
+    getNarrativeMessagesForTurnStart: narrativeStore.getNarrativeMessagesForTurnStart,
+    getPuzzleForTurn: narrativeStore.getPuzzleForTurn
   }
 }

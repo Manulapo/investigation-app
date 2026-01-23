@@ -125,6 +125,8 @@ export function useMessageScheduler({ contactId }: SchedulerDependencies) {
 
     return {
         reset,
+        incrementDelay,
+        getDelay,
         scheduleMessage,
         scheduleTextMessages,
         scheduleMediaMessages,

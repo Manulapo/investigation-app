@@ -1,7 +1,5 @@
-import { contactDataMap } from '../data/contactDataMap'
 import type { Ref } from 'vue'
 import type { Contact } from '../types'
-import type { ContactData, NarrativeEvent, NarrativeResult } from '../types/narrative'
 import { useMessageScheduler } from './useMessageScheduler'
 import { useChatStore } from '../stores/chatStore'
 import { useGameStore } from '../stores/gameStore'
@@ -22,33 +20,7 @@ export function useContactLoader({ contactId, contact, messages }: ContactLoader
         contactId: contactId.value
     })
 
-    const checkTriggeredNarratives = (contactData: ContactData | null): NarrativeResult => {
-        if (!contactData) return { messages: [], mediaIds: [], events: [] }
-
-        const timeline = contactData.timeline || []
-        const triggeredNarratives: NarrativeEvent[] = []
-
-        timeline.forEach((event: NarrativeEvent) => {
-            if (event.type === 'narrative' && event.triggerAfter) {
-                const triggerExists = Object.keys(chatStore.chatHistories).some(cId => {
-                    const contactMessages = chatStore.chatHistories[cId] || []
-                    return contactMessages.some((msg: any) => msg.id === event.triggerAfter)
-                })
-
-                if (triggerExists) {
-                    triggeredNarratives.push(event)
-                }
-            }
-        })
-
-        return {
-            messages: triggeredNarratives.flatMap((event: NarrativeEvent) => event.messages || []),
-            mediaIds: triggeredNarratives.flatMap((event: NarrativeEvent) => event.mediaId || []),
-            events: triggeredNarratives
-        }
-    }
-
-    const loadInitialMessage = (contactData: ContactData, isNewChat: boolean) => {
+    const loadInitialMessage = (contactData: any, isNewChat: boolean) => {
         if (!isNewChat || !contactData.initialMessage) return
 
         scheduler.scheduleMessage(
@@ -62,6 +34,19 @@ export function useContactLoader({ contactId, contact, messages }: ContactLoader
         )
     }
 
+    const accountForExistingInitialMessage = (contactData: any, isNewChat: boolean) => {
+        // If it's not a new chat but the initial message exists in the chat history,
+        // we need to increment the delay counter to account for it
+        if (!isNewChat && contactData.initialMessage) {
+            const hasInitialMessage = messages.value.some((msg: any) =>
+                msg.id === `msg_initial_${contactId.value}`
+            )
+            if (hasInitialMessage) {
+                scheduler.incrementDelay(false)
+            }
+        }
+    }
+
     const loadTurnNarratives = (currentTurn: number, isNewChat: boolean): number => {
         const narrativeData = narrativeStore.getNarrativeMessagesForTurnStart(contactId.value, currentTurn)
         return scheduler.scheduleNarrativeBlock(
@@ -73,8 +58,9 @@ export function useContactLoader({ contactId, contact, messages }: ContactLoader
         )
     }
 
-    const loadTriggeredNarratives = (contactData: ContactData, isNewChat: boolean): NarrativeResult => {
-        const triggeredData = checkTriggeredNarratives(contactData)
+    const loadTriggeredNarratives = (isNewChat: boolean) => {
+        // Use narrativeStore's checkTriggeredNarratives instead of local duplicate
+        const triggeredData = narrativeStore.checkTriggeredNarratives(contactId.value)
         if (triggeredData.events.length === 0) return triggeredData
 
         const event = triggeredData.events[0]
@@ -89,24 +75,47 @@ export function useContactLoader({ contactId, contact, messages }: ContactLoader
         return triggeredData
     }
 
-    const loadPreQuestion = (currentTurn: number, isNewChat: boolean) => {
-        const puzzleEvent = narrativeStore.getPuzzleForTurn(contactId.value, currentTurn)
-        const puzzleKey = `${contactId.value}_${currentTurn}`
+    const loadPreQuestion = (currentTurn: number, isNewChat: boolean, contactData: any | null) => {
+        let puzzleEvent: any = null
+        let puzzleKey = ''
+
+        if (isNewChat && contactData) {
+            // For new chats, find the first puzzle in the timeline
+            const timeline = contactData.timeline || []
+            const firstPuzzle = timeline.find((event: any) => event.type === 'puzzle')
+            if (firstPuzzle) {
+                puzzleEvent = firstPuzzle
+                puzzleKey = `${contactId.value}_${firstPuzzle.turnId}`
+            }
+        } else {
+            // For existing chats, use the current turn
+            puzzleEvent = narrativeStore.getPuzzleForTurn(contactId.value, currentTurn)
+            puzzleKey = `${contactId.value}_${currentTurn}`
+        }
 
         if (puzzleEvent?.preQuestion && !gameStore.isPreQuestionShown(puzzleKey)) {
-            const delay = scheduler.getCurrentDelay()
-            chatStore.addDelayedMessage(contactId.value, {
-                id: `msg_prequestion_${puzzleKey}`,
-                content: puzzleEvent.preQuestion,
-                sender: 'contact'
-            }, isNewChat ? delay * 2 : delay)
+            // Mark as shown immediately to prevent duplicate scheduling
             gameStore.setPreQuestionShown(puzzleKey, true)
+
+            const delay = scheduler.getDelay(isNewChat)
+
+            // Schedule the message
+            setTimeout(() => {
+                chatStore.addMessage(contactId.value, {
+                    id: `msg_prequestion_${puzzleKey}`,
+                    content: puzzleEvent.preQuestion,
+                    sender: 'contact',
+                    timestamp: Date.now()
+                })
+            }, delay * 1000)
+
+            scheduler.incrementDelay(isNewChat)
         }
     }
 
     const shouldShowTypingIndicator = (
         narrativeData: { messages: string[] },
-        triggeredData: NarrativeResult,
+        triggeredData: any,
         currentTurn: number
     ): boolean => {
         const hasInitialNarratives = narrativeData.messages.length > 0 &&
@@ -116,19 +125,19 @@ export function useContactLoader({ contactId, contact, messages }: ContactLoader
 
         const hasTriggeredNarratives = triggeredData.messages.length > 0 &&
             triggeredData.events.length > 0 &&
-            triggeredData.events.some((event: NarrativeEvent) =>
+            triggeredData.events.some((event: any) =>
                 !gameStore.isNarrativeShown(`narrative_triggered_${event.id}_0`)
             )
 
         return hasInitialNarratives || hasTriggeredNarratives
     }
 
-    const loadContactData = (): ContactData | null => {
+    const loadContactData = () => {
         try {
             const contactFile = contact.value?.file
             if (!contactFile) return null
 
-            const contactData: ContactData = contactDataMap[contactFile]
+            const contactData = narrativeStore.findContactFile(contactId.value)
             if (!contactData) return null
 
             const isNewChat = messages.value.length === 0
@@ -139,7 +148,7 @@ export function useContactLoader({ contactId, contact, messages }: ContactLoader
 
             // Get narrative data to check if we should show typing indicator
             const narrativeData = narrativeStore.getNarrativeMessagesForTurnStart(contactId.value, currentTurn)
-            const triggeredData = checkTriggeredNarratives(contactData)
+            const triggeredData = narrativeStore.checkTriggeredNarratives(contactId.value)
 
             // Show typing indicator if there are narratives to display
             if (shouldShowTypingIndicator(narrativeData, triggeredData, currentTurn)) {
@@ -148,9 +157,10 @@ export function useContactLoader({ contactId, contact, messages }: ContactLoader
 
             // Load all messages in sequence
             loadInitialMessage(contactData, isNewChat)
+            accountForExistingInitialMessage(contactData, isNewChat)
             loadTurnNarratives(currentTurn, isNewChat)
-            loadTriggeredNarratives(contactData, isNewChat)
-            loadPreQuestion(currentTurn, isNewChat)
+            loadTriggeredNarratives(isNewChat)
+            loadPreQuestion(currentTurn, isNewChat, contactData)
 
             // Turn off typing indicator after all messages are sent
             const totalDelay = scheduler.getTotalDelayMs(isNewChat)
@@ -168,7 +178,6 @@ export function useContactLoader({ contactId, contact, messages }: ContactLoader
     }
 
     return {
-        loadContactData,
-        checkTriggeredNarratives
+        loadContactData
     }
 }

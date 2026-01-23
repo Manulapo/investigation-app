@@ -4,9 +4,11 @@ import { contactDataMap } from '../data/contactDataMap'
 import registry from '../data/registry.json'
 import type { ContactData, PuzzleEvent } from '../types/narrative'
 import { useChatStore } from './chatStore'
+import { useGameStore } from './gameStore'
 
 export const useNarrativeStore = defineStore('narrative', () => {
     const chatStore = useChatStore()
+    const gameStore = useGameStore()
 
     // Getters
     const findContactFile = computed(() => (id: string): ContactData | null => {
@@ -45,18 +47,25 @@ export const useNarrativeStore = defineStore('narrative', () => {
 
     const getCurrentTurnForContact = computed(() => (contactId: string): number => {
         const messages = chatStore.getMessages(contactId)
-        if (messages.length === 0) return 1
+        let highestCompletedTurn = 0
 
-        // Find the highest turn number in message IDs
-        let maxTurn = 1
+        // Find the highest completed turn from success messages
         messages.forEach((msg: any) => {
-            const match = msg.id.match(/_(\d+)_/)
-            if (match) {
-                const turn = parseInt(match[1], 10)
-                if (turn > maxTurn) maxTurn = turn
+            if (msg.id?.startsWith('msg_turn') && msg.id?.endsWith('_success')) {
+                const match = msg.id.match(/msg_turn(\d+)_success/)
+                if (match) {
+                    const turnNumber = parseInt(match[1], 10)
+                    highestCompletedTurn = Math.max(highestCompletedTurn, turnNumber)
+                }
             }
         })
-        return maxTurn
+
+        const nextTurn = highestCompletedTurn + 1
+        const globalTurn = gameStore.currentGlobalTurn
+        const result = Math.max(globalTurn, nextTurn)
+
+        // Return the maximum between global turn and the next turn for this contact
+        return result
     })
 
     const checkTriggeredNarratives = computed(() => (contactId: string) => {

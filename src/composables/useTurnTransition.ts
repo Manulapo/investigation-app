@@ -115,19 +115,8 @@ export function useTurnTransition({ contactId, isMessageSending }: TurnTransitio
             }
         }
 
-        // Schedule pre-question after narratives
-        const puzzleEvent = narrativeStore.getPuzzleForTurn(contactId, newTurn)
-        if (puzzleEvent?.preQuestion && !gameStore.isPreQuestionShown(`${contactId}_${newTurn}`)) {
-            setTimeout(() => {
-                chatStore.addMessage(contactId, {
-                    id: `msg_prequestion_${contactId}_${newTurn}`,
-                    content: puzzleEvent.preQuestion as string,
-                    sender: 'contact',
-                    timestamp: Date.now()
-                })
-                gameStore.setPreQuestionShown(`${contactId}_${newTurn}`, true)
-            }, delay)
-        }
+        // Note: PreQuestion for new turn is handled by useContactLoader
+        // when the component re-renders with the new currentTurn value
     }
 
     return {

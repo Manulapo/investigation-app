@@ -16,28 +16,39 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { useSaveManager } from '../composables/useSaveManager'
+import { useChatStore } from '../stores/chatStore'
+import { useGameStore } from '../stores/gameStore'
+import { useDocumentsStore } from '../stores/documentsStore'
 import { useNotification } from '../composables/useNotification'
 import { useRouter } from 'vue-router'
-const { resetAll, state, setLevel, resetChatHistories } = useSaveManager()
+
+const chatStore = useChatStore()
+const gameStore = useGameStore()
+const documentsStore = useDocumentsStore()
 const { show } = useNotification()
 const router = useRouter()
 const showMenu = ref(false)
 const isDev = import.meta.env.DEV
 
-const currentLevel = computed(() => state.currentGlobalTurn)
+const currentLevel = computed(() => gameStore.currentGlobalTurn)
+
+function resetAll() {
+  chatStore.resetChatHistories()
+  gameStore.resetAll()
+  documentsStore.resetDocuments()
+}
 
 function reset() { if (confirm('Reimpostare il gioco e cancellare localStorage?')) resetAll() }
 
 function incrementLevel() {
-  setLevel(currentLevel.value + 1)
-  resetChatHistories()
+  gameStore.setLevel(currentLevel.value + 1)
+  chatStore.resetChatHistories()
 }
 
 function decrementLevel() {
   if (currentLevel.value > 1) {
-    setLevel(currentLevel.value - 1)
-    resetChatHistories()
+    gameStore.setLevel(currentLevel.value - 1)
+    chatStore.resetChatHistories()
   }
 }
 

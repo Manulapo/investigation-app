@@ -43,12 +43,14 @@ import ChatInput from '../components/ui/ChatInput.vue'
 import FullscreenMediaModal from '../components/ui/FullscreenMediaModal.vue'
 import MessageBubble from '../components/ui/MessageBubble.vue'
 import { useContactLoader } from '../composables/useContactLoader'
-import { useDocuments } from '../composables/useDocuments'
 import { useGameEngine } from '../composables/useGameEngine'
 import { useImageViewer } from '../composables/useImageViewer'
 import { useMessageQueue } from '../composables/useMessageQueue'
-import { useSaveManager } from '../composables/useSaveManager'
 import { useTurnTransition } from '../composables/useTurnTransition'
+import { useChatStore } from '../stores/chatStore'
+import { useGameStore } from '../stores/gameStore'
+import { useDocumentsStore } from '../stores/documentsStore'
+import { useNarrativeStore } from '../stores/narrativeStore'
 import registry from '../data/registry.json'
 import type { MessageData } from '../types'
 
@@ -56,9 +58,12 @@ import type { MessageData } from '../types'
 const props = defineProps<{ id: string }>()
 
 const router = useRouter()
-const { state, getMessages, addMessage, getLockedUntil, markMessagesAsRead, getUsedHintsForPuzzle, useHint } = useSaveManager()
+const chatStore = useChatStore()
+const gameStore = useGameStore()
+const documentsStore = useDocumentsStore()
+const narrativeStore = useNarrativeStore()
+
 const { parseInput, getPuzzleForTurn } = useGameEngine()
-const { getDocumentById } = useDocuments()
 const { fullscreenMedia, imageElement, imageTransform, openFullscreen, closeFullscreen, zoomIn, zoomOut, resetZoom, startDrag, zoomLevel } = useImageViewer()
 
 
@@ -71,8 +76,8 @@ const isMessageSending = ref(false)
 
 const contactId = computed(() => props.id)
 const contact = computed(() => registry.find((c: any) => c.id === contactId.value) || null)
-const messages = computed(() => getMessages(contactId.value))
-const currentTurn = computed(() => getCurrentTurnForContact(contactId.value))
+const messages = computed(() => chatStore.getMessages(contactId.value))
+const currentTurn = computed(() => narrativeStore.getCurrentTurnForContact(contactId.value))
 
 const currentPuzzle = computed(() => {
   if (!contactData.value) return null
@@ -84,48 +89,34 @@ const isHintAvailable = computed(() => {
     return false
   }
   const puzzleKey = `${contactId.value}_${currentTurn.value}`
-  const usedHints = getUsedHintsForPuzzle(puzzleKey)
+  const usedHints = gameStore.getUsedHintsForPuzzle(puzzleKey)
   return usedHints < currentPuzzle.value.hints.length
 })
 
 const isCooldown = computed(() => {
   reactiveTimer.value
   const key = `${contactId.value}_${currentTurn.value}`
-  const status = state.puzzleStatus[key]
+  const status = gameStore.puzzleStatus[key]
   if (!status || !status.lockedUntil) return false
   return Date.now() < status.lockedUntil
 })
 
 const getCurrentTurnForContact = (contactId: string): number => {
-  const messages = getMessages(contactId)
-  let highestCompletedTurn = 0
-
-  messages.forEach((message: any) => {
-    if (message.id?.startsWith('msg_turn') && message.id?.endsWith('_success')) {
-      const match = message.id.match(/msg_turn(\d+)_success/)
-      if (match) {
-        const turnNumber = parseInt(match[1])
-        highestCompletedTurn = Math.max(highestCompletedTurn, turnNumber)
-      }
-    }
-  })
-
-  const nextTurn = highestCompletedTurn + 1
-  return Math.max(state.currentGlobalTurn, nextTurn)
+  // Use narrativeStore's method instead
+  return narrativeStore.getCurrentTurnForContact(contactId)
 }
 
 const findMedia = (mediaId: string) => {
-  return getDocumentById(mediaId)
+  return documentsStore.getDocumentById(mediaId)
 }
 
 const findMediaArray = (mediaIds: string | string[]) => {
-  const ids = Array.isArray(mediaIds) ? mediaIds : [mediaIds]
-  return ids.map(id => findMedia(id)).filter(Boolean)
+  return documentsStore.findMediaArray(mediaIds)
 }
 
 const addDelayedMessage = (contactId: string, messageData: MessageData, delaySeconds: number = 2) => {
   const addMsg = () => {
-    addMessage(contactId, {
+    chatStore.addMessage(contactId, {
       ...messageData,
       timestamp: Date.now()
     })
@@ -147,10 +138,6 @@ const contactLoader = useContactLoader({
   messages
 })
 
-const checkTriggeredNarratives = () => {
-  return contactLoader.checkTriggeredNarratives(contactData.value)
-}
-
 // Initialize turn transition handler
 const turnTransition = useTurnTransition({
   contactId: contactId.value,
@@ -161,7 +148,7 @@ const requestHint = () => {
   if (!isHintAvailable.value || !currentPuzzle.value) return
 
   const puzzleKey = `${contactId.value}_${currentTurn.value}`
-  const usedHints = getUsedHintsForPuzzle(puzzleKey)
+  const usedHints = gameStore.getUsedHintsForPuzzle(puzzleKey)
   const hintText = currentPuzzle.value.hints?.[usedHints]
 
   if (hintText) {
@@ -171,7 +158,7 @@ const requestHint = () => {
       sender: 'contact'
     }, 0)
 
-    useHint(puzzleKey)
+    gameStore.useHint(puzzleKey)
 
     isTyping.value = true
     setTimeout(() => {
@@ -190,7 +177,7 @@ const loadContactData = () => {
 
 const updateCooldownTimer = () => {
   const key = `${contactId.value}_${currentTurn.value}`
-  const until = getLockedUntil(key)
+  const until = gameStore.getLockedUntil(key)
   cooldownCountdown.value = until ? Math.max(0, Math.ceil((until - Date.now()) / 1000)) : 0
 }
 
@@ -211,7 +198,7 @@ const handleAutoSolve = (event: any) => {
   if (answer) {
     handleSendMessage(answer)
   } else {
-    console.log('No answer found for turn:', currentTurn.value)
+    console.warn('No answer found for turn:', currentTurn.value)
   }
 }
 
@@ -282,7 +269,7 @@ watch(currentTurn, (newTurn) => {
 
 onMounted(() => {
   scrollToBottom()
-  markMessagesAsRead(contactId.value)
+  chatStore.markMessagesAsRead(contactId.value)
 
   if (isCooldown.value) {
     updateCooldownTimer()

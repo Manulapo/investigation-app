@@ -47,9 +47,10 @@ export const useDocumentsStore = defineStore('documents', () => {
         return allDocuments.filter((doc: any) => doc.contactId === contactId)
     }
 
-    function findMediaArray(mediaIds: string[]) {
-        if (!mediaIds || mediaIds.length === 0) return []
-        return mediaIds
+    function findMediaArray(mediaIds: string | string[]) {
+        if (!mediaIds || (Array.isArray(mediaIds) && mediaIds.length === 0)) return []
+        const ids = Array.isArray(mediaIds) ? mediaIds : [mediaIds]
+        return ids
             .map(id => getDocumentById(id))
             .filter((doc): doc is NonNullable<typeof doc> => doc !== undefined)
     }
@@ -85,5 +86,10 @@ export const useDocumentsStore = defineStore('documents', () => {
         findMediaArray,
         resetDocuments,
         initializeDocuments
+    }
+}, {
+    persist: {
+        key: 'documents-store',
+        pick: ['unlockedDocumentIds']
     }
 })

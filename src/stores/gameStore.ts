@@ -137,4 +137,8 @@ export const useGameStore = defineStore('game', () => {
         resetPuzzles,
         resetAll
     }
+}, {
+    persist: {
+        key: 'game-store'
+    }
 })

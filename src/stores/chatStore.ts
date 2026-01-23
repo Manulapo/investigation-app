@@ -126,4 +126,9 @@ export const useChatStore = defineStore('chat', () => {
         clearDelayedMessages,
         resetChatHistories
     }
+}, {
+    persist: {
+        key: 'chat-store',
+        pick: ['chatHistories', 'hasNotification'] // Only persist these, not temporary state
+    }
 })

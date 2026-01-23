@@ -9,7 +9,10 @@
       "preQuestion": "Prima di darvi informazioni abbiamo bisogno di sapere il giorno di morte del Signor Socks",
       "maxAttempts": 3,
       "penaltySeconds": 10,
-      "notification": {},
+      "notification": {
+        "notificationContact": "lab",
+        "notificationMessage": "Hai ricevuto un messaggio da Laboratorio Forense"
+      },
       "solution": {
         "keywords": [
           "17"

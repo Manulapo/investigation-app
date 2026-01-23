@@ -1,15 +1,11 @@
 <template>
   <div class="documents-page">
-    <AppHeader 
-      title="Documenti Iniziali"
-      show-left-button
-      left-icon="fas fa-chevron-left"
-      @left-click="goBack"
-    />
+    <AppHeader title="Documenti Iniziali" show-left-button left-icon="fas fa-chevron-left" @left-click="goBack" />
 
     <div class="documents-content">
       <section class="description-section">
-        <p>Questi sono i documenti base del caso che hai a disposizione fin dall'inizio dell'indagine. Utilizzali per familiarizzare con i dettagli del caso "Ombra" prima di iniziare le comunicazioni con i contatti.</p>
+        <p>Questi sono i documenti base del caso che hai a disposizione fin dall'inizio dell'indagine. Utilizzali per
+          familiarizzare con i dettagli del caso "Ombra" prima di iniziare le comunicazioni con i contatti.</p>
       </section>
 
       <section class="gallery-section">
@@ -24,10 +20,11 @@
 import { useRouter } from 'vue-router'
 import MediaGrid from '../components/ui/MediaGrid.vue'
 import AppHeader from '../components/layout/AppHeader.vue'
-import { useDocuments } from '../composables/useDocuments'
+import { useDocumentsStore } from '../stores/documentsStore'
 
 const router = useRouter()
-const { unlockedDocuments } = useDocuments()
+const documentsStore = useDocumentsStore()
+const { unlockedDocuments } = documentsStore
 
 function goBack() {
   router.back()

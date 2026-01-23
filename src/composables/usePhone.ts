@@ -1,16 +1,17 @@
 import { ref } from 'vue'
 import registry from '../data/registry.json'
-import { useSaveManager } from './useSaveManager'
+import { useGameStore } from '../stores/gameStore'
 import type { Contact } from '../types'
 
 export type CallStatus = 'idle' | 'dialing' | 'accepted' | 'rejected' | 'not-found'
 
 export function usePhone() {
+  const gameStore = useGameStore()
+
   const callStatus = ref<CallStatus>('idle')
   const dialedNumber = ref('')
   const contactName = ref('')
   const acceptedContactId = ref<string | null>(null)
-  const { state, unlockContactByPhone } = useSaveManager()
 
   function findContactByPhone(number: string): Contact | undefined {
     return registry.find((contact: Contact) => contact.phoneNumber === number)
@@ -32,14 +33,14 @@ export function usePhone() {
     }
 
     // Check if the contact is available (turn requirement met)
-    if (state.currentGlobalTurn >= contact.visibleAtTurn) {
+    if (gameStore.currentGlobalTurn >= contact.visibleAtTurn) {
       // Call accepted - contact is available
       contactName.value = contact.name
       acceptedContactId.value = contact.id
       callStatus.value = 'accepted'
-      
+
       // Unlock the contact by phone call
-      unlockContactByPhone(contact.id)
+      gameStore.unlockContactByPhone(contact.id)
     } else {
       // Call rejected - turn requirement not met
       contactName.value = contact.name

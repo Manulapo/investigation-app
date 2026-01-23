@@ -1,6 +1,6 @@
 <template>
   <div class="contact-item" @click="$emit('select')">
-   <Avatar :src="contact.avatar" :alt="contact.name" class="avatar" />
+    <Avatar :src="contact.avatar" :alt="contact.name" class="avatar" />
     <div class="info">
       <p class="name">{{ contact.name }}</p>
       <p class="preview">{{ lastMessage }}</p>
@@ -14,7 +14,7 @@
 <script setup lang="ts">
 import { computed, ref, onMounted } from 'vue'
 import { format } from 'date-fns'
-import { useSaveManager } from '../../composables/useSaveManager'
+import { useChatStore } from '../../stores/chatStore'
 import { contactDataMap } from '../../data/contactDataMap'
 import Avatar from './Avatar.vue';
 
@@ -24,8 +24,8 @@ const props = defineProps<{
 
 defineEmits(['select'])
 
-const { getMessages } = useSaveManager()
-const messages = computed(() => getMessages(props.contact.id))
+const chatStore = useChatStore()
+const messages = computed(() => chatStore.getMessages(props.contact.id))
 const contactData = ref<any>(null)
 
 onMounted(() => {
@@ -46,7 +46,7 @@ const lastMessage = computed(() => {
     return preview.substring(0, 50) + (preview.length > 50 ? '...' : '')
   }
   const last = messages.value[messages.value.length - 1]
-  
+
   // If message has media but no text content
   if (last.media && !last.content && last.media.length > 0) {
     const mediaType = last.media[last.media.length - 1].type
@@ -55,7 +55,7 @@ const lastMessage = computed(() => {
     if (mediaType === 'audio') return '🎵 Audio'
     return '📎 File'
   }
-  
+
   return last.content.substring(0, 50) + (last.content.length > 50 ? '...' : '')
 })
 const timestamp = computed(() => {

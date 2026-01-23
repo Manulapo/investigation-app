@@ -8,13 +8,13 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
-import { useSaveManager } from '../../composables/useSaveManager'
+import { useGameStore } from '../../stores/gameStore'
 import { useAppConfig } from '../../composables/useAppConfig'
 
 const route = useRoute()
-const { state } = useSaveManager()
+const gameStore = useGameStore()
 const { config } = useAppConfig()
-const currentTurn = computed(() => state.currentGlobalTurn)
+const currentTurn = computed(() => gameStore.currentGlobalTurn)
 const showBack = computed(() => route.name === 'chat' || route.name === 'profile')
 const showHeader = computed(() => route.name === 'chat' || route.name === 'profile')
 </script>

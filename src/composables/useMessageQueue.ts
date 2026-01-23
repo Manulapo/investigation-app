@@ -1,9 +1,9 @@
 import type { ComputedRef } from 'vue'
 import type { MessageData } from '../types'
-import { useSaveManager } from './useSaveManager'
-import { useDocuments } from './useDocuments'
+import { useChatStore } from '../stores/chatStore'
+import { useGameStore } from '../stores/gameStore'
+import { useDocumentsStore } from '../stores/documentsStore'
 import { useNotification } from './useNotification'
-import { useGameEngine } from './useGameEngine'
 
 export function useMessageQueue(
     contactId: ComputedRef<string>,
@@ -13,18 +13,13 @@ export function useMessageQueue(
     let messageDelayCounter = 0
     const MESSAGE_DELAY_SECONDS = 2
 
-    const { addMessage, isPreQuestionShown, setPreQuestionShown } = useSaveManager()
-    const { unlockDocuments, getDocumentById } = useDocuments()
+    const chatStore = useChatStore()
+    const gameStore = useGameStore()
+    const documentsStore = useDocumentsStore()
     const { show } = useNotification()
-    const { getPuzzleForTurn } = useGameEngine()
-
-    const findMediaArray = (mediaIds: string | string[]) => {
-        const ids = Array.isArray(mediaIds) ? mediaIds : [mediaIds]
-        return ids.map(id => getDocumentById(id)).filter(Boolean)
-    }
 
     const addUserMessage = (content: string) => {
-        addMessage(contactId.value, {
+        chatStore.addMessage(contactId.value, {
             id: `msg_user_${Date.now()}`,
             content,
             sender: 'user',
@@ -33,7 +28,7 @@ export function useMessageQueue(
     }
 
     const addMainResponse = (result: any) => {
-        addMessage(contactId.value, {
+        chatStore.addMessage(contactId.value, {
             id: result.messageId || `msg_auto_${Date.now()}`,
             content: result.text,
             sender: 'contact',
@@ -106,9 +101,9 @@ export function useMessageQueue(
         if (!mediaId) return
 
         const ids = Array.isArray(mediaId) ? mediaId : [mediaId]
-        unlockDocuments(ids)
+        documentsStore.unlockDocuments(ids)
 
-        const mediaArray = findMediaArray(mediaId)
+        const mediaArray = documentsStore.findMediaArray(mediaId)
         queueMessages(mediaArray, 'media')
     }
 
@@ -143,8 +138,8 @@ export function useMessageQueue(
     const queueNarrativeMedia = (mediaIds: string[] | undefined) => {
         if (!mediaIds || mediaIds.length === 0) return
 
-        unlockDocuments(mediaIds)
-        const narrativeMediaArray = findMediaArray(mediaIds)
+        documentsStore.unlockDocuments(mediaIds)
+        const narrativeMediaArray = documentsStore.findMediaArray(mediaIds)
         queueMessages(narrativeMediaArray, 'narrativeMedia')
     }
 
@@ -154,18 +149,8 @@ export function useMessageQueue(
 
     const handleSuccessActions = (result: any, totalMessageDelay: number) => {
         setTimeout(() => {
-            const puzzleEvent = getPuzzleForTurn(contactId.value, currentTurn.value)
-            if (puzzleEvent?.preQuestion && !isPreQuestionShown(`${contactId.value}_${currentTurn.value}`)) {
-                addMessage(contactId.value, {
-                    id: `msg_prequestion_${contactId.value}_${currentTurn.value}`,
-                    content: puzzleEvent.preQuestion,
-                    sender: 'contact',
-                    timestamp: Date.now()
-                })
-                setPreQuestionShown(`${contactId.value}_${currentTurn.value}`, true)
-            }
-
-            // Show notification after all messages are sent and preQuestion is shown
+            // Show notification after all messages are sent
+            // Note: PreQuestion for next turn is now handled by useTurnTransition
             if (result.notificationContact && result.notificationMessage) {
                 show(result.notificationMessage, result.notificationContact)
             }
