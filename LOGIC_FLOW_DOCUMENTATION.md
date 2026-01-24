@@ -25,7 +25,7 @@ This application is an interactive investigation game where users solve puzzles 
 ## Stores Architecture
 
 ### 1. GameStore (`gameStore.ts`)
-**Purpose**: Manages global game state, turn progression, and puzzle status.
+**Purpose**: Manages global game state, turn progression, puzzle validation, and phone system.
 
 #### State
 ```typescript
@@ -35,9 +35,14 @@ This application is an interactive investigation game where users solve puzzles 
 - totalHintsUsed: number                // Total hints used across all puzzles
 - usedHintsPerPuzzle: Record<string, number>  // Hints used per puzzle
 - shownNarratives: Record<string, boolean>    // Track shown narrative messages
+- callStatus: 'idle' | 'dialing' | 'accepted' | 'rejected' | 'not-found'
+- dialedNumber: string
+- contactName: string
+- acceptedContactId: string | null
 ```
 
 #### Key Actions
+**Game State:**
 - `advanceTurn(next)`: Advances to the next turn if higher than current
 - `incrementFailed(key)`: Increments failed attempts for a puzzle
 - `setLockUntil(key, untilTs)`: Locks a puzzle until timestamp
@@ -47,13 +52,23 @@ This application is an interactive investigation game where users solve puzzles 
 - `setNarrativeShown(narrativeId)`: Marks narrative as displayed
 - `resetAll()`: Resets entire game state
 
+**Puzzle Validation (Game Engine):**
+- `validateAnswer(contactId, input)`: Validates user's puzzle answer, returns result object
+- `findContactFile(id)`: Finds contact data by ID
+- `findTriggeredNarratives(contact, triggerMessageId)`: Finds narratives triggered by success
+
+**Phone System:**
+- `makePhoneCall(number)`: Initiates phone call to unlock contact
+- `resetCall()`: Resets phone call state
+- `findContactByPhone(number)`: Finds contact by phone number
+
 #### Persistence
 Persisted to localStorage with key `game-store`.
 
 ---
 
 ### 2. ChatStore (`chatStore.ts`)
-**Purpose**: Manages all chat messages and conversation state.
+**Purpose**: Manages all chat messages, conversation state, and message scheduling/sequencing.
 
 #### State
 ```typescript
@@ -65,12 +80,20 @@ Persisted to localStorage with key `game-store`.
 ```
 
 #### Key Actions
+**Basic Message Management:**
 - `addMessage(contactId, msg)`: Adds a message to chat history
 - `addDelayedMessage(contactId, messageData, delaySeconds)`: Schedules a delayed message
 - `markMessagesAsRead(contactId)`: Marks all messages as read
 - `setTyping(contactId, typing)`: Sets typing indicator
+- `setMessageSending(contactId, sending)`: Sets message sending status
 - `clearDelayedMessages(contactId?)`: Cancels pending messages
 - `resetChatHistories()`: Clears all chat data
+
+**Advanced Message Scheduling:**
+- `queuePuzzleResponse(contactId, result)`: Queues all puzzle response messages in order (text, media, evidence, narratives)
+- `loadContactMessages(contactId)`: Loads initial messages, narratives, and pre-questions when chat opens
+- `handleTurnTransition(contactId, newTurn, isMessageSending)`: Schedules narratives for turn changes
+- `scheduleTriggeredNarratives(triggerId)`: Schedules cross-contact triggered narratives
 
 #### Persistence
 Only `chatHistories` and `hasNotification` are persisted to localStorage.
@@ -92,7 +115,37 @@ This store only computes data from static JSON files and other stores.
 
 ---
 
-### 4. DocumentsStore (`documentsStore.ts`)
+### 4. UIStore (`uiStore.ts`)
+**Purpose**: Manages UI-only state (notifications and image viewer).
+
+#### State
+```typescript
+- toasts: Toast[]                       // Active toast notifications
+- fullscreenMedia: any | null           // Currently viewed media in fullscreen
+- zoomLevel: number                     // Image zoom level (1-4)
+- position: { x: number, y: number }    // Pan position for zoomed images
+- isDragging: boolean                   // Drag state for image panning
+```
+
+#### Key Actions
+**Toast Notifications:**
+- `showNotification(text, contactId?, ttl)`: Shows a toast notification
+- `removeToast(id)`: Removes a specific toast
+- `clearAllToasts()`: Clears all toasts
+
+**Image Viewer:**
+- `openFullscreen(media)`: Opens media in fullscreen mode
+- `closeFullscreen()`: Closes fullscreen viewer
+- `zoomIn()`, `zoomOut()`, `resetZoom()`: Zoom controls
+- `startDrag(e)`, `onDrag(e)`, `stopDrag()`: Pan controls
+- `setupDragListeners()`, `removeDragListeners()`: Event listener management
+
+#### Persistence
+Not persisted - pure UI state.
+
+---
+
+### 5. DocumentsStore (`documentsStore.ts`)
 **Purpose**: Manages unlocked documents/evidence.
 
 #### State
@@ -114,226 +167,62 @@ Only `unlockedDocumentIds` persisted to localStorage.
 
 ## Composables Architecture
 
-### 1. useGameEngine (`useGameEngine.ts`)
-**Purpose**: Core puzzle validation and game logic engine.
+**IMPORTANT**: Most composables have been consolidated into stores for better clarity and single source of truth.
 
-#### Main Function: `parseInput(contactId, input)`
-**Input**: User's answer string (e.g., "T1: Blue Eagle")
+### Eliminated Composables (Now in Stores):
+- ❌ **useGameEngine** → `gameStore.validateAnswer()`
+- ❌ **useMessageQueue** → `chatStore.queuePuzzleResponse()`
+- ❌ **useContactLoader** → `chatStore.loadContactMessages()`
+- ❌ **useTurnTransition** → `chatStore.handleTurnTransition()`
+- ❌ **useTriggeredNarratives** → `chatStore.scheduleTriggeredNarratives()`
+- ❌ **usePhone** → `gameStore.makePhoneCall()`
+- ❌ **useNotification** → `uiStore.showNotification()`
+- ❌ **useImageViewer** → `uiStore` (openFullscreen, zoomIn, etc.)
+- ❌ **useMessageScheduler** → Integrated into `chatStore` methods
 
-**Process**:
-1. **Parse Input**: Extracts turn number and answer using regex `^T(\d+):\s*(.+)$`
-2. **Validate Format**: Returns error if format is invalid
-3. **Find Puzzle**: Locates puzzle event for the specified turn
-4. **Check PreQuestion**: Shows pre-question if it exists and hasn't been shown
-5. **Check Lock Status**: Returns penalty message if puzzle is locked
-6. **Validate Answer**: 
-   - Tokenizes user input
-   - Checks if all solution keywords are present
-7. **Success Handler**: If solved:
-   - Advances turn
-   - Resets failed attempts
-   - Returns success with media, evidence, and narrative data
-8. **Failure Handler**: If wrong:
-   - Increments failed attempts
-   - Locks puzzle if max attempts reached
-   - Returns fallback message
+### Remaining Composables:
 
-**Output**: Result object with status and associated data
-```typescript
-{
-  status: 'success' | 'fail' | 'locked' | 'prequestion' | 'invalid' | 'error',
-  text: string,
-  textMessages?: string[],
-  mediaId?: string | string[],
-  evidenceText?: string,
-  evidenceTextMessages?: string[],
-  messageId?: string,
-  successMedia?: any,
-  notificationContact?: string,
-  notificationMessage?: string,
-  narrativeMessages?: string[],
-  narrativeMediaIds?: string[]
-}
-```
+### 1. ~~useGameEngine~~ → **NOW IN GAMESTORE**
+~~**Purpose**: Core puzzle validation and game logic engine.~~
 
----
+**MOVED TO**: `gameStore.validateAnswer(contactId, input)`
 
-### 2. useMessageQueue (`useMessageQueue.ts`)
-**Purpose**: Manages message sequencing and delayed delivery for puzzle responses.
+See GameStore documentation above for puzzle validation logic (previously in useGameEngine).
 
-#### Key Functions
+### 2. ~~useMessageQueue~~ → **NOW IN CHATSTORE**
+**MOVED TO**: `chatStore.queuePuzzleResponse(contactId, result)`
 
-**Message Addition**:
-- `addUserMessage(content)`: Immediately adds user message to chat
-- `addMainResponse(result)`: Adds main system response immediately
+See ChatStore documentation for message sequencing logic.
 
-**Puzzle Response Queuing**:
-- `queuePuzzleResponseMessages(result)`: Queues all puzzle response messages in correct order:
-  1. response.text (array) - already added as main response
-  2. Additional textMessages
-  3. mediaId (success media or regular media)
-  4. evidenceText
-  5. evidenceTextMessages
-  6. narrativeMessages
-  7. narrativeMedia
+### 3. ~~useContactLoader~~ → **NOW IN CHATSTORE**
+**MOVED TO**: `chatStore.loadContactMessages(contactId)`
 
-**Timing System**:
-- Messages are queued with 2-second delays between each
-- `calculateTotalDelay()`: Returns total delay for all queued messages
-- `handleSuccessActions()`: Shows notifications after all messages delivered
-- `handleFailureActions()`: Shows cooldown notification if locked
+See ChatStore documentation for contact loading logic.
 
----
+### 4. ~~useTriggeredNarratives~~ → **NOW IN CHATSTORE**
+**MOVED TO**: `chatStore.scheduleTriggeredNarratives(triggerId)`
 
-### 3. useContactLoader (`useContactLoader.ts`)
-**Purpose**: Loads and initializes contact conversation data in the correct order.
+See ChatStore documentation for triggered narrative logic.
 
-#### Main Function: `loadMessagesInOrder(contactData, currentTurn, isNewChat)`
-**Called**: When opening a chat for the first time or navigating to existing chat
+### 5. ~~useTurnTransition~~ → **NOW IN CHATSTORE**
+**MOVED TO**: `chatStore.handleTurnTransition(contactId, newTurn, isMessageSending)`
 
-**Message Order**:
-1. **Initial Message** (immediately, 0s delay)
-   - Only if not already present in chat history
-   - Marks as shown in gameStore
-   
-2. **Narrative Messages** with `triggerAfter: null` (4s/2s delays between each)
-   - Gets narratives for current turn
-   - Schedules each message with delay
-   
-3. **Narrative Media** (if any)
-   - Unlocks documents
-   - Schedules media messages
-   
-4. **Triggered Narratives** (narratives with `triggerAfter` that have been activated)
-   - Checks for narratives triggered by existing messages
-   - Schedules messages and media
-   
-5. **Pre-question** for current turn's puzzle (after all narratives)
-   - Only if not already shown
+See ChatStore documentation for turn transition logic.
 
-**Delay Configuration**:
-- New chats (no user messages): 4-second delays
-- Existing chats (has user messages): 2-second delays
+### 6. ~~usePhone~~ → **NOW IN GAMESTORE**
+**MOVED TO**: `gameStore.makePhoneCall(number)`, `gameStore.resetCall()`, etc.
 
-**Process**:
-```typescript
-1. Check if initial message exists
-2. Add initial message if needed (immediately)
-3. Increment delay counter
-4. Schedule narratives with proper delays
-5. Schedule triggered narratives
-6. Schedule pre-question
-7. Return total delay for typing indicator
-```
+See GameStore documentation for phone call logic.
 
----
+### 7. ~~useNotification~~ → **NOW IN UISTORE**
+**MOVED TO**: `uiStore.showNotification(text, contactId?, ttl)`
 
-### 4. useTriggeredNarratives (`useTriggeredNarratives.ts`)
-**Purpose**: Handles cross-contact triggered narratives when success messages are sent.
+See UIStore documentation for notification logic.
 
-#### Main Function: `checkAndScheduleTriggeredNarratives(triggerId)`
-**Called**: After sending a success message (e.g., `msg_turn4_success`)
+### 8. ~~useImageViewer~~ → **NOW IN UISTORE**
+**MOVED TO**: `uiStore.openFullscreen()`, `uiStore.zoomIn()`, etc.
 
-**Process**:
-1. **Check Each Contact**: Iterates through all contacts in registry
-2. **Find Triggered Events**: Filters events where `triggerAfter === triggerId`
-3. **Check Contact State**: 
-   - Only adds messages to contacts with user messages (opened/active chats)
-   - Unopened contacts will show triggered narratives via `loadMessagesInOrder` when opened
-4. **Schedule Messages**: 
-   - Starts with 2-second delay
-   - Schedules narrative messages
-   - Schedules narrative media
-   - Marks as shown in gameStore
-
-**Important**: This prevents triggered narratives from appearing before initial messages in unopened chats.
-
----
-
-### 5. useTurnTransition (`useTurnTransition.ts`)
-**Purpose**: Handles narrative delivery when turn changes during gameplay.
-
-#### Main Function: `handleTurnChange(newTurn)`
-**Triggered**: When `currentTurn` changes (watched in ChatRoom.vue)
-
-**Process**:
-1. **Skip Conditions**: Don't run if:
-   - newTurn <= 1 (initial turn)
-   - isMessageSending.value is true (puzzle being solved)
-
-2. **Schedule Turn-Start Narratives**:
-   ```typescript
-   narrativeData = getNarrativeMessagesForTurnStart(contactId, newTurn)
-   // For each message/media:
-   //   - Check if not already shown
-   //   - Schedule with 2-second delays
-   //   - Mark as shown
-   ```
-
-3. **Schedule Triggered Narratives**:
-   ```typescript
-   triggeredData = checkTriggeredNarratives(contactId)
-   // For each triggered narrative:
-   //   - Check if not already shown
-   //   - Schedule messages and media
-   //   - Mark as shown
-   ```
-
-**Note**: PreQuestion for new turn handled by useContactLoader when component re-renders.
-**Purpose**: Manages phone call functionality to unlock contacts.
-
-#### State
-```typescript
-- callStatus: 'idle' | 'dialing' | 'accepted' | 'rejected' | 'not-found'
-- dialedNumber: string
-- contactName: string
-- acceptedContactId: string | null
-```
-
-#### Main Function: `makeCall(number)`
-**Process**:
-1. Set status to 'dialing'
-2. Wait 4 seconds (simulated dialing)
-3. Find contact by phone number in registry
-4. Check status:
-   - **Not found**: Set status to 'not-found'
-   - **Available** (visibleAtTurn met): 
-     - Set status to 'accepted'
-     - Call `gameStore.unlockContactByPhone(contact.id)`
-   - **Unavailable** (visibleAtTurn not met):
-     - Set status to 'rejected'
-
-**Usage Flow**:
-1. User enters number on keypad
-2. User clicks call button
-3. App calls `makeCall(number)`
-4. PhoneDialer.vue watches callStatus
-5. On 'accepted': Navigate to chat after 2 seconds
-
----
-
-### 7. useNotification (`useNotification.ts`)
-**Purpose**: Manages toast notifications.
-
-#### Functions
-- `show(text, contactId?, ttl)`: Shows notification for specified duration
-- `removeToast(id)`: Manually removes a notification
-- `getToasts()`: Returns reactive array of active toasts
-
-**Auto-removal**: Notifications automatically removed after TTL (default 4000ms)
-
----
-
-### 8. useImageViewer (`useImageViewer.ts`)
-**Purpose**: Manages fullscreen image viewing with zoom and pan.
-
-#### Features
-- Zoom in/out (1x to 4x)
-- Pan/drag when zoomed
-- Touch support
-- Reset zoom
-
-**Not critical to game logic**, purely UI enhancement.
+See UIStore documentation for image viewer logic.
 
 ---
 
@@ -1074,11 +963,11 @@ When currentGlobalTurn changes (after solving a puzzle):
 ```
 User Input
     ↓
-handleSendMessage()
+handleSendMessage() in ChatRoom.vue
     ↓
 ┌─────────────────────┐
-│  useGameEngine      │
-│  parseInput()       │
+│  GameStore          │
+│  validateAnswer()   │
 │                     │
 │  1. Parse format    │
 │  2. Find puzzle     │
@@ -1088,15 +977,15 @@ handleSendMessage()
 └─────────────────────┘
     ↓
 ┌──────────────────────────────────┐
-│  useMessageQueue                 │
+│  ChatStore                       │
+│  queuePuzzleResponse()           │
 │                                  │
-│  1. addUserMessage()             │
-│  2. addMainResponse()            │
-│  3. queueTextMessages()          │
-│  4. queueMediaMessages()         │
-│  5. queueEvidenceMessages()      │
-│  6. queueNarrativeMessages()     │
-│  7. queueNarrativeMedia()        │
+│  1. Adds main response           │
+│  2. Queues text messages         │
+│  3. Queues media documents       │
+│  4. Queues evidence              │
+│  5. Queues narratives            │
+│  6. Returns total delay          │
 └──────────────────────────────────┘
     ↓
 chatStore.addDelayedMessage()
@@ -1106,6 +995,8 @@ setTimeout() for each message
 chatStore.addMessage() (when delay expires)
     ↓
 Messages appear in UI (ChatRoom.vue)
+    ↓
+UIStore.showNotification() (if success)
 ```
 
 ### Store Interaction Diagram
@@ -1153,51 +1044,49 @@ Messages appear in UI (ChatRoom.vue)
 └─────────────────────┘
 ```
 
-### Component & Composable Hierarchy
+### Component & Store Hierarchy
 
 ```
 ChatRoom.vue
     │
-    ├─> useGameEngine
-    │   └─> Validates answers, manages game rules
+    ├─> gameStore
+    │   ├─> validateAnswer() - Validates puzzle answers
+    │   └─> Game state management
     │
-    ├─> useMessageQueue
-    │   ├─> Queues response messages
-    │   ├─> Handles delays
-    │   └─> Triggers notifications
+    ├─> chatStore
+    │   ├─> loadContactMessages() - Loads initial messages, narratives, pre-questions
+    │   ├─> queuePuzzleResponse() - Queues all puzzle response messages
+    │   ├─> handleTurnTransition() - Schedules turn-change narratives
+    │   ├─> scheduleTriggeredNarratives() - Cross-contact triggers
+    │   └─> Message state management
     │
-    ├─> useContactLoader
-    │   ├─> useMessageScheduler
-    │   │   └─> Schedules initial narratives
-    │   │
-    │   └─> Loads:
-    │       ├─> Initial message
-    │       ├─> Turn narratives
-    │       ├─> Triggered narratives
-    │       └─> PreQuestion
+    ├─> uiStore
+    │   ├─> Image viewer (fullscreen, zoom, pan)
+    │   └─> showNotification() - Toast notifications
     │
-    ├─> useTurnTransition
-    │   ├─> useMessageScheduler
-    │   │   └─> Schedules turn-based narratives
-    │   │
-    │   └─> Handles turn advancement narratives
+    ├─> narrativeStore
+    │   └─> Read-only data queries
     │
-    └─> useImageViewer
-        └─> Manages fullscreen media view
+    └─> documentsStore
+        └─> Document unlocking
 
 ChatList.vue
     │
-    └─> Displays contacts based on:
+    └─> Reads from stores:
         ├─> gameStore.currentGlobalTurn
         ├─> gameStore.phoneUnlockedContacts
-        └─> chatStore (for last message sorting)
+        └─> chatStore (for messages)
 
 PhoneDialer.vue
     │
-    └─> usePhone
-        ├─> Validates phone numbers
-        ├─> Simulates calling
-        └─> Unlocks contacts via gameStore
+    └─> gameStore
+        ├─> makePhoneCall() - Validates and processes phone calls
+        └─> callStatus, dialedNumber, etc.
+
+ToastNotification.vue
+    │
+    └─> uiStore
+        └─> toasts, removeToast()
 ```
 
 ### Narrative Loading Decision Tree
@@ -1273,15 +1162,20 @@ Opening Chat
   - `messages = computed(() => chatStore.getMessages(contactId.value))`
   - `visibleContacts = computed(() => filter by turn and phone unlock status)`
 
-### 5. Composable Separation of Concerns
-- **useGameEngine**: Game rules, validation, puzzle logic
-- **useMessageQueue**: Message sequencing for puzzle responses
-- **useMessageScheduler**: Message scheduling for narrative delivery
-- **useContactLoader**: Initial chat data loading
-- **useTurnTransition**: Turn advancement narrative handling
-- **usePhone**: Phone call mechanics
+### 5. Store-Based Architecture
+**Stores own their domains completely:**
+- **GameStore**: Game rules, validation, puzzle logic, phone system
+- **ChatStore**: All message management and scheduling
+- **UIStore**: Pure UI state (notifications, image viewer)
+- **NarrativeStore**: Read-only computed data from JSON files
+- **DocumentsStore**: Document unlocking
 
-Each composable has a single, clear responsibility.
+Benefits:
+- Single source of truth for each domain
+- No indirection through composables
+- Easier to test and debug
+- Better DevTools integration
+- Clearer data flow
 
 ### 6. Store Persistence Strategy
 - **Persisted**: Game progress, chat histories, unlocked documents
@@ -1299,12 +1193,20 @@ Each composable has a single, clear responsibility.
 
 ## Conclusion
 
-This application uses a sophisticated state management system with four Pinia stores and multiple composables to create an interactive, turn-based investigation game. The key to its architecture is:
+This application uses a **simplified, store-centric architecture** with five Pinia stores to create an interactive, turn-based investigation game. The key improvements are:
 
-1. **Clear separation**: Stores manage state, composables manage logic
-2. **Reactivity**: Vue's reactivity system propagates changes automatically
-3. **Deduplication**: Careful tracking prevents duplicate content
-4. **Timing**: Delayed messages create realistic conversation flow
-5. **Turn-based progression**: Linear narrative with gated content
+1. **Store-Based Logic**: All business logic consolidated into stores - no scattered composables
+2. **Clear Ownership**: Each store owns its domain completely (GameStore = game logic, ChatStore = messages, UIStore = UI)
+3. **Single Source of Truth**: Direct store method calls (`chatStore.queuePuzzleResponse()`) instead of composable indirection
+4. **Better Maintainability**: Easier to test, debug, and understand data flow
+5. **Reactivity**: Vue's reactivity system propagates changes automatically through computed properties
 
-The execution flows interlock to create a seamless experience where solving puzzles unlocks new content, narratives trigger automatically, and the game state persists across sessions.
+**Architecture Summary:**
+- **GameStore**: Puzzle validation, phone calls, game state
+- **ChatStore**: Message management, scheduling, loading, turn transitions
+- **UIStore**: Notifications, image viewer (pure UI state)
+- **NarrativeStore**: Read-only computed data from JSON files
+- **DocumentsStore**: Document unlocking
+
+The execution flows are streamlined: Components call store methods directly, stores handle all logic internally, and state changes propagate reactively through the UI. This creates a seamless experience where solving puzzles unlocks new content, narratives trigger automatically, and the game state persists across sessions.
+
