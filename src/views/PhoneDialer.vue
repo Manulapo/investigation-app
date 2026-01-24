@@ -1,80 +1,68 @@
 <template>
   <div class="phone-dialer">
-    <AppHeader 
-      title="Telefono"
-      show-left-button
-      left-icon="fas fa-arrow-left"
-      @left-click="goBack"
-    />
-    
+    <AppHeader title="Telefono" show-left-button left-icon="fas fa-arrow-left" @left-click="goBack" />
+
     <!-- Initial Dialer State -->
-    <div v-if="callStatus === 'idle'" class="dialer-container">
+    <div v-if="gameStore.callStatus === 'idle'" class="dialer-container">
       <div class="phone-icon">
         <i class="fas fa-phone"></i>
       </div>
       <h1>Componi Numero</h1>
       <p>Inserisci il numero da chiamare</p>
-      
+
       <div class="number-display">
         {{ phoneNumber || '—' }}
       </div>
 
-      <Keypad 
-        show-letters
-        action-icon="fas fa-phone"
-        action-button-class="call-btn"
-        :action-disabled="!phoneNumber"
-        @digit="addDigit"
-        @clear="deleteDigit"
-        @action="handleMakeCall"
-      />
+      <Keypad show-letters action-icon="fas fa-phone" action-button-class="call-btn" :action-disabled="!phoneNumber"
+        @digit="addDigit" @clear="deleteDigit" @action="handleMakeCall" />
     </div>
 
     <!-- Dialing State -->
-    <div v-else-if="callStatus === 'dialing'" class="dialer-container">
+    <div v-else-if="gameStore.callStatus === 'dialing'" class="dialer-container">
       <div class="phone-icon dialing">
         <i class="fas fa-phone"></i>
       </div>
       <h1>Chiamata in corso...</h1>
-      <p class="dialing-number">{{ dialedNumber }}</p>
-      
+      <p class="dialing-number">{{ gameStore.dialedNumber }}</p>
+
       <div class="spinner"></div>
     </div>
 
     <!-- Call Rejected State -->
-    <div v-else-if="callStatus === 'rejected'" class="dialer-container">
+    <div v-else-if="gameStore.callStatus === 'rejected'" class="dialer-container">
       <div class="phone-icon rejected">
         <i class="fas fa-phone-slash"></i>
       </div>
-      <h1>{{ contactName }}</h1>
-      <p>{{ contactName }} non risponde</p>
-      
+      <h1>{{ gameStore.contactName }}</h1>
+      <p>{{ gameStore.contactName }} non risponde</p>
+
       <button class="back-to-dialer-btn" @click="resetDialer">
         Torna al Dialer
       </button>
     </div>
 
     <!-- Call Accepted State -->
-    <div v-else-if="callStatus === 'accepted'" class="dialer-container">
+    <div v-else-if="gameStore.callStatus === 'accepted'" class="dialer-container">
       <div class="phone-icon accepted">
         <i class="fas fa-phone"></i>
       </div>
-      <h1>{{ contactName }}</h1>
+      <h1>{{ gameStore.contactName }}</h1>
       <p>Chiamata accettata. Reindirizzamento alla chat...</p>
-      
+
       <div class="spinner"></div>
     </div>
 
     <!-- Number Not Found State -->
-    <div v-else-if="callStatus === 'not-found'" class="dialer-container">
+    <div v-else-if="gameStore.callStatus === 'not-found'" class="dialer-container">
       <div class="phone-icon not-found">
         <i class="fas fa-times-circle"></i>
       </div>
       <h1>Numero Inesistente</h1>
-      <p>Il numero {{ dialedNumber }} non esiste</p>
-      
+      <p>Il numero {{ gameStore.dialedNumber }} non esiste</p>
+
       <button class="back-to-dialer-btn" @click="resetDialer">
-      <i class="fas fa-phone"></i>
+        <i class="fas fa-phone"></i>
         Torna al Dialer
       </button>
     </div>
@@ -86,22 +74,22 @@ import { ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import Keypad from '../components/ui/Keypad.vue'
 import AppHeader from '../components/layout/AppHeader.vue'
-import { usePhone } from '../composables/usePhone'
+import { useGameStore } from '../stores/gameStore'
 
 const router = useRouter()
+const gameStore = useGameStore()
 const phoneNumber = ref('')
-const { callStatus, dialedNumber, contactName, acceptedContactId, makeCall, resetCall } = usePhone()
 
 const emit = defineEmits<{
   dial: [number: string]
 }>()
 
 // Watch for call accepted status and navigate to chat
-watch(callStatus, (newStatus) => {
-  if (newStatus === 'accepted' && acceptedContactId.value) {
+watch(() => gameStore.callStatus, (newStatus) => {
+  if (newStatus === 'accepted' && gameStore.acceptedContactId) {
     // Wait 2 seconds to show the "Call Accepted" screen, then navigate
     setTimeout(() => {
-      router.push({ name: 'chat', params: { id: acceptedContactId.value } })
+      router.push({ name: 'chat', params: { id: gameStore.acceptedContactId } })
       // Reset after navigation
       setTimeout(() => {
         resetDialer()
@@ -123,12 +111,12 @@ function deleteDigit() {
 async function handleMakeCall() {
   if (phoneNumber.value) {
     emit('dial', phoneNumber.value)
-    await makeCall(phoneNumber.value)
+    await gameStore.makePhoneCall(phoneNumber.value)
   }
 }
 
 function resetDialer() {
-  resetCall()
+  gameStore.resetCall()
   phoneNumber.value = ''
 }
 
@@ -189,10 +177,13 @@ function goBack() {
 }
 
 @keyframes pulse-icon {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: scale(1);
     opacity: 1;
   }
+
   50% {
     transform: scale(1.1);
     opacity: 0.7;
@@ -229,8 +220,13 @@ p {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .back-to-dialer-btn {

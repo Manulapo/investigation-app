@@ -28,9 +28,9 @@
     <ChatInput :is-cooldown="isCooldown" :cooldown-countdown="cooldownCountdown" @send="handleSendMessage" />
 
     <!-- Fullscreen Media Modal -->
-    <FullscreenMediaModal :media="fullscreenMedia" :image-element="imageElement" :image-transform="imageTransform"
-      :zoom-level="zoomLevel" @close="closeFullscreen" @zoom-in="zoomIn" @zoom-out="zoomOut" @reset-zoom="resetZoom"
-      @start-drag="startDrag" />
+    <FullscreenMediaModal :media="uiStore.fullscreenMedia" :image-element="null"
+      :image-transform="uiStore.imageTransform" :zoom-level="uiStore.zoomLevel" @close="closeFullscreen"
+      @zoom-in="zoomIn" @zoom-out="zoomOut" @reset-zoom="resetZoom" @start-drag="startDrag" />
   </div>
 </template>
 
@@ -42,17 +42,12 @@ import Avatar from '../components/ui/Avatar.vue'
 import ChatInput from '../components/ui/ChatInput.vue'
 import FullscreenMediaModal from '../components/ui/FullscreenMediaModal.vue'
 import MessageBubble from '../components/ui/MessageBubble.vue'
-import { useContactLoader } from '../composables/useContactLoader'
-import { useGameEngine } from '../composables/useGameEngine'
-import { useImageViewer } from '../composables/useImageViewer'
-import { useMessageQueue } from '../composables/useMessageQueue'
-import { useTurnTransition } from '../composables/useTurnTransition'
 import { useChatStore } from '../stores/chatStore'
 import { useGameStore } from '../stores/gameStore'
 import { useDocumentsStore } from '../stores/documentsStore'
 import { useNarrativeStore } from '../stores/narrativeStore'
+import { useUIStore } from '../stores/uiStore'
 import registry from '../data/registry.json'
-import type { MessageData } from '../types'
 
 
 const props = defineProps<{ id: string }>()
@@ -62,26 +57,23 @@ const chatStore = useChatStore()
 const gameStore = useGameStore()
 const documentsStore = useDocumentsStore()
 const narrativeStore = useNarrativeStore()
-
-const { parseInput, getPuzzleForTurn } = useGameEngine()
-const { fullscreenMedia, imageElement, imageTransform, openFullscreen, closeFullscreen, zoomIn, zoomOut, resetZoom, startDrag, zoomLevel } = useImageViewer()
-
+const uiStore = useUIStore()
 
 const contactData = ref<any>(null)
-const isTyping = ref(false)
 const messagesContainer = ref<HTMLElement | null>(null)
 const cooldownCountdown = ref(0)
 const reactiveTimer = ref(0)
-const isMessageSending = ref(false)
 
 const contactId = computed(() => props.id)
 const contact = computed(() => registry.find((c: any) => c.id === contactId.value) || null)
 const messages = computed(() => chatStore.getMessages(contactId.value))
 const currentTurn = computed(() => narrativeStore.getCurrentTurnForContact(contactId.value))
+const isTyping = computed(() => chatStore.isTyping(contactId.value))
+const isMessageSending = computed(() => chatStore.isMessageSending(contactId.value))
 
 const currentPuzzle = computed(() => {
   if (!contactData.value) return null
-  return getPuzzleForTurn(contactId.value, currentTurn.value)
+  return narrativeStore.getPuzzleForTurn(contactId.value, currentTurn.value)
 })
 
 const isHintAvailable = computed(() => {
@@ -101,49 +93,6 @@ const isCooldown = computed(() => {
   return Date.now() < status.lockedUntil
 })
 
-const getCurrentTurnForContact = (contactId: string): number => {
-  // Use narrativeStore's method instead
-  return narrativeStore.getCurrentTurnForContact(contactId)
-}
-
-const findMedia = (mediaId: string) => {
-  return documentsStore.getDocumentById(mediaId)
-}
-
-const findMediaArray = (mediaIds: string | string[]) => {
-  return documentsStore.findMediaArray(mediaIds)
-}
-
-const addDelayedMessage = (contactId: string, messageData: MessageData, delaySeconds: number = 2) => {
-  const addMsg = () => {
-    chatStore.addMessage(contactId, {
-      ...messageData,
-      timestamp: Date.now()
-    })
-  }
-  if (delaySeconds === 0) {
-    addMsg()
-  } else {
-    setTimeout(addMsg, delaySeconds * 1000)
-  }
-}
-
-// Initialize message queue composable
-const messageQueue = useMessageQueue(contactId, currentTurn, addDelayedMessage)
-
-// Initialize contact loader composable
-const contactLoader = useContactLoader({
-  contactId,
-  contact,
-  messages
-})
-
-// Initialize turn transition handler
-const turnTransition = useTurnTransition({
-  contactId: contactId.value,
-  isMessageSending
-})
-
 const requestHint = () => {
   if (!isHintAvailable.value || !currentPuzzle.value) return
 
@@ -152,27 +101,32 @@ const requestHint = () => {
   const hintText = currentPuzzle.value.hints?.[usedHints]
 
   if (hintText) {
-    addDelayedMessage(contactId.value, {
+    chatStore.addMessage(contactId.value, {
       id: `msg_hint_${puzzleKey}_${usedHints}`,
       content: hintText,
-      sender: 'contact'
-    }, 0)
+      sender: 'contact',
+      timestamp: Date.now()
+    })
 
     gameStore.useHint(puzzleKey)
 
-    isTyping.value = true
+    chatStore.setTyping(contactId.value, true)
     setTimeout(() => {
-      isTyping.value = false
+      chatStore.setTyping(contactId.value, false)
       scrollToBottom()
     }, 1000)
   }
 }
 
 const loadContactData = () => {
-  const loadedData = contactLoader.loadContactData()
-  if (loadedData) {
-    contactData.value = loadedData
-  }
+  const contactFile = contact.value?.file
+  if (!contactFile) return
+
+  contactData.value = narrativeStore.findContactFile(contactId.value)
+  if (!contactData.value) return
+
+  // Load messages using chatStore
+  chatStore.loadContactMessages(contactId.value)
 }
 
 const updateCooldownTimer = () => {
@@ -205,40 +159,71 @@ const handleAutoSolve = (event: any) => {
 const handleSendMessage = async (userMsg: string) => {
   if (!userMsg.trim() || isCooldown.value) return
 
-  messageQueue.addUserMessage(userMsg)
-  isMessageSending.value = true
-  isTyping.value = true
+  // Add user message
+  chatStore.addMessage(contactId.value, {
+    id: `msg_user_${Date.now()}`,
+    content: userMsg,
+    sender: 'user',
+    timestamp: Date.now()
+  })
+
+  chatStore.setMessageSending(contactId.value, true)
+  chatStore.setTyping(contactId.value, true)
 
   await new Promise(resolve => setTimeout(resolve, 1500))
 
-  const result = parseInput(contactId.value, userMsg)
+  // Validate answer using gameStore
+  const result = gameStore.validateAnswer(contactId.value, userMsg)
 
-  messageQueue.addMainResponse(result)
+  // Add main response
+  chatStore.addMessage(contactId.value, {
+    id: result.messageId || `msg_auto_${Date.now()}`,
+    content: result.text,
+    sender: 'contact',
+    timestamp: Date.now()
+  })
 
-  messageQueue.queueTextMessages(result.textMessages)
-  messageQueue.queueSuccessMedia(result.successMedia)
-  messageQueue.queueMediaMessages(result.mediaId)
-  messageQueue.queueEvidenceText(result.evidenceText)
-  messageQueue.queueEvidenceMessages(result.evidenceTextMessages)
-  messageQueue.queueNarrativeMessages(result)
-  messageQueue.queueNarrativeMedia(result.narrativeMediaIds)
-
-  const totalMessageDelay = messageQueue.calculateTotalDelay(result)
+  // Queue remaining puzzle response messages
+  const totalMessageDelay = chatStore.queuePuzzleResponse(contactId.value, result)
 
   setTimeout(() => {
-    isTyping.value = false
+    chatStore.setTyping(contactId.value, false)
   }, totalMessageDelay)
 
   if (result.status === 'success') {
-    messageQueue.handleSuccessActions(result, totalMessageDelay)
-    isMessageSending.value = false
+    // Handle success: show notification after messages
+    setTimeout(() => {
+      if (result.notificationContact && result.notificationMessage) {
+        uiStore.showNotification(result.notificationMessage, result.notificationContact)
+      }
+    }, totalMessageDelay + 2000)
+
+    chatStore.setMessageSending(contactId.value, false)
+
+    // Schedule triggered narratives in other contacts
+    if (result.messageId) {
+      setTimeout(() => {
+        chatStore.scheduleTriggeredNarratives(result.messageId)
+      }, totalMessageDelay + 1000)
+    }
   } else {
-    messageQueue.handleFailureActions(result)
-    isMessageSending.value = false
+    // Handle failure
+    if (result.status === 'locked') {
+      uiStore.showNotification('🔒 Sistema Bloccato - Cooldown Attivo')
+    }
+    chatStore.setMessageSending(contactId.value, false)
   }
 
   scrollToBottom()
 }
+
+// Image viewer methods from UIStore
+const openFullscreen = (media: any) => uiStore.openFullscreen(media)
+const closeFullscreen = () => uiStore.closeFullscreen()
+const zoomIn = () => uiStore.zoomIn()
+const zoomOut = () => uiStore.zoomOut()
+const resetZoom = () => uiStore.resetZoom()
+const startDrag = (e: MouseEvent | TouchEvent) => uiStore.startDrag(e)
 
 
 watch(() => messages.value.length, scrollToBottom)
@@ -263,7 +248,7 @@ watch(isCooldown, (val) => {
 })
 
 watch(currentTurn, (newTurn) => {
-  turnTransition.handleTurnChange(newTurn)
+  chatStore.handleTurnTransition(contactId.value, newTurn, isMessageSending.value)
 })
 
 
@@ -285,10 +270,12 @@ onMounted(() => {
   }
 
   window.addEventListener('debug-auto-solve', handleAutoSolve)
+  uiStore.setupDragListeners()
 })
 
 onUnmounted(() => {
   window.removeEventListener('debug-auto-solve', handleAutoSolve)
+  uiStore.removeDragListeners()
 })
 
 

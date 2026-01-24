@@ -1,8 +1,10 @@
 <template>
   <div class="toast-wrap">
-    <div v-for="toast in toasts" :key="toast.id" :class="['toast', { clickable: toast.contactId, 'animate-in': !animatedToasts.has(toast.id) }]" @click="handleClick(toast)">
+    <div v-for="toast in toasts" :key="toast.id"
+      :class="['toast', { clickable: toast.contactId, 'animate-in': !animatedToasts.has(toast.id) }]"
+      @click="handleClick(toast)">
       <div v-if="toast.contactId" class="chat-notification">
-         <Avatar :src="getContact(toast.contactId)?.avatar!" :alt="getContact(toast.contactId)?.name" class="avatar" />
+        <Avatar :src="getContact(toast.contactId)?.avatar!" :alt="getContact(toast.contactId)?.name" class="avatar" />
         <div class="content">
           <div class="name">{{ getContact(toast.contactId)?.name }}</div>
           <div class="message">{{ toast.text }}</div>
@@ -18,16 +20,16 @@
 import { useRouter } from 'vue-router'
 import { ref, onMounted, onUnmounted, watch } from 'vue'
 import registry from '../data/registry.json'
-import { toasts } from '../composables/useNotification'
-import { useNotification } from '../composables/useNotification'
+import { useUIStore } from '../stores/uiStore'
 import Avatar from './ui/Avatar.vue'
 
 const router = useRouter()
-const { removeToast } = useNotification()
+const uiStore = useUIStore()
 const animatedToasts = new Set<number>()
 const clickedToastIds = new Set<number>()
 
 const progressUpdates = ref(0)
+const toasts = uiStore.getToasts
 
 function getContact(id: string) {
   return registry.find((c: any) => c.id === id)
@@ -36,7 +38,7 @@ function getContact(id: string) {
 function getProgressWidth(toast: any): number {
   // Use progressUpdates to make this function reactive
   progressUpdates.value // This creates a dependency
-  
+
   if (!toast.createdAt || !toast.ttl) return 100
   const elapsed = Date.now() - toast.createdAt
   const remaining = Math.max(0, toast.ttl - elapsed)
@@ -48,7 +50,7 @@ onMounted(() => {
   const interval = setInterval(() => {
     progressUpdates.value++
   }, 100)
-  
+
   onUnmounted(() => {
     clearInterval(interval)
   })
@@ -74,7 +76,7 @@ function handleClick(toast: any) {
   if (toast.contactId) {
     // Navigate to the chat and remove toast after navigation
     router.push({ name: 'chat', params: { id: toast.contactId } }).then(() => {
-      removeToast(toast.id)
+      uiStore.removeToast(toast.id)
     })
   }
 }
@@ -128,6 +130,7 @@ function handleClick(toast: any) {
     transform: translateY(-100%);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;

@@ -19,13 +19,13 @@ import { computed, ref } from 'vue'
 import { useChatStore } from '../stores/chatStore'
 import { useGameStore } from '../stores/gameStore'
 import { useDocumentsStore } from '../stores/documentsStore'
-import { useNotification } from '../composables/useNotification'
+import { useUIStore } from '../stores/uiStore'
 import { useRouter } from 'vue-router'
 
 const chatStore = useChatStore()
 const gameStore = useGameStore()
 const documentsStore = useDocumentsStore()
-const { show } = useNotification()
+const uiStore = useUIStore()
 const router = useRouter()
 const showMenu = ref(false)
 const isDev = import.meta.env.DEV
@@ -53,7 +53,7 @@ function decrementLevel() {
 }
 
 function showMockNotification() {
-  show('Hai ricevuto un nuovo indizio!', 'robert')
+  uiStore.showNotification('Hai ricevuto un nuovo indizio!', 'robert')
 }
 
 function autoSolve() {

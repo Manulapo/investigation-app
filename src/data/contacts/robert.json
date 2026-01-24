@@ -178,9 +178,9 @@
     },
     {
       "id": "event_robert_8",
-      "turnId": 16,
+      "turnId": 17,
       "type": "narrative",
-      "triggerAfter": "msg_turn15_success",
+      "triggerAfter": "msg_turn16_success",
       "messages": [
         "Lo sapevo! anche il partner della figlia non me la racconta giusta, devi assolutamente chiedere alla scientifica di verificare meglio la sala fumatori ci potrebbe essere sfuggito qualcosa!"
       ],
@@ -188,9 +188,9 @@
     },
     {
       "id": "event_robert_9",
-      "turnId": 17,
+      "turnId": 18,
       "type": "narrative",
-      "triggerAfter": "msg_turn16_success",
+      "triggerAfter": "msg_turn17_success",
       "messages": [
         "Interessante, questi pezzetti di carta potrebbero avere a che fare con chi stava parlando Vincent?",
         "Chissa se possono essere decifrati...",
@@ -200,7 +200,7 @@
     },
     {
       "id": "event_robert_10",
-      "turnId": 17,
+      "turnId": 18,
       "type": "puzzle",
       "preQuestion": "Ci sereve un luogo ed un motivo, riesci ad aiutarmi?",
       "maxAttempts": 3,
@@ -238,9 +238,9 @@
     },
     {
       "id": "event_robert_11",
-      "turnId": 19,
+      "turnId": 20,
       "type": "narrative",
-      "triggerAfter": "msg_turn18_success",
+      "triggerAfter": "msg_turn19_success",
       "messages": [
         "Sono Arrivato proprio ora in villa Bellosguardo, sto controllando la stanza di Elias, vediamo un po' se riesco a trovare qualcosa di interessante.",
         "Troppe cianfrusaglie per i miei gusti, ma aspetta un attimo... questo cassetto sembra chiuso a chiave!",
@@ -253,7 +253,7 @@
     },
     {
       "id": "event_robert_12",
-      "turnId": 19,
+      "turnId": 20,
       "type": "puzzle",
       "preQuestion": "Potete aiutarmi a trovare la giusta combinazione?",
       "maxAttempts": 3,
@@ -293,7 +293,7 @@
     },
     {
       "id": "event_robert_13",
-      "turnId": 21,
+      "turnId": 22,
       "type": "puzzle",
       "preQuestion": "Ho appena ricevuto i documenti dalla banca... qualcosa non mi torna, a quanto ammonta la quota di Marcus?",
       "maxAttempts": 3,
@@ -329,9 +329,9 @@
     },
     {
       "id": "event_robert_14",
-      "turnId": 23,
+      "turnId": 24,
       "type": "narrative",
-      "triggerAfter": "msg_turn22_success",
+      "triggerAfter": "msg_turn23_success",
       "messages": [
         "Hey, la stanza è pulita, l'unica cosa che rimane serrata è la cassaforte personale di Elias.",
         "Sono convinto che ci sia qualcosa di importante lì dentro, se solo avessimo la combinazione...",
@@ -345,7 +345,7 @@
     },
     {
       "id": "event_robert_15",
-      "turnId": 23,
+      "turnId": 24,
       "type": "puzzle",
       "preQuestion": "Non è che per caso hai un'idea di quale sia la combinazione della cassaforte?",
       "maxAttempts": 3,
@@ -382,7 +382,7 @@
     },
     {
       "id": "event_robert_16",
-      "turnId": 24,
+      "turnId": 26,
       "type": "puzzle",
       "preQuestion": "Abbiamo capito a chi appartiene la 'V' nel biglietto della bottiglia regalata a Elias? Che significa?",
       "maxAttempts": 3,
@@ -420,7 +420,7 @@
     },
     {
       "id": "event_robert_17",
-      "turnId": 27,
+      "turnId": 28,
       "type": "puzzle",
       "preQuestion": "Marcus ha detto che l'ispettore Rusty è ancora vivo, dove si trova?",
       "maxAttempts": 3,

@@ -75,14 +75,17 @@ const currentLevel = computed(() => gameStore.currentGlobalTurn)
 const menuOpen = ref(false)
 
 // Pre-populate initial messages for visible contacts that haven't been opened yet
+// This allows users to see a preview in the chat list
 function ensureInitialMessages() {
   for (const contact of visibleContacts.value) {
     const messages = chatStore.getMessages(contact.id)
+
+    // Only add if there are no messages at all
     if (messages.length === 0) {
       try {
         const contactData = contactDataMap[contact.file]
 
-        // Add initial message
+        // Add initial message only (contact loader will handle narratives and pre-questions)
         if (contactData?.initialMessage) {
           chatStore.addMessage(contact.id, {
             id: `msg_initial_${contact.id}`,
@@ -90,18 +93,6 @@ function ensureInitialMessages() {
             sender: 'contact',
             timestamp: Date.now()
           })
-        }
-
-        const firstPuzzle = contactData?.timeline?.find((event: any) => event.type === 'puzzle' && event.turnId === 1)
-        if (firstPuzzle?.preQuestion && firstPuzzle.turnId === 1) {
-          chatStore.addMessage(contact.id, {
-            id: `msg_prequestion_${contact.id}_1`,
-            content: firstPuzzle.preQuestion,
-            sender: 'contact',
-            timestamp: Date.now() + 1
-          })
-
-          gameStore.setPreQuestionShown(`${contact.id}_1`, true)
         }
 
       } catch (error) {
